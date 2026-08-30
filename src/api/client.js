@@ -128,6 +128,14 @@ export const api = {
   // Orders
   checkout: (payload) =>
     request("/api/orders/checkout", { method: "POST", body: payload, auth: true }),
+  getOrderStatus: (orderId) => request(`/api/orders/${orderId}/status`),
+
+  // ABA Pay / KHQRcc — Scan & Pay QR
+  getPaymentConfig: () => request("/api/payments/config"),
+  checkPaymentStatus: (transaction_id) =>
+    request("/api/payments/status", { method: "POST", body: { transaction_id } }),
+  confirmPayment: (transaction_id) =>
+    request("/api/payments/confirm", { method: "POST", body: { transaction_id } }),
 
   // Discounts
   validatePromo: (code) =>
