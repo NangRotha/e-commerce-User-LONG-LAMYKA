@@ -9,6 +9,7 @@ export default function VerifyOtp() {
   const email = location.state?.email || new URLSearchParams(location.search).get("email") || "";
   const redirect = location.state?.redirect || "/";
   const devOtp = location.state?.devOtp || null;
+  const devReason = location.state?.devReason || null;
 
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -16,6 +17,7 @@ export default function VerifyOtp() {
   const [resent, setResent] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [devHint, setDevHint] = useState(devOtp);
+  const [devHintReason, setDevHintReason] = useState(devReason);
 
   // បើអ្នកប្រើបានផ្ទៀងផ្ទាត់រួចហើយ (login រួច) -> រំលងទំព័រនេះ
   useEffect(() => {
@@ -72,7 +74,10 @@ export default function VerifyOtp() {
     setCode(""); // លុបលេខកូដចាស់ ដើម្បីឱ្យអ្នកប្រើបញ្ចូលលេខថ្មី
     try {
       const data = await resendOtp(email);
-      if (data.dev_otp) setDevHint(data.dev_otp);
+      if (data.dev_otp) {
+        setDevHint(data.dev_otp);
+        setDevHintReason(data.otp_reason || null);
+      }
       setResent(true);
       setCooldown(30);
     } catch (err) {
@@ -116,8 +121,18 @@ export default function VerifyOtp() {
 
         {devHint && (
           <p className="mt-5 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-            🧪 <strong>Dev mode:</strong> SMTP not configured, so the code was
-            printed in the backend console instead. Try:{" "}
+            {devHintReason === "send_failed" ? (
+              <>
+                ⚠️ <strong>Email sending failed:</strong> the server could not
+                reach the email service. Try again in a moment, or use the code
+                below:
+              </>
+            ) : (
+              <>
+                🧪 <strong>Dev mode:</strong> email sending is not configured on
+                this server, so here's your code:
+              </>
+            )}{" "}
             <code className="font-bold">{devHint}</code>
           </p>
         )}

@@ -28,7 +28,12 @@ export default function Register() {
       // បន្ទាប់ពីចុះឈ្មោះរួច ទៅកាន់ទំព័របញ្ចូល OTP
       navigate(`/verify-otp?email=${encodeURIComponent(email)}`, {
         replace: true,
-        state: { email, redirect, devOtp: res.dev_otp || null },
+        state: {
+          email,
+          redirect,
+          devOtp: res.dev_otp || null,
+          devReason: res.otp_reason || null,
+        },
       });
     } catch (err) {
       setError(err.message);
