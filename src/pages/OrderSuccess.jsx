@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
 import { formatPrice } from "../lib/helpers";
 
@@ -7,6 +8,7 @@ import { formatPrice } from "../lib/helpers";
 const POLL_MS = 3000;
 
 export default function OrderSuccess() {
+  const { user } = useAuth();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const order = location.state?.order;
@@ -185,6 +187,12 @@ export default function OrderSuccess() {
             </p>
             <p className="mt-1 text-sm text-emerald-700/80">
               Your order has been marked as paid. Thank you!
+            </p>
+            <p className="mt-3 text-sm text-emerald-700/80 flex items-center gap-1.5">
+              ✉️ A receipt has been sent to your email
+              {user?.email ? (
+                <span className="font-medium">({user.email})</span>
+              ) : null}
             </p>
           </div>
         )}
