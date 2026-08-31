@@ -10,7 +10,10 @@ export default function Checkout() {
   const { items, subtotal, clear } = useCart();
   const navigate = useNavigate();
 
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [note, setNote] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [promo, setPromo] = useState(null); // { percent }
   const [promoError, setPromoError] = useState("");
@@ -24,6 +27,14 @@ export default function Checkout() {
       navigate("/login", { state: { redirect: "/checkout" }, replace: true });
     }
   }, [user, navigate]);
+
+  // ដាក់ឈ្មោះពី Profile ដោយស្វ័យប្រវត្តិ (អ្នកប្រើអាចកែបាន)
+  useEffect(() => {
+    if (user?.name && !name.trim()) {
+      setName(user.name);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const applyPromo = async () => {
     setPromoError("");
@@ -53,16 +64,27 @@ export default function Checkout() {
 
   const placeOrder = async () => {
     setError("");
+    if (!name.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+    if (!phone.trim()) {
+      setError("Please enter your phone number.");
+      return;
+    }
     if (!address.trim()) {
-      setError("Please enter your shipping address.");
+      setError("Please enter your delivery address.");
       return;
     }
     setPlacing(true);
     try {
       const res = await api.checkout({
         items: items.map((i) => ({ product_id: i.id, quantity: i.quantity })),
-        promo_code: promo ? promoCode.trim() : null,
+        customer_name: name.trim(),
+        customer_phone: phone.trim(),
         shipping_address: address.trim(),
+        note: note.trim(),
+        promo_code: promo ? promoCode.trim() : null,
       });
       clear();
       navigate("/order-success", { state: { order: res } });
@@ -112,19 +134,80 @@ export default function Checkout() {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
             <h2 className="text-lg font-bold text-slate-900">
-              1. Shipping address
+              1. Contact information
+            </h2>
+            <div className="mt-4 grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Full name *
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your full name"
+                  className="mt-1.5 w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                {name.trim() === (user?.name || "") && user?.name && (
+                  <p className="mt-1.5 text-xs text-emerald-600">
+                    ✓ Auto-filled from your profile (you can edit)
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700">
+                  Phone *
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. 012 345 678"
+                  className="mt-1.5 w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+            <h2 className="text-lg font-bold text-slate-900">
+              2. Delivery address
             </h2>
             <textarea
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               rows={3}
-              placeholder="Full name, street address, city, country..."
+              placeholder="Street address, building, city, province..."
               className="mt-4 w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
-            <h2 className="text-lg font-bold text-slate-900">2. Promo code</h2>
+            <h2 className="text-lg font-bold text-slate-900">
+              3. Note{" "}
+              <span className="text-sm font-normal text-slate-400">
+                (optional)
+              </span>
+            </h2>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={2}
+              placeholder="Anything we should know? (e.g. delivery time, gift wrap...)"
+              className="mt-4 w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+            <h2 className="text-lg font-bold text-slate-900">
+              4. Promo code{" "}
+              <span className="text-sm font-normal text-slate-400">
+                (optional)
+              </span>
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              You can skip this if you don't have a code.
+            </p>
             <div className="mt-4 flex gap-3">
               <input
                 value={promoCode}
