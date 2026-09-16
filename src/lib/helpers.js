@@ -11,3 +11,9 @@ export function effectivePrice(p) {
 export function formatPrice(n) {
   return `$${Number(n || 0).toFixed(2)}`;
 }
+
+/** ពិនិត្យថា URL ជាវីដេអូ ឬរូបភាព (ប្រើក្នុង Gallery ផលិតផល) */
+export function isVideoUrl(url) {
+  if (!url) return false;
+  return /\.(mp4|webm|mov|ogg|m4v)(\?|#|$)/i.test(String(url));
+}

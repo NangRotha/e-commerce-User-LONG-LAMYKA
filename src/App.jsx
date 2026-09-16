@@ -5,16 +5,17 @@ import ScrollToTop from "./components/ScrollToTop";
 import ApiStatusBanner from "./components/ApiStatusBanner";
 import AlertCenter from "./components/AlertCenter";
 import ChatWidget from "./components/ChatWidget";
+import PageTransition from "./components/PageTransition";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import VerifyOtp from "./pages/VerifyOtp";
 import OrderSuccess from "./pages/OrderSuccess";
-import Profile from "./pages/Profile";
 
+/**
+ * Storefront — គ្មាន Login / Sign Up / Profile
+ * អតិថិជនអាចជ្រើសរើសទំនិញ រួចបង់ប្រាក់ជា Guest ដោយស្កេន KHQR (ABA / Bakong)។
+ */
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -24,18 +25,16 @@ export default function App() {
       {/* Alerts / Popups ពី Admin (real-time auto-update) */}
       <AlertCenter />
       <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/order-success" element={<OrderSuccess />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </PageTransition>
       </main>
       <Footer />
       {/* AI Chatbot (DeepSeek) — floating widget */}

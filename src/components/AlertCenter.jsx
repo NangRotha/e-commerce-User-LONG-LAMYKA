@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { useRealtime } from "../context/RealtimeContext";
+import { useI18n } from "../i18n/I18nContext";
 
 // រយៈពេល exit animation (Popup/Banner ចេញ) មុននឹងលាក់
 const EXIT_MS = 260;
@@ -52,6 +53,7 @@ const META = {
  * - Real-time: បញ្ចូលថ្មីដោយស្វ័យប្រវត្តិ ពេល Admin កែ/បង្កើត/លុប Alert
  */
 export default function AlertCenter() {
+  const { t } = useI18n();
   const [alerts, setAlerts] = useState([]);
   // status[id] = 'closing' | 'hidden' — ចងចាំតែក្នុង Memory (Refresh page បាត់ -> បង្ហាញវិញ)
   const [status, setStatus] = useState({});
@@ -157,7 +159,7 @@ export default function AlertCenter() {
                 <button
                   onClick={(e) => handleDismiss(e, a)}
                   className={`shrink-0 p-1 rounded-md opacity-60 hover:opacity-100 transition ${m.bannerBtn}`}
-                  aria-label="Dismiss announcement"
+                  aria-label={t("alerts.dismiss")}
                 >
                   ✕
                 </button>
@@ -190,7 +192,7 @@ export default function AlertCenter() {
             <button
               onClick={() => dismiss(popup.id)}
               className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-slate-900/60 text-white hover:bg-slate-900/80 transition"
-              aria-label="Close announcement"
+              aria-label={t("alerts.close")}
             >
               ✕
             </button>
@@ -259,16 +261,16 @@ export default function AlertCenter() {
                 {popup.link_url && (
                   <button
                     onClick={() => handleAction(popup)}
-                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition"
+                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition active:scale-95"
                   >
-                    Learn more
+                    {t("alerts.learnMore")}
                   </button>
                 )}
                 <button
                   onClick={() => dismiss(popup.id)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition"
+                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition active:scale-95"
                 >
-                  {popup.link_url ? "Maybe later" : "Got it"}
+                  {popup.link_url ? t("alerts.later") : t("alerts.gotIt")}
                 </button>
               </div>
             </div>

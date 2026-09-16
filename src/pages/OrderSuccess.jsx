@@ -1,55 +1,149 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { api } from "../api/client";
-import { formatPrice } from "../lib/helpers";
+import { useI18n } from "../i18n/I18nContext";
+import { formatMoney } from "../lib/payment";
+import { useRealtime } from "../context/RealtimeContext";
 
 // ពិនិត្យស្ថានភាពការបង់ប្រាក់រៀងរាល់ 3 វិនាទី (auto-detect payment)
 const POLL_MS = 3000;
+// តាមឯកសារ KHQRcc ៖ Poll រៀងរាល់ 3 វិនាទី មិនលើស 3 នាទី (បន្ទាប់មក QR ផុតកំណត់)
+const MAX_POLL_MS = 3 * 60 * 1000;
 
+// KHQRcc Checkout Plugin — បង្ហាញ ABA Pay Checkout (KHQR + Deeplink) ជា Modal
+const KHQR_PLUGIN_SRC = "https://khqr.cc/khqrcc-plugin.js";
+
+/** ផ្ទុក Script របស់ KHQRcc Plugin (តែពេលចាំបាច់) */
+function loadKhqrPlugin() {
+  return new Promise((resolve, reject) => {
+    if (typeof window === "undefined") return reject(new Error("no window"));
+    if (window.KhqrPayway) return resolve(window.KhqrPayway);
+
+    const script = document.getElementById("khqrcc-plugin") || document.createElement("script");
+    script.id = "khqrcc-plugin";
+    script.src = KHQR_PLUGIN_SRC;
+    script.async = true;
+    script.onload = () =>
+      window.KhqrPayway ? resolve(window.KhqrPayway) : reject(new Error("plugin unavailable"));
+    script.onerror = () => reject(new Error("plugin failed to load"));
+    if (!script.parentNode) document.head.appendChild(script);
+  });
+}
+
+/**
+ * Order Success — ស្កេន KHQR បង់ប្រាក់ (ABA / Bakong Wallet)
+ *
+ * ✅ Auto payment: ទំព័រនេះ Poll ស្ថានភាពទៅ KHQRcc Gateway រៀងរាល់ 3 វិនាទី
+ *    ពេលអតិថិជនស្កេន និងបង់ប្រាក់រួច -> Order ត្រូវបានបញ្ជាក់ថា "paid" ដោយស្វ័យប្រវត្តិ
+ * ✅ Real-time: បើ Admin ប្តូរស្ថានភាព -> ទំព័រនេះដឹងភ្លាមៗតាម WebSocket (orders_changed)
+ * ✅ Refresh-safe: QR ត្រូវបានរក្សាទុកក្នុង Database -> Refresh ក៏នៅតែឃើញ QR
+ */
 export default function OrderSuccess() {
-  const { user } = useAuth();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const order = location.state?.order;
+  const { t } = useI18n();
 
-  const [paymentStatus, setPaymentStatus] = useState(order?.status || "pending");
+  const [order, setOrder] = useState(location.state?.order || null);
+  const [paymentStatus, setPaymentStatus] = useState(
+    location.state?.order?.status || "pending"
+  );
   const [confirming, setConfirming] = useState(false);
   const [pollError, setPollError] = useState("");
+  const [opening, setOpening] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [expired, setExpired] = useState(false);
+  const [pollKey, setPollKey] = useState(0);
   const timerRef = useRef(null);
+  const startedRef = useRef(Date.now());
 
-  // បើ Refresh page (state បាត់) -> យក Order ID ពី URL មកពិនិត្យស្ថានភាព
   const orderId = order?.order_id || searchParams.get("order_id");
 
-  useEffect(() => {
-    if (orderId && !order) {
-      api
-        .getOrderStatus(orderId)
-        .then((s) => setPaymentStatus(s.status))
-        .catch(() => {});
+  // ទាញព័ត៌មាន Order ឡើងវិញ (រួមទាំង QR + ព័ត៌មាន Bakong) — ប្រើពេល Refresh ឬពេលមានព្រឹត្តិការណ៍ real-time
+  const refresh = useCallback(async () => {
+    if (!orderId) return;
+    try {
+      const s = await api.getOrderStatus(orderId);
+      setOrder((prev) => ({ ...(prev || {}), ...s }));
+      setPaymentStatus(s.status);
+    } catch {
+      /* ignore — បន្តបង្ហាញទិន្នន័យចាស់ */
     }
-  }, [orderId, order]);
+  }, [orderId]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  // Real-time: Admin ប្តូរស្ថានភាព Order -> ទំព័រនេះបច្ចុប្បន្នភាពភ្លាមៗ
+  useRealtime("orders_changed", refresh);
+
+  /**
+   * Gateway Redirect (success_url) ផ្ញើ `success_hash`, `success_amount`,
+   * `success_time` មកជាមួយ URL -> យើងផ្ទៀងផ្ទាត់ជាមួយ Gateway ភ្លាមៗ
+   * (Server-side verify — មិនជឿតែលើ Query Param) ដើម្បីកុំរង់ចាំ Poll
+   */
+  const successHash = searchParams.get("success_hash");
+  useEffect(() => {
+    if (!successHash) return;
+    let cancelled = false;
+
+    (async () => {
+      try {
+        setConfirming(true);
+        let tx = order?.payment_transaction_id;
+        if (!tx) {
+          const s = await api.getOrderStatus(orderId);
+          tx = s.payment_transaction_id;
+          if (!cancelled) setOrder((prev) => ({ ...(prev || {}), ...s }));
+        }
+        if (tx && !cancelled) {
+          const confirmed = await api.confirmPayment(tx);
+          setPaymentStatus(confirmed.status || "paid");
+        }
+      } catch {
+        /* បើបរាជ័យ -> Poll / WebSocket នឹងដោះស្រាយ */
+      } finally {
+        if (!cancelled) setConfirming(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [successHash, orderId]);
 
   // Auto-detect: Poll KHQRcc រហូតដល់ឃើញ success -> Confirm -> Order paid
   useEffect(() => {
     const tx = order?.payment_transaction_id;
     if (!tx || paymentStatus === "paid") return;
 
+    let stopped = false;
+
     const poll = async () => {
+      // តាមឯកសារ KHQRcc៖ បើហួស 3 នាទី -> ឈប់ Poll (QR ផុតកំណត់)
+      if (Date.now() - startedRef.current > MAX_POLL_MS) {
+        clearInterval(timerRef.current);
+        setExpired(true);
+        return;
+      }
       try {
         const s = await api.checkPaymentStatus(tx);
+        if (stopped) return;
         if (s.status === "success") {
           clearInterval(timerRef.current);
           setConfirming(true);
           try {
             const confirmed = await api.confirmPayment(tx);
-            setPaymentStatus(confirmed.status);
+            setPaymentStatus(confirmed.status || "paid");
+          } catch {
+            /* WS / refresh នឹងធ្វើបច្ចុប្បន្នភាពជំនួស */
           } finally {
             setConfirming(false);
           }
         } else if (s.status === "failed") {
           clearInterval(timerRef.current);
-          setPollError("Payment was not completed. Please try again.");
+          setPollError(t("pay.failed"));
         }
       } catch {
         /* network error — បន្តពិនិត្យបន្ទាប់ */
@@ -58,18 +152,67 @@ export default function OrderSuccess() {
 
     poll();
     timerRef.current = setInterval(poll, POLL_MS);
-    return () => clearInterval(timerRef.current);
-  }, [order?.payment_transaction_id, paymentStatus]);
+    return () => {
+      stopped = true;
+      clearInterval(timerRef.current);
+    };
+  }, [order?.payment_transaction_id, paymentStatus, pollKey, t]);
 
-  if (!order && !orderId) {
+  /** បើក ABA Pay Checkout — ប្រើ KHQRcc Plugin Modal (បើផ្ទុកមិនបាន -> បើក Tab ថ្មី) */
+  const payNow = async () => {
+    const url = order?.payment_url;
+    if (!url) return;
+    setOpening(true);
+    try {
+      const KhqrPayway = await loadKhqrPlugin();
+      KhqrPayway.openCheckout({
+        checkout_url: url,
+        onSuccess: () => {
+          setPaymentStatus("paid");
+          refresh();
+        },
+        onError: () => {
+          /* អ្នកប្រើបិទ Modal — មិនធ្វើអ្វី */
+        },
+      });
+    } catch {
+      // Plugin ផ្ទុកមិនបាន (Network / Ad-blocker) -> បើក Checkout ដោយផ្ទាល់
+      window.open(url, "_blank", "noopener,noreferrer");
+    } finally {
+      setOpening(false);
+    }
+  };
+
+  /** ពិនិត្យការបង់ប្រាក់ម្តងទៀត (ពេល QR ហួស 3 នាទី) */
+  const checkNow = () => {
+    setExpired(false);
+    setPollError("");
+    startedRef.current = Date.now();
+    setPollKey((k) => k + 1);
+    refresh();
+  };
+
+  const copyLink = async () => {
+    const url = order?.payment_url || order?.payment_checkout_url;
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.prompt(t("pay.copyLink"), url);
+    }
+  };
+
+  if (!orderId) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center">
-        <h1 className="text-2xl font-bold text-slate-800">No order found</h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
+        <h1 className="text-2xl font-bold text-slate-800">{t("pay.noOrder")}</h1>
         <Link
           to="/"
-          className="mt-4 inline-block text-emerald-600 font-medium"
+          className="mt-4 inline-block text-emerald-600 font-medium hover:underline"
         >
-          ← Back to shop
+          {t("pay.backToShop")}
         </Link>
       </div>
     );
@@ -77,130 +220,233 @@ export default function OrderSuccess() {
 
   const isPaid = paymentStatus === "paid";
   const showQr =
-    order?.payment_enabled && order.payment_qr_url && !isPaid;
+    order?.payment_enabled && order?.payment_qr_url && !isPaid;
+  const currency = order?.currency || "USD";
+  const khrRate = order?.khr_rate || 4100;
+  const amount = formatMoney(order?.total_amount ?? 0, currency, khrRate);
+  // Link សម្រាប់បើកក្នុង Tab ថ្មី -> ប្រើ Checkout ផ្ទាល់ (លឿនជាងមួយជំហាត់)
+  const directCheckoutUrl = order?.payment_checkout_url || order?.payment_url || "";
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-16">
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 text-center">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+      <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 sm:p-8 text-center animate-fade-in-up">
+        {/* Company name (ពី Admin Settings — Bakong Wallet) */}
+        {order?.payment_company_name && (
+          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600">
+            {order.payment_company_name}
+          </p>
+        )}
+
+        {/* Status icon */}
         <div
-          className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-3xl ${
-            isPaid
-              ? "bg-emerald-100 animate-pop-in"
-              : "bg-amber-100 animate-pulse"
+          className={`mx-auto mt-4 w-16 h-16 rounded-full flex items-center justify-center text-3xl transition-all duration-500 ${
+            isPaid ? "bg-emerald-100 animate-pop-in" : "bg-amber-100 animate-pulse-soft"
           }`}
         >
           {isPaid ? "✅" : "⏳"}
         </div>
+
         <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold text-slate-900">
           {isPaid
-            ? "Payment received!"
+            ? t("pay.paidTitle")
             : showQr
-            ? "Scan to pay with ABA / Bakong"
-            : "Order placed successfully!"}
+            ? t("pay.scanTitle")
+            : t("pay.orderPlacedTitle")}
         </h1>
         <p className="mt-2 text-slate-500">
           {isPaid
-            ? "Thank you! Your payment has been confirmed automatically."
+            ? t("pay.paidHint")
             : showQr
-            ? "Scan the QR code below with your ABA Mobile app to complete payment."
-            : "Thank you for your purchase. Here are your order details."}
+            ? t("pay.scanHint")
+            : t("pay.orderPlacedHint")}
         </p>
 
         {/* Order details */}
         <div className="mt-8 bg-slate-50 rounded-2xl border border-slate-200 p-6 text-left space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Order ID</span>
+            <span className="text-slate-500">{t("pay.orderId")}</span>
             <span className="font-semibold text-slate-900">#{orderId}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Status</span>
+            <span className="text-slate-500">{t("pay.status")}</span>
             <span
-              className={`font-semibold capitalize ${
+              className={`font-semibold inline-flex items-center gap-1.5 transition-colors duration-300 ${
                 isPaid ? "text-emerald-600" : "text-amber-600"
               }`}
             >
-              {isPaid ? "Paid" : "Pending payment"}
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  isPaid ? "bg-emerald-500" : "bg-amber-500 animate-pulse"
+                }`}
+              />
+              {isPaid ? t("pay.statusPaid") : t("pay.statusPending")}
             </span>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Total</span>
-            <span className="font-bold text-emerald-600">
-              {formatPrice(order?.total_amount ?? 0)}
-            </span>
+          <div className="flex justify-between text-sm pt-2 border-t border-slate-200">
+            <span className="text-slate-500">{t("pay.total")}</span>
+            <span className="font-bold text-emerald-600 text-lg">{amount}</span>
           </div>
         </div>
 
-
-        {/* QR Code — Scan & Pay (ABA / Bakong) */}
+        {/* ===== QR Code — Scan & Pay (ABA / Bakong Wallet) ===== */}
         {showQr && (
-          <div className="mt-8 bg-white rounded-2xl border-2 border-emerald-100 p-6 animate-fade-in-up">
-            <div className="mx-auto w-52 h-52 sm:w-56 sm:h-56 bg-white rounded-2xl border border-slate-200 shadow-soft p-3 flex items-center justify-center">
+          <div
+            className="mt-8 bg-white rounded-2xl border-2 border-emerald-100 p-5 animate-fade-in-up transition-shadow duration-300 hover:shadow-lift"
+            style={{ animationDelay: "80ms" }}
+          >
+            <div className="relative mx-auto w-56 h-56 sm:w-60 sm:h-60 bg-white rounded-2xl border border-slate-200 shadow-soft p-3 flex items-center justify-center">
+              {/* Animated scanning line (បង្ហាញថាកំពុងរង់ចាំការស្កេន) */}
+              {!isPaid && (
+                <span className="pointer-events-none absolute inset-0 rounded-2xl qr-scan-line" />
+              )}
               <img
                 src={order.payment_qr_url}
-                alt="ABA Pay QR code"
+                alt="KHQR — ABA / Bakong Wallet"
                 className="w-full h-full object-contain"
               />
             </div>
-            <p className="mt-4 text-lg font-bold text-slate-900">
-              Scan to pay {formatPrice(order.total_amount)}
-            </p>
-            <p className="mt-1 text-xs text-slate-500">
-              Open <strong>ABA Mobile</strong> (or any Bakong wallet) → Scan QR →
-              Confirm payment. The order updates automatically once paid.
-            </p>
 
-            <a
-              href={order.payment_url}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition hover:bg-emerald-700"
+            <p className="mt-4 text-lg font-bold text-slate-900">{amount}</p>
+            <p className="text-xs text-slate-500">{t("pay.amountToPay")}</p>
+
+            {/* ព័ត៌មានអ្នកទទួលប្រាក់ (Display Name + Bakong Wallet ID) */}
+            {(order.payment_display_name || order.payment_bakong_id) && (
+              <div className="mt-4 grid sm:grid-cols-2 gap-2 text-left">
+                {order.payment_display_name && (
+                  <div className="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-slate-400">
+                      {t("pay.receiver")}
+                    </p>
+                    <p className="text-sm font-semibold text-slate-800 truncate">
+                      {order.payment_display_name}
+                    </p>
+                  </div>
+                )}
+                {order.payment_bakong_id && (
+                  <div className="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+                    <p className="text-[11px] uppercase tracking-wide text-slate-400">
+                      {t("pay.receiverId")}
+                    </p>
+                    <p className="text-sm font-semibold text-slate-800 truncate">
+                      {order.payment_bakong_id}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {directCheckoutUrl && (
+              <a
+                href={directCheckoutUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-medium transition-all duration-200 hover:bg-slate-50 active:scale-95"
+              >
+                {t("pay.openCheckout")}
+              </a>
+            )}
+          </div>
+        )}
+
+        {/* ===== គ្មានរូប QR ពី Gateway -> បង្ហាញ Managed Checkout (ABA Pay) ===== */}
+        {!showQr && order?.payment_enabled && order?.payment_url && !isPaid && (
+          <div className="mt-8 bg-white rounded-2xl border-2 border-emerald-100 p-5 animate-fade-in-up">
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-2xl">
+              🇰🇭
+            </div>
+            <p className="mt-3 text-xl font-bold text-slate-900">{amount}</p>
+            <p className="mt-1 text-sm text-slate-500">{t("pay.checkoutHint")}</p>
+
+            <button
+              type="button"
+              onClick={payNow}
+              disabled={opening}
+              className="mt-5 w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95 disabled:opacity-60"
             >
-              Open ABA Pay checkout →
-            </a>
+              {opening ? t("common.loading") : `💳 ${t("pay.payNow")}`}
+            </button>
 
-            <div className="mt-5 flex items-center justify-center gap-2 text-sm text-emerald-700">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+              <a
+                href={directCheckoutUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-emerald-700 hover:underline"
+              >
+                {t("pay.openCheckout")}
+              </a>
+              <span className="text-slate-300">·</span>
+              <button
+                type="button"
+                onClick={copyLink}
+                className="font-medium text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                {copied ? t("pay.copied") : t("pay.copyLink")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ===== Waiting / verifying (ទាំង QR និង Checkout) ===== */}
+        {!isPaid && order?.payment_enabled && (
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <div className="flex items-center justify-center gap-2 text-sm text-emerald-700">
               {confirming ? (
                 <>
                   <span className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
-                  Verifying payment…
+                  {t("pay.verifying")}
                 </>
               ) : (
                 <>
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Waiting for payment…
+                  {t("pay.waiting")}
                 </>
               )}
             </div>
+            <p className="text-xs text-slate-400">{t("pay.scanNote")}</p>
+
+            {expired && (
+              <div className="mt-2 flex flex-col items-center gap-2">
+                <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                  ⏰ {t("pay.expired")}
+                </p>
+                <button
+                  type="button"
+                  onClick={checkNow}
+                  className="px-4 py-2 rounded-xl border border-slate-300 text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-slate-50 active:scale-95"
+                >
+                  {t("pay.checkNow")}
+                </button>
+              </div>
+            )}
             {pollError && (
-              <p className="mt-3 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3">
+              <p className="mt-1 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 animate-fade-in">
                 {pollError}
               </p>
             )}
           </div>
         )}
 
-        {/* Paid confirmation */}
+        {/* ===== Paid confirmation ===== */}
         {isPaid && (
           <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6 animate-pop-in">
             <p className="text-lg font-bold text-emerald-700">
-              ✓ Payment confirmed automatically
+              {t("pay.paidBadge")}
             </p>
-            <p className="mt-1 text-sm text-emerald-700/80">
-              Your order has been marked as paid. Thank you!
-            </p>
-            <p className="mt-3 text-sm text-emerald-700/80 flex items-center gap-1.5">
-              ✉️ A receipt has been sent to your email
-              {user?.email ? (
-                <span className="font-medium">({user.email})</span>
-              ) : null}
-            </p>
+            <p className="mt-1 text-sm text-emerald-700/80">{t("pay.paidNote")}</p>
+            {order?.customer_email ? (
+              <p className="mt-3 text-sm text-emerald-700/80 flex items-center justify-center gap-1.5">
+                {t("pay.receiptSent")}{" "}
+                <span className="font-medium">({order.customer_email})</span>
+              </p>
+            ) : null}
           </div>
         )}
 
         {/* Fallback payment link (when ABA Pay is not configured) */}
         {!order?.payment_enabled && order?.payment_url && !isPaid && (
           <div className="mt-8 flex flex-col items-center gap-2 text-sm">
-            <span className="text-slate-500">Payment link</span>
+            <span className="text-slate-500">{t("pay.payLink")}</span>
             <a
               href={order.payment_url}
               target="_blank"
@@ -215,13 +461,14 @@ export default function OrderSuccess() {
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             to="/"
-            className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition hover:bg-emerald-700"
+            className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95"
           >
-            ← Continue shopping
+            {t("pay.backToShop")}
           </Link>
         </div>
+
+        <p className="mt-6 text-xs text-slate-400">🔒 {t("pay.secureNote")}</p>
       </div>
     </div>
   );
 }
-

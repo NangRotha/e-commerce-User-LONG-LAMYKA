@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { effectivePrice, formatPrice } from "../lib/helpers";
+import { effectivePrice, formatPrice, isVideoUrl } from "../lib/helpers";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
+import { useI18n } from "../i18n/I18nContext";
 
+/** Product Detail (i18n km/en + animation + real-time update) */
 export default function ProductDetail() {
   const { id } = useParams();
   const { addItem } = useCart();
+  const { t } = useI18n();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
   const [qty, setQty] = useState(1);
@@ -25,7 +28,7 @@ export default function ProductDetail() {
       .catch((e) => setError(e.message));
   }, [id]);
 
-  // បច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ៖ ពេល Admin កែផលិតផលនេះ -> ទាញទិន្នន័យថ្មីមកបង្ហាញភ្លាមៗ
+  // Real-time: ពេល Admin កែផលិតផលនេះ -> ទាញទិន្នន័យថ្មីមកបង្ហាញភ្លាមៗ
   useProductsRealtime(() => {
     api
       .getProduct(id)
@@ -34,19 +37,21 @@ export default function ProductDetail() {
         setQty((q) => Math.min(q, Math.max(1, p.stock)));
       })
       .catch((e) => {
-        // ផលិតផលត្រូវបានលុប ឬបណ្តាញមានបញ្ហា — បង្ហាញថាលែងមានទៀត
         setProduct(null);
-        setError(e.message || "This product is no longer available");
+        setError(e.message || t("product.notFound"));
       });
   });
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center">
-        <div className="text-5xl mb-4">😕</div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
+        <div className="text-5xl mb-4 animate-float">😕</div>
         <h1 className="text-2xl font-bold">{error}</h1>
-        <Link to="/" className="mt-4 inline-block text-emerald-600 font-medium">
-          ← Back to shop
+        <Link
+          to="/"
+          className="mt-4 inline-block text-emerald-600 font-medium hover:underline"
+        >
+          {t("product.backToShop")}
         </Link>
       </div>
     );
@@ -71,14 +76,25 @@ export default function ProductDetail() {
   const price = effectivePrice(product);
   const onSale = product.is_on_sale && product.sale_percent > 0;
   const outOfStock = product.stock <= 0;
-  // បញ្ជីរូបភាពទាំងអស់ (រូបទី១ = Main) — គាំទ្ររូបភាពច្រើនសន្លឹក
   const images =
     product.images && product.images.length
       ? product.images
       : product.image_url
       ? [product.image_url]
       : [];
-  const activeImg = images[activeImage] || product.image_url;
+  // Gallery = រូបភាពទាំងអស់ + វីដេអូ (បើ Admin បាន Upload) នៅខាងចុង
+  // ចំណាំ៖ URL របស់ UploadThing អាចគ្មាន .mp4 ដូច្នេះយើងកំណត់ `type` ដោយផ្ទាល់
+  // ពី `product.video_url` (មិនពឹងតែលើ extension) — isVideoUrl ជា Safety Net
+  const media = [
+    ...images.map((url) => ({
+      url,
+      type: isVideoUrl(url) ? "video" : "image",
+    })),
+    ...(product.video_url ? [{ url: product.video_url, type: "video" }] : []),
+  ];
+  const activeMedia = media[activeImage] || null;
+  const activeItem = activeMedia?.url || product.image_url;
+  const activeIsVideo = activeMedia?.type === "video";
 
   const handleAdd = () => {
     addItem(product, qty);
@@ -90,47 +106,80 @@ export default function ProductDetail() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <Link
         to="/"
-        className="text-sm text-slate-500 hover:text-emerald-600 transition"
+        className="text-sm text-slate-500 hover:text-emerald-600 transition-colors duration-200"
       >
-        ← Back to shop
+        {t("product.backToShop")}
       </Link>
 
       <div className="mt-6 grid md:grid-cols-2 gap-8 lg:gap-14">
         {/* Image gallery (Main + supporting) */}
         <div className="animate-fade-in">
-          <div className="bg-white rounded-3xl border border-slate-100 shadow-soft overflow-hidden">
-            {activeImg ? (
+          <div className="bg-white rounded-3xl border border-slate-100 shadow-soft overflow-hidden group">
+            {activeItem && activeIsVideo ? (
+              <video
+                key={activeItem}
+                src={activeItem}
+                poster={product.image_url || undefined}
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full aspect-square object-contain bg-black"
+              />
+            ) : activeItem ? (
               <img
-                key={activeImage}
-                src={activeImg}
+                key={activeItem}
+                src={activeItem}
                 alt={product.name}
-                className="w-full aspect-square object-cover animate-fade-in"
+                className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
               />
             ) : (
-              <div className="w-full aspect-square flex items-center justify-center text-8xl bg-slate-100">
+              <div className="w-full aspect-square flex items-center justify-center text-7xl">
                 📦
               </div>
             )}
           </div>
 
-          {images.length > 1 && (
-            <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
-              {images.map((url, i) => (
+          {media.length > 1 && (
+            <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+              {media.map((item, i) => (
                 <button
-                  key={`${url}-${i}`}
+                  key={`${item.url}-${i}`}
+                  type="button"
                   onClick={() => setActiveImage(i)}
-                  className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-200 active:scale-95 ${
+                  className={`relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 active:scale-95 ${
                     i === activeImage
-                      ? "border-emerald-600 shadow-md shadow-emerald-600/20"
-                      : "border-transparent opacity-60 hover:opacity-100"
+                      ? "border-emerald-500 ring-2 ring-emerald-200"
+                      : "border-slate-200 hover:border-emerald-300"
                   }`}
-                  aria-label={`View image ${i + 1}`}
+                  aria-label={`${product.name} — ${i + 1}`}
                 >
-                  <img
-                    src={url}
-                    alt={`${product.name} ${i + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                  {item.type === "video" ? (
+                    <>
+                      {/* វីដេអូ: បង្ហាញរូបមេ + Icon Play */}
+                      <img
+                        src={product.image_url || ""}
+                        alt=""
+                        className="w-full h-full object-cover opacity-70"
+                      />
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <span className="w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center">
+                          <svg
+                            viewBox="0 0 24 24"
+                            className="w-3.5 h-3.5 fill-current ml-0.5"
+                            aria-hidden="true"
+                          >
+                            <polygon points="6 3 20 12 6 21 6 3" />
+                          </svg>
+                        </span>
+                      </span>
+                    </>
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </button>
               ))}
             </div>
@@ -138,7 +187,10 @@ export default function ProductDetail() {
         </div>
 
         {/* Info */}
-        <div className="flex flex-col animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+        <div
+          className="flex flex-col animate-fade-in-up"
+          style={{ animationDelay: "100ms" }}
+        >
           <p className="text-sm text-slate-400 uppercase tracking-widest font-semibold">
             {product.category}
           </p>
@@ -163,18 +215,20 @@ export default function ProductDetail() {
           </div>
 
           <p className="mt-6 text-slate-600 leading-relaxed">
-            {product.description || "No description available."}
+            {product.description || t("product.noDescription")}
           </p>
 
           <p className="mt-4 text-sm">
             {outOfStock ? (
-              <span className="text-rose-600 font-semibold">Out of stock</span>
+              <span className="text-rose-600 font-semibold">
+                {t("product.outOfStock")}
+              </span>
             ) : (
               <span className="text-slate-500">
                 <span className="font-semibold text-emerald-600">
-                  {product.stock} in stock
+                  {product.stock} {t("product.inStock")}
                 </span>{" "}
-                · Ready to ship
+                · {t("product.readyToShip")}
               </span>
             )}
           </p>
@@ -182,27 +236,30 @@ export default function ProductDetail() {
           <div className="mt-8 flex items-center gap-4">
             <div className="flex items-center border border-slate-200 rounded-2xl overflow-hidden shadow-soft">
               <button
+                type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 disabled={outOfStock}
-                className="px-4 py-2.5 text-lg font-bold text-slate-600 hover:bg-slate-100 transition active:scale-90 disabled:opacity-40"
-                aria-label="Decrease quantity"
+                className="px-4 py-2.5 text-lg font-bold text-slate-600 hover:bg-slate-100 transition-colors duration-200 active:scale-90 disabled:opacity-40"
+                aria-label={t("product.decrease")}
               >
                 −
               </button>
-              <span className="px-4 py-2.5 text-lg font-semibold min-w-12 text-center border-x border-slate-200">
+              <span className="px-4 py-2.5 text-lg font-semibold min-w-12 text-center border-x border-slate-200 tabular-nums">
                 {qty}
               </span>
               <button
+                type="button"
                 onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
                 disabled={outOfStock}
-                className="px-4 py-2.5 text-lg font-bold text-slate-600 hover:bg-slate-100 transition active:scale-90 disabled:opacity-40"
-                aria-label="Increase quantity"
+                className="px-4 py-2.5 text-lg font-bold text-slate-600 hover:bg-slate-100 transition-colors duration-200 active:scale-90 disabled:opacity-40"
+                aria-label={t("product.increase")}
               >
                 +
               </button>
             </div>
 
             <button
+              type="button"
               onClick={handleAdd}
               disabled={outOfStock}
               className={`flex-1 px-6 py-3.5 rounded-2xl text-white font-semibold transition-all duration-200 active:scale-95 ${
@@ -211,7 +268,11 @@ export default function ProductDetail() {
                   : "bg-emerald-600 shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-lift"
               } disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100`}
             >
-              {outOfStock ? "Sold out" : added ? "✓ Added!" : "Add to cart"}
+              {outOfStock
+                ? t("product.soldOut")
+                : added
+                ? t("product.added")
+                : t("product.addToCart")}
             </button>
           </div>
         </div>

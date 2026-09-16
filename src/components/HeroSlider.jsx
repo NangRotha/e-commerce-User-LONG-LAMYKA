@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api/client";
 import useSlidesRealtime from "../hooks/useSlidesRealtime";
+import { useI18n } from "../i18n/I18nContext";
 
 export function getYouTubeId(url) {
   if (!url) return null;
@@ -71,6 +72,7 @@ function CloseIcon({ className }) {
 }
 
 export default function HeroSlider({ fallback = null }) {
+  const { t } = useI18n();
   const [slides, setSlides] = useState([]);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -194,7 +196,7 @@ export default function HeroSlider({ fallback = null }) {
                   href={current.link_url}
                   className="mt-5 sm:mt-7 inline-block px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition"
                 >
-                  Shop now
+                  {t("product.shopNow")}
                 </a>
               )}
             </div>
@@ -209,7 +211,7 @@ export default function HeroSlider({ fallback = null }) {
             aria-label="Watch with sound"
           >
             <PlayIcon className="w-4 h-4 fill-white ml-0.5" />
-            Watch with sound
+            {t("product.watchWithSound")}
           </button>
         )}
       </div>

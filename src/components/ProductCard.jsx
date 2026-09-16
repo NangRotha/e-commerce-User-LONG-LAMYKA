@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { effectivePrice, formatPrice } from "../lib/helpers";
+import { useI18n } from "../i18n/I18nContext";
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
+  const { t } = useI18n();
   const [justAdded, setJustAdded] = useState(false);
   const price = effectivePrice(product);
   const outOfStock = product.stock <= 0;
@@ -50,14 +52,28 @@ export default function ProductCard({ product }) {
         {/* Stock badge */}
         {outOfStock && (
           <span className="absolute top-3 right-3 bg-slate-900/80 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur">
-            Sold out
+            {t("product.soldOut")}
+          </span>
+        )}
+
+        {/* Video badge (បើ Admin បាន Upload វីដេអូ) */}
+        {product.video_url && (
+          <span className="absolute bottom-3 right-3 bg-emerald-600/90 text-white text-[11px] font-bold px-2 py-1 rounded-full shadow-md backdrop-blur flex items-center gap-1">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-3 h-3 fill-current"
+              aria-hidden="true"
+            >
+              <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+            VIDEO
           </span>
         )}
 
         {/* Quick view hint on hover */}
         <div className="absolute bottom-3 inset-x-3 flex justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           <span className="bg-white/90 backdrop-blur text-slate-800 text-xs font-semibold px-4 py-2 rounded-full shadow-md">
-            View details
+            {t("product.viewDetails")}
           </span>
         </div>
       </Link>
@@ -91,7 +107,7 @@ export default function ProductCard({ product }) {
           <button
             onClick={handleAdd}
             disabled={outOfStock}
-            aria-label={outOfStock ? "Sold out" : "Add to cart"}
+            aria-label={outOfStock ? t("product.soldOut") : t("product.addToCart")}
             className={`relative px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
               justAdded
                 ? "bg-emerald-600 text-white scale-105"
@@ -103,12 +119,12 @@ export default function ProductCard({ product }) {
                 <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
-                Added
+                {t("product.addedShort")}
               </span>
             ) : outOfStock ? (
-              "Sold out"
+              t("product.soldOut")
             ) : (
-              "Add"
+              t("common.add")
             )}
           </button>
         </div>

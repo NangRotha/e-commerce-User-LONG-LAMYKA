@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { api } from "../api/client";
+import { useI18n } from "../i18n/I18nContext";
 
 // AI bot animation (dotLottie) from lottie.host
 const LOTTIE_URL =
@@ -33,13 +34,8 @@ function BotIcon({ className }) {
   );
 }
 
-const SUGGESTIONS = [
-  "What do you sell?",
-  "Do you offer free shipping?",
-  "Recommend a gift under $50",
-];
-
 export default function ChatWidget() {
+  const { t } = useI18n();
   const [enabled, setEnabled] = useState(null);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -86,7 +82,7 @@ export default function ChatWidget() {
       setError(e.message);
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "Sorry, I couldn't reach the AI right now. Please try again." },
+        { role: "assistant", content: t("chat.error") },
       ]);
     } finally {
       setTyping(false);
@@ -99,7 +95,7 @@ export default function ChatWidget() {
       <button
         onClick={() => setOpen((o) => !o)}
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white border border-emerald-100 shadow-lift flex items-center justify-center transition-transform duration-300 hover:scale-110 active:scale-95"
-        aria-label={open ? "Close chat" : "Open AI chat"}
+        aria-label={open ? t("chat.close") : t("chat.open")}
       >
         {open ? (
           <CloseIcon className="w-7 h-7 text-emerald-700 animate-pop-in" />
@@ -139,16 +135,16 @@ export default function ChatWidget() {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-bold leading-tight">Shop Assistant</p>
+            <p className="font-bold leading-tight">{t("chat.title")}</p>
             <p className="text-xs text-emerald-100 flex items-center gap-1.5 truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse shrink-0" />
-              AI E-Commerce Assistant· online
+              {t("chat.subtitle")}
             </p>
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="shrink-0 p-2 rounded-xl hover:bg-white/15 transition"
-            aria-label="Close chat"
+            className="shrink-0 p-2 rounded-xl hover:bg-white/15 transition active:scale-90"
+            aria-label={t("chat.close")}
           >
             <CloseIcon className="w-5 h-5" />
           </button>
@@ -160,15 +156,15 @@ export default function ChatWidget() {
         <div className="px-4 py-4 space-y-3 overflow-y-auto flex-1 min-h-0">
           {messages.length === 0 && (
             <div className="text-center text-slate-400 text-sm pt-2">
-              <p className="text-2xl mb-1">👋</p>
-              <p>Hi! I'm your AI shopping assistant.</p>
-              <p className="mt-1">Ask me anything about our store.</p>
+              <p className="text-2xl mb-1 animate-bounce-soft">👋</p>
+              <p>{t("chat.greeting")}</p>
+              <p className="mt-1">{t("chat.askAnything")}</p>
               <div className="mt-4 space-y-2">
-                {SUGGESTIONS.map((s) => (
+                {t("chat.suggestions").map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className="w-full text-left text-xs bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl px-3 py-2.5 transition text-slate-600"
+                    className="w-full text-left text-xs bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-xl px-3 py-2.5 transition-all duration-200 hover:translate-x-0.5 text-slate-600"
                   >
                     {s}
                   </button>
@@ -220,14 +216,14 @@ export default function ChatWidget() {
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2.5 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm placeholder:text-slate-400"
+            placeholder={t("chat.placeholder")}
+            className="flex-1 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm placeholder:text-slate-400 transition duration-200"
           />
           <button
             type="submit"
             disabled={!input.trim() || typing}
-            className="shrink-0 w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center transition hover:bg-emerald-700 disabled:opacity-40 active:scale-90"
-            aria-label="Send message"
+            className="shrink-0 w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center transition-all duration-200 hover:bg-emerald-700 disabled:opacity-40 active:scale-90"
+            aria-label={t("chat.send")}
           >
             <SendIcon className="w-4.5 h-4.5" />
           </button>

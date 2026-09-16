@@ -4,6 +4,7 @@ import HeroSlider from "../components/HeroSlider";
 import Reveal from "../components/Reveal";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
+import { useI18n } from "../i18n/I18nContext";
 
 // ផលិតផលសាកល្បងសម្រាប់បញ្ចូលទិន្នន័យពេល Database ទទេ
 const DEMO_PRODUCTS = [
@@ -19,7 +20,9 @@ const DEMO_PRODUCTS = [
   { name: "Lipstick Matte", description: "Long-lasting matte lipstick in a range of bold shades.", price: 12.99, stock: 60, category: "Beauty", is_on_sale: false, sale_percent: 0 },
 ];
 
+/** Home — Storefront (i18n km/en + animation + real-time auto-refresh) */
 export default function Home() {
+  const { t } = useI18n();
   const [products, setProducts] = useState(null);
   const [settings, setSettings] = useState({});
   const [categories, setCategories] = useState([]);
@@ -36,7 +39,6 @@ export default function Home() {
   };
 
   const loadCategories = () => {
-    // ទាញ Category ពី API (Admin គ្រប់គ្រងក្នុង Admin Panel)
     api
       .getCategories()
       .then((cats) => setCategories(cats.map((c) => c.name)))
@@ -53,8 +55,7 @@ export default function Home() {
     loadCategories();
   }, []);
 
-  // បច្ចុប្បន្នភាពដោយស្វ័យប្រវត្តិ៖ ពេល Admin កែផលិតផល / Category / Settings
-  // -> ទាញទិន្នន័យថ្មីទាំងអស់ដោយមិនចាំបាច់ Refresh
+  // Real-time: ពេល Admin កែផលិតផល / Category / Settings -> ទាញទិន្នន័យថ្មីភ្លាមៗ
   const live = useProductsRealtime(() => {
     loadProducts();
     loadCategories();
@@ -73,7 +74,11 @@ export default function Home() {
       }
       loadProducts();
     } catch (e) {
-      setSeedError(e.message);
+      setSeedError(
+        /authent|forbidden|401|403|admin/i.test(e.message || "")
+          ? t("home.adminOnlyDemo")
+          : e.message
+      );
     } finally {
       setSeeding(false);
     }
@@ -91,29 +96,30 @@ export default function Home() {
     });
   }, [products, category, search]);
 
-  // បញ្ជី Category សម្រាប់ Filter៖ យកពី API ជាមុនសិន។
-  // បើ API មិនមាន Category (ទទេ) -> ដកយកពីផលិតផលដែលមានស្រាប់
+  // បញ្ជី Category សម្រាប់ Filter៖ យកពី API ជាមុនសិន បើទទេ -> ដកយកពីផលិតផល
   const categoryOptions = useMemo(() => {
     if (categories.length) return ["All", ...categories];
-    const uniq = [
-      ...new Set((products || []).map((p) => p.category).filter(Boolean)),
-    ];
+    const uniq = [...new Set((products || []).map((p) => p.category).filter(Boolean))];
     return ["All", ...uniq.sort()];
   }, [categories, products]);
 
+  const countLabel =
+    filtered.length === 1
+      ? t("home.availableCountOne")
+      : t("home.availableCount", { count: filtered.length });
+
   return (
     <div>
-      {/* Hero Slider (រូប / វីដេអូ / YouTube) — បើគ្មាន Slide ទេ -> បង្ហាញ Hero ធម្មតា */}
+      {/* Hero Slider (រូប / វីដេអូ / YouTube) — បើគ្មាន Slide -> បង្ហាញ Hero ធម្មតា */}
       <HeroSlider
         fallback={
           <section className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 text-white animate-gradient">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight max-w-2xl">
-                {settings.site_name || "Welcome to our store"}
+              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight max-w-2xl animate-fade-in-up">
+                {settings.site_name || t("home.heroTitle")}
               </h1>
-              <p className="mt-4 text-emerald-100 text-lg max-w-xl">
-                Discover amazing products at unbeatable prices. Shop the latest
-                trends today.
+              <p className="mt-4 text-emerald-100 text-lg max-w-xl animate-fade-in-up" style={{ animationDelay: "120ms" }}>
+                {t("home.heroSubtitle")}
               </p>
             </div>
           </section>
@@ -141,8 +147,8 @@ export default function Home() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search products..."
-              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-white shadow-soft focus:outline-none focus:ring-2 focus:ring-emerald-500 transition placeholder:text-slate-400"
+              placeholder={t("home.searchPlaceholder")}
+              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 shadow-soft focus:outline-none focus:ring-2 focus:ring-emerald-500 transition duration-200"
             />
           </div>
 
@@ -150,6 +156,7 @@ export default function Home() {
             {categoryOptions.map((c) => (
               <button
                 key={c}
+                type="button"
                 onClick={() => setCategory(c)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 ${
                   category === c
@@ -157,25 +164,23 @@ export default function Home() {
                     : "bg-white border border-slate-200 text-slate-600 shadow-soft hover:border-emerald-400 hover:text-emerald-600"
                 }`}
               >
-                {c}
+                {c === "All" ? t("home.all") : c}
               </button>
             ))}
           </div>
 
           <span
-            className={`ml-auto inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full ${
-              live
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-slate-200 text-slate-500"
+            className={`ml-auto inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full transition-colors duration-300 ${
+              live ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"
             }`}
-            title="Product updates appear automatically when the admin makes changes"
+            title={t("home.liveHint")}
           >
             <span
               className={`w-1.5 h-1.5 rounded-full ${
                 live ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
               }`}
             />
-            LIVE
+            {t("nav.live")}
           </span>
         </div>
 
@@ -183,11 +188,9 @@ export default function Home() {
         <Reveal className="mt-10 mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              {category === "All" ? "Featured products" : category}
+              {category === "All" ? t("home.featured") : category}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              {filtered.length} product{filtered.length === 1 ? "" : "s"} available
-            </p>
+            <p className="mt-1 text-sm text-slate-500">{countLabel}</p>
           </div>
         </Reveal>
 
@@ -223,29 +226,30 @@ export default function Home() {
             </div>
           </Reveal>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-            <div className="text-5xl mb-4">🛒</div>
+          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300 animate-fade-in-up">
+            <div className="text-5xl mb-4 animate-float">🛒</div>
             <h2 className="text-xl font-bold text-slate-800">
-              {search || category !== "All"
-                ? "No products match your search"
-                : "No products yet"}
+              {search || category !== "All" ? t("home.noMatch") : t("home.noProducts")}
             </h2>
             <p className="mt-2 text-slate-500">
               {search || category !== "All"
-                ? "Try a different keyword or category."
-                : "Load some demo products to see the store in action."}
+                ? t("home.noMatchHint")
+                : t("home.noProductsHint")}
             </p>
             {!(search || category !== "All") && (
               <>
                 <button
+                  type="button"
                   onClick={seedDemo}
                   disabled={seeding}
-                  className="mt-6 px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition hover:bg-emerald-700 disabled:opacity-50"
+                  className="mt-6 px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95 disabled:opacity-50"
                 >
-                  {seeding ? "Loading..." : "🪄 Load demo products"}
+                  {seeding ? t("common.loading") : t("home.loadDemo")}
                 </button>
                 {seedError && (
-                  <p className="mt-3 text-sm text-rose-600">{seedError}</p>
+                  <p className="mt-3 text-sm text-rose-600 animate-fade-in">
+                    {seedError}
+                  </p>
                 )}
               </>
             )}
