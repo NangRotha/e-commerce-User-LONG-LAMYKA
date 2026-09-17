@@ -72,6 +72,8 @@ export const en = {
     notFound: "This product is no longer available",
     shopNow: "Shop now",
     watchWithSound: "Watch with sound",
+    selectType: "Select Option / Color",
+    videoFirst: "Product Video",
   },
   cart: {
     title: "Shopping Cart",
@@ -316,6 +318,8 @@ export const km = {
     notFound: "ផលិតផលនេះលែងមានទៀតហើយ",
     shopNow: "ទិញឥឡូវនេះ",
     watchWithSound: "មើលជាមួយសំឡេង",
+    selectType: "ជម្រើសប្រភេទ / ពណ៌",
+    videoFirst: "វីដេអូផលិតផល",
   },
   cart: {
     title: "កន្ត្រកទំនិញ",

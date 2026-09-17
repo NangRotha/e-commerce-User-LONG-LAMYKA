@@ -35,11 +35,15 @@ export function normalizeInstagram(val) {
   return `https://instagram.com/${clean}`;
 }
 
-export function getTelegramOrderUrl(telegramVal, product, price) {
+export function getTelegramOrderUrl(telegramVal, product, price, variant = "") {
   const base = normalizeTelegram(telegramVal);
   // Extract username if it's a t.me link
   const match = base.match(/t\.me\/([^/?#]+)/i);
   const user = match ? match[1] : "khmerudomet";
-  const text = `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${product.name}\n💰 តម្លៃ៖ $${price}\n🔗 ${window.location.href}`;
+  let text = `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${product.name}`;
+  if (variant) {
+    text += `\n🎨 ប្រភេទ/ជម្រើស៖ ${variant}`;
+  }
+  text += `\n💰 តម្លៃ៖ $${price}\n🔗 ${window.location.href}`;
   return `https://t.me/${user}?text=${encodeURIComponent(text)}`;
 }

@@ -83,7 +83,11 @@ export default function Checkout() {
     setPlacing(true);
     try {
       const res = await api.checkout({
-        items: items.map((i) => ({ product_id: i.id, quantity: i.quantity })),
+        items: items.map((i) => ({
+          product_id: i.id,
+          quantity: i.quantity,
+          variant: i.variant || null,
+        })),
         customer_name: name.trim(),
         customer_phone: phone.trim(),
         customer_email: email.trim(),
@@ -116,10 +120,12 @@ export default function Checkout() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
         <div className="text-6xl mb-4">🛒</div>
-        <h1 className="text-2xl font-bold text-slate-800">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
           {t("checkout.nothingToCheckout")}
         </h1>
-        <p className="mt-2 text-slate-500">{t("checkout.emptyCartHint")}</p>
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
+          {t("checkout.emptyHint")}
+        </p>
         <Link
           to="/"
           className="mt-6 inline-block px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95"
@@ -131,10 +137,10 @@ export default function Checkout() {
   }
 
   const input =
-    "mt-1.5 w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200";
-  const label = "block text-sm font-medium text-slate-700";
+    "mt-1.5 w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200";
+  const label = "block text-sm font-medium text-slate-700 dark:text-slate-300";
   const card =
-    "bg-white rounded-2xl border border-slate-200 p-6 transition-all duration-300 hover:shadow-soft";
+    "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 transition-all duration-300 hover:shadow-soft";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -325,37 +331,44 @@ export default function Checkout() {
 
         {/* ===== Summary ===== */}
         <div
-          className="bg-white rounded-2xl border border-slate-200 p-6 h-fit lg:sticky lg:top-24 animate-fade-in-up transition-shadow duration-300 hover:shadow-soft"
+          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 h-fit lg:sticky lg:top-24 animate-fade-in-up transition-shadow duration-300 hover:shadow-soft"
           style={{ animationDelay: "120ms" }}
         >
-          <h2 className="text-lg font-bold text-slate-900">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
             {t("checkout.orderSummary")}
           </h2>
           <div className="mt-4 space-y-3 text-sm">
             {items.map((i) => (
-              <div key={i.id} className="flex justify-between gap-2 text-slate-600">
-                <span className="truncate">
-                  {i.name} × {i.quantity}
-                </span>
-                <span className="font-medium text-slate-900 shrink-0">
+              <div key={`${i.id}-${i.variant || ""}`} className="flex justify-between gap-2 text-slate-600 dark:text-slate-300">
+                <div className="min-w-0">
+                  <p className="truncate text-slate-800 dark:text-slate-100 font-medium">
+                    {i.name} × {i.quantity}
+                  </p>
+                  {i.variant && (
+                    <span className="inline-block mt-0.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
+                      {i.variant}
+                    </span>
+                  )}
+                </div>
+                <span className="font-medium text-slate-900 dark:text-white shrink-0">
                   {formatPrice(i.price * i.quantity)}
                 </span>
               </div>
             ))}
-            <div className="pt-3 border-t border-slate-200 flex justify-between text-slate-600">
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between text-slate-600 dark:text-slate-400">
               <span>{t("cart.subtotal", { count: items.length })}</span>
-              <span className="font-semibold text-slate-900">
+              <span className="font-semibold text-slate-900 dark:text-white">
                 {formatPrice(subtotal)}
               </span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-emerald-600">
+              <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
                 <span>{t("checkout.discount", { percent: promo.percent })}</span>
                 <span className="font-semibold">−{formatPrice(discount)}</span>
               </div>
             )}
           </div>
-          <div className="mt-4 pt-4 border-t border-slate-200 flex justify-between text-lg font-bold text-slate-900">
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between text-lg font-bold text-slate-900 dark:text-white">
             <span>{t("cart.total")}</span>
             <span>{formatPrice(total)}</span>
           </div>

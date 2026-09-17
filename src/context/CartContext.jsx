@@ -62,12 +62,14 @@ export function CartProvider({ children }) {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
-  const addItem = (product, qty = 1) => {
+  const addItem = (product, qty = 1, variant = "") => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === product.id);
+      const existing = prev.find(
+        (i) => i.id === product.id && (i.variant || "") === (variant || "")
+      );
       if (existing) {
         return prev.map((i) =>
-          i.id === product.id
+          i.id === product.id && (i.variant || "") === (variant || "")
             ? { ...i, quantity: Math.min(i.quantity + qty, product.stock) }
             : i
         );
@@ -77,6 +79,7 @@ export function CartProvider({ children }) {
         {
           id: product.id,
           name: product.name,
+          variant: variant || "",
           price: effectivePrice(product),
           originalPrice: product.price,
           image_url: product.image_url,
@@ -88,13 +91,15 @@ export function CartProvider({ children }) {
     });
   };
 
-  const removeItem = (id) =>
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const removeItem = (id, variant = "") =>
+    setItems((prev) =>
+      prev.filter((i) => !(i.id === id && (i.variant || "") === (variant || "")))
+    );
 
-  const updateQuantity = (id, qty) =>
+  const updateQuantity = (id, qty, variant = "") =>
     setItems((prev) =>
       prev.map((i) =>
-        i.id === id
+        i.id === id && (i.variant || "") === (variant || "")
           ? { ...i, quantity: Math.max(1, Math.min(qty, i.stock)) }
           : i
       )
