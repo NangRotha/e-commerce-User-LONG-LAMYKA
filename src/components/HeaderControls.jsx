@@ -40,7 +40,7 @@ function MoonIcon({ className }) {
 
 /**
  * ប៊ូតុងប្តូរភាសា (ខ្មែរ 🇰🇭 / English 🇬🇧) និងប្តូរ Theme (ភ្លឺ / ងងឹត)
- * មាន animation រលូន — ប្រើនៅលើ Navbar (Storefront) និង Topbar (Admin)
+ * រចនា Segmented Pill ស្រស់ស្អាត មិនធ្លាយ ឬកាត់ផ្តាច់ទង់ជាតិលើគ្រប់អេក្រង់
  */
 export default function HeaderControls({ className = "" }) {
   const { lang, setLang, languages, t } = useI18n();
@@ -53,36 +53,32 @@ export default function HeaderControls({ className = "" }) {
         role="group"
         aria-label={t("nav.selectLanguage")}
         title={t("nav.language")}
-        className="relative flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 p-0.5 border border-slate-200/80 dark:border-slate-700/80 shadow-inner shrink-0"
+        className="inline-flex items-center gap-0.5 p-1 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-xs shrink-0"
       >
-        <span
-          className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 shadow-sm transition-transform duration-300 ease-out"
-          style={{
-            transform:
-              languages[0].code === lang ? "translateX(2px)" : "translateX(calc(100% + 2px))",
-          }}
-        />
-        {languages.map((l) => (
-          <button
-            key={l.code}
-            type="button"
-            onClick={() => setLang(l.code)}
-            aria-pressed={lang === l.code}
-            className={`relative z-10 flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-bold rounded-full transition-colors duration-300 ${
-              lang === l.code
-                ? "text-white drop-shadow-xs"
-                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            {l.code === "km" ? (
-              <CambodiaFlag className="w-3.5 h-2.5 sm:w-4 sm:h-2.5 rounded-xs shadow-2xs shrink-0" />
-            ) : (
-              <EnglishFlag className="w-3.5 h-2.5 sm:w-4 sm:h-2.5 rounded-xs shadow-2xs shrink-0" />
-            )}
-            <span className="hidden sm:inline">{l.label}</span>
-            <span className="sm:hidden">{l.short}</span>
-          </button>
-        ))}
+        {languages.map((l) => {
+          const active = lang === l.code;
+          return (
+            <button
+              key={l.code}
+              type="button"
+              onClick={() => setLang(l.code)}
+              aria-pressed={active}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs rounded-full transition-all duration-200 select-none ${
+                active
+                  ? "bg-emerald-600 text-white font-bold shadow-xs"
+                  : "font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
+              }`}
+            >
+              {l.code === "km" ? (
+                <CambodiaFlag className="w-4 h-3 rounded-[2px] shadow-2xs shrink-0" />
+              ) : (
+                <EnglishFlag className="w-4 h-3 rounded-[2px] shadow-2xs shrink-0" />
+              )}
+              <span className="hidden sm:inline">{l.label}</span>
+              <span className="sm:hidden">{l.short}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* ===== Theme Toggle (Dark / Light) ===== */}
