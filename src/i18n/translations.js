@@ -253,6 +253,14 @@ export const en = {
     unreachable: "Cannot reach the backend API at",
     hint: "Check your internet connection — the store will reconnect automatically.",
   },
+  notFound: {
+    title: "Page Not Found",
+    desc: "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
+    backHome: "Back to Home",
+    viewCart: "View Shopping Cart",
+    needHelp: "Need further help?",
+    browseProducts: "Browse all available products",
+  },
 };
 
 export const km = {
@@ -466,6 +474,14 @@ export const km = {
   offline: {
     unreachable: "មិនអាចភ្ជាប់ទៅ Backend API បានទេ នៅ",
     hint: "សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត — ហាងនឹងភ្ជាប់ឡើងវិញដោយស្វ័យប្រវត្តិ។",
+  },
+  notFound: {
+    title: "រកមិនឃើញទំព័រនេះទេ",
+    desc: "ទំព័រដែលលោកអ្នកកំពុងស្វែងរកប្រហែលជាត្រូវបានប្តូរទីតាំង លុបចេញ ឬមិនមាននៅក្នុងប្រព័ន្ធឡើយ។",
+    backHome: "ត្រឡប់ទៅទំព័រដើម",
+    viewCart: "មើលកន្ត្រកទំនិញ",
+    needHelp: "ត្រូវការជំនួយបន្ថែម?",
+    browseProducts: "មើលផលិតផលទាំងអស់ក្នុងហាង",
   },
 };
 
