@@ -3,14 +3,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { api } from "../api/client";
 import { useI18n } from "../i18n/I18nContext";
-import { isValidEmail, isValidPhone } from "../lib/payment";
+import { isValidPhone } from "../lib/payment";
 import { formatPrice } from "../lib/helpers";
 
 const CUSTOMER_KEY = "shop_customer";
 
+// បញ្ជីខេត្ត-ក្រុងទាំង ១២ នៃប្រទេសកម្ពុជា (+ ជម្រើសខេត្តផ្សេងៗ)
+export const CAMBODIA_PROVINCES = [
+  "ភ្នំពេញ (Phnom Penh)",
+  "កណ្តាល (Kandal)",
+  "សៀមរាប (Siem Reap)",
+  "បាត់ដំបង (Battambang)",
+  "ព្រះសីហនុ (Preah Sihanouk)",
+  "កំពង់ចាម (Kampong Cham)",
+  "កំពត (Kampot)",
+  "កែប (Kep)",
+  "តាកែវ (Takeo)",
+  "កំពង់ធំ (Kampong Thom)",
+  "កំពង់ឆ្នាំង (Kampong Chhnang)",
+  "បន្ទាយមានជ័យ (Banteay Meanchey)",
+  "ខេត្តផ្សេងៗ (Other Provinces)",
+];
+
 /**
  * Checkout — Guest Checkout (គ្មាន Login / Sign Up) ✓
- * អតិថិជនបំពេញឈ្មោះ / លេខទូរស័ព្ទ / អាសយដ្ឋាន រួចបញ្ជាទិញ
+ * អតិថិជនបំពេញឈ្មោះ / លេខទូរស័ព្ទ / ជ្រើសរើសខេត្តទាំង ១២ / អាសយដ្ឋានលម្អិត រួចបញ្ជាទិញ
  * បន្ទាប់មកទៅទំព័រ Order Success ដើម្បីស្កេន KHQR បង់ប្រាក់ (auto-detect) ✓
  */
 export default function Checkout() {
@@ -20,7 +37,7 @@ export default function Checkout() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  const [province, setProvince] = useState("");
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
   const [promoCode, setPromoCode] = useState("");
@@ -42,7 +59,7 @@ export default function Checkout() {
       const saved = JSON.parse(localStorage.getItem(CUSTOMER_KEY) || "{}");
       if (saved.name) setName(saved.name);
       if (saved.phone) setPhone(saved.phone);
-      if (saved.email) setEmail(saved.email);
+      if (saved.province) setProvince(saved.province);
       if (saved.address) setAddress(saved.address);
     } catch {
       /* ignore */
@@ -77,11 +94,12 @@ export default function Checkout() {
     if (!name.trim()) return setError(t("checkout.errName"));
     if (!phone.trim()) return setError(t("checkout.errPhone"));
     if (!isValidPhone(phone)) return setError(t("checkout.errPhoneInvalid"));
-    if (email.trim() && !isValidEmail(email)) return setError(t("checkout.errEmail"));
+    if (!province.trim()) return setError(t("checkout.errProvince"));
     if (!address.trim()) return setError(t("checkout.errAddress"));
 
     setPlacing(true);
     try {
+      const shippingAddress = `${province} — ${address.trim()}`;
       const res = await api.checkout({
         items: items.map((i) => ({
           product_id: i.id,
@@ -90,8 +108,7 @@ export default function Checkout() {
         })),
         customer_name: name.trim(),
         customer_phone: phone.trim(),
-        customer_email: email.trim(),
-        shipping_address: address.trim(),
+        shipping_address: shippingAddress,
         note: note.trim(),
         promo_code: promo ? promoCode.trim() : null,
       });
@@ -101,7 +118,7 @@ export default function Checkout() {
           JSON.stringify({
             name: name.trim(),
             phone: phone.trim(),
-            email: email.trim(),
+            province: province.trim(),
             address: address.trim(),
           })
         );
@@ -118,12 +135,12 @@ export default function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
-        <div className="text-6xl mb-4">🛒</div>
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center animate-fade-in-up">
+        <div className="text-5xl sm:text-6xl mb-4">🛒</div>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100">
           {t("checkout.nothingToCheckout")}
         </h1>
-        <p className="mt-2 text-slate-500 dark:text-slate-400">
+        <p className="mt-2 text-sm sm:text-base text-slate-500 dark:text-slate-400">
           {t("checkout.emptyHint")}
         </p>
         <Link
@@ -137,30 +154,31 @@ export default function Checkout() {
   }
 
   const input =
-    "mt-1.5 w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200";
-  const label = "block text-sm font-medium text-slate-700 dark:text-slate-300";
+    "mt-1.5 w-full px-3.5 sm:px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200 text-sm sm:text-base";
+  const label = "block text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300";
   const card =
     "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 transition-all duration-300 hover:shadow-soft";
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
           {t("checkout.title")}
         </h1>
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900 px-3 py-1.5 rounded-full animate-pop-in">
+        <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full animate-pop-in">
           ✨ {t("checkout.guestBadge")}
         </span>
       </div>
 
-      <div className="mt-6 sm:mt-8 grid lg:grid-cols-3 gap-6 sm:gap-8">
+      <div className="mt-5 sm:mt-8 grid lg:grid-cols-3 gap-5 sm:gap-8">
         {/* ===== Form ===== */}
         <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          {/* 1. Contact Information */}
           <div className={`${card} animate-fade-in-up`}>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               {t("checkout.contact")}
             </h2>
-            <div className="mt-4 grid sm:grid-cols-2 gap-4">
+            <div className="mt-3.5 sm:mt-4 grid sm:grid-cols-2 gap-3.5 sm:gap-4">
               <div>
                 <label className={label}>{t("checkout.fullName")}</label>
                 <input
@@ -169,6 +187,7 @@ export default function Checkout() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t("checkout.fullNamePlaceholder")}
                   className={input}
+                  autoComplete="name"
                 />
               </div>
               <div>
@@ -179,47 +198,78 @@ export default function Checkout() {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder={t("checkout.phonePlaceholder")}
                   className={input}
+                  autoComplete="tel"
                 />
               </div>
-              <div className="sm:col-span-2">
-                <label className={label}>{t("checkout.email")}</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("checkout.emailPlaceholder")}
-                  className={input}
+            </div>
+          </div>
+
+          {/* 2. Delivery Address (with 12 Cambodian Provinces dropdown) */}
+          <div
+            className={`${card} animate-fade-in-up`}
+            style={{ animationDelay: "80ms" }}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                {t("checkout.delivery")}
+              </h2>
+              <span className="text-[11px] sm:text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-emerald-100 dark:border-emerald-900">
+                🇰🇭 ដឹកជញ្ជូនទូទាំងប្រទេស
+              </span>
+            </div>
+
+            <div className="mt-3.5 sm:mt-4 space-y-3.5 sm:space-y-4">
+              {/* ខេត្តទាំង12 ដែលមាន select */}
+              <div>
+                <label className={label}>{t("checkout.province")}</label>
+                <div className="relative mt-1.5">
+                  <select
+                    value={province}
+                    onChange={(e) => setProvince(e.target.value)}
+                    className={`${input} appearance-none pr-10 cursor-pointer font-medium text-slate-800 dark:text-slate-100`}
+                  >
+                    <option value="" disabled>
+                      {t("checkout.selectProvince")}
+                    </option>
+                    {CAMBODIA_PROVINCES.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 dark:text-slate-500">
+                    <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* អាសយដ្ឋានលម្អិត */}
+              <div>
+                <label className={label}>{t("checkout.detailAddress")}</label>
+                <textarea
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  rows={3}
+                  placeholder={t("checkout.detailAddressPlaceholder")}
+                  className="mt-1.5 w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200 text-sm sm:text-base"
                 />
-                <p className="mt-1.5 text-xs text-slate-400">
-                  {t("checkout.emailHint")}
+                <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+                  {t("checkout.addressHint")}
                 </p>
               </div>
             </div>
           </div>
 
-          <div
-            className={`${card} animate-fade-in-up`}
-            style={{ animationDelay: "80ms" }}
-          >
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-              {t("checkout.delivery")}
-            </h2>
-            <textarea
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              rows={3}
-              placeholder={t("checkout.addressPlaceholder")}
-              className="mt-4 w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200"
-            />
-          </div>
-
+          {/* 3. Note */}
           <div
             className={`${card} animate-fade-in-up`}
             style={{ animationDelay: "140ms" }}
           >
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               {t("checkout.note")}{" "}
-              <span className="text-sm font-normal text-slate-400">
+              <span className="text-xs sm:text-sm font-normal text-slate-400">
                 {t("common.optional")}
               </span>
             </h2>
@@ -228,35 +278,35 @@ export default function Checkout() {
               onChange={(e) => setNote(e.target.value)}
               rows={2}
               placeholder={t("checkout.notePlaceholder")}
-              className="mt-4 w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200"
+              className="mt-3 w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-400 transition duration-200 text-sm sm:text-base"
             />
           </div>
 
-          {/* ===== Promo code ===== */}
+          {/* 4. Promo Code */}
           <div
             className={`${card} animate-fade-in-up`}
             style={{ animationDelay: "200ms" }}
           >
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               {t("checkout.promo")}{" "}
-              <span className="text-sm font-normal text-slate-400">
+              <span className="text-xs sm:text-sm font-normal text-slate-400">
                 {t("common.optional")}
               </span>
             </h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t("checkout.promoHint")}</p>
-            <div className="mt-4 flex gap-3">
+            <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">{t("checkout.promoHint")}</p>
+            <div className="mt-3.5 flex gap-2 sm:gap-3">
               <input
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                 placeholder={t("checkout.promoPlaceholder")}
                 disabled={promoApplied}
-                className={`flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 uppercase text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-60 transition duration-200`}
+                className={`flex-1 px-3.5 sm:px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 uppercase text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-60 transition duration-200 text-sm sm:text-base`}
               />
               {promoApplied ? (
                 <button
                   type="button"
                   onClick={removePromo}
-                  className="px-4 sm:px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95"
+                  className="px-3.5 sm:px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 text-xs sm:text-sm active:scale-95 shrink-0"
                 >
                   {t("checkout.remove")}
                 </button>
@@ -264,54 +314,54 @@ export default function Checkout() {
                 <button
                   type="button"
                   onClick={applyPromo}
-                  className="px-4 sm:px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-emerald-500 transition-all duration-200 active:scale-95"
+                  className="px-4 sm:px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-emerald-600 text-white font-semibold hover:bg-slate-800 dark:hover:bg-emerald-500 transition-all duration-200 text-xs sm:text-sm active:scale-95 shrink-0"
                 >
                   {t("checkout.apply")}
                 </button>
               )}
             </div>
             {promoApplied && promo && (
-              <p className="mt-3 text-sm text-emerald-600 dark:text-emerald-400 font-medium animate-pop-in">
+              <p className="mt-2.5 text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 font-medium animate-pop-in">
                 {t("checkout.applied", { percent: promo.percent })}
               </p>
             )}
             {promoError && (
-              <p className="mt-3 text-sm text-rose-600 animate-fade-in">
+              <p className="mt-2.5 text-xs sm:text-sm text-rose-600 animate-fade-in">
                 {promoError}
               </p>
             )}
           </div>
 
-          {/* ===== Payment (Bakong Wallet / KHQR) ===== */}
+          {/* 5. Payment (Bakong Wallet / KHQR) */}
           <div
             className={`${card} animate-fade-in-up`}
             style={{ animationDelay: "260ms" }}
           >
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               {t("checkout.payment")}
             </h2>
-            <div className="mt-4 flex items-start gap-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/70 p-4 transition-all duration-300 hover:shadow-lift">
-              <span className="shrink-0 w-11 h-11 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-xl">
+            <div className="mt-3.5 flex items-start gap-3 rounded-xl border-2 border-emerald-500 dark:border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/40 p-3.5 sm:p-4 transition-all duration-300 hover:shadow-lift">
+              <span className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900 flex items-center justify-center text-lg sm:text-xl shadow-xs">
                 🇰🇭
               </span>
               <div className="min-w-0">
-                <p className="font-semibold text-emerald-800">
+                <p className="font-semibold text-emerald-900 dark:text-emerald-300 text-sm sm:text-base">
                   {t("checkout.payWith")}
                 </p>
-                <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                   {t("checkout.payWithHint")}
                 </p>
                 {payment?.display_name && (
-                  <p className="mt-2 text-xs text-slate-500">
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                     {t("pay.receiver")}:{" "}
-                    <span className="font-semibold text-slate-700">
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">
                       {payment.display_name}
                     </span>
                     {payment.bakong_id ? (
                       <>
                         {" · "}
                         {t("pay.receiverId")}:{" "}
-                        <span className="font-semibold text-slate-700">
+                        <span className="font-semibold text-slate-700 dark:text-slate-200">
                           {payment.bakong_id}
                         </span>
                       </>
@@ -319,7 +369,7 @@ export default function Checkout() {
                   </p>
                 )}
                 {payment && payment.enabled === false && (
-                  <p className="mt-2 text-xs font-medium text-amber-700">
+                  <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-400">
                     ⚠️ Online payment is not configured yet — we will contact you
                     to arrange payment.
                   </p>
@@ -331,17 +381,17 @@ export default function Checkout() {
 
         {/* ===== Summary ===== */}
         <div
-          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 h-fit lg:sticky lg:top-24 animate-fade-in-up transition-shadow duration-300 hover:shadow-soft"
+          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 h-fit lg:sticky lg:top-24 animate-fade-in-up transition-shadow duration-300 hover:shadow-soft"
           style={{ animationDelay: "120ms" }}
         >
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
             {t("checkout.orderSummary")}
           </h2>
-          <div className="mt-4 space-y-3 text-sm">
+          <div className="mt-3.5 sm:mt-4 space-y-3 text-sm">
             {items.map((i) => (
               <div key={`${i.id}-${i.variant || ""}`} className="flex justify-between gap-2 text-slate-600 dark:text-slate-300">
                 <div className="min-w-0">
-                  <p className="truncate text-slate-800 dark:text-slate-100 font-medium">
+                  <p className="truncate text-slate-800 dark:text-slate-100 font-medium text-sm sm:text-base">
                     {i.name} × {i.quantity}
                   </p>
                   {i.variant && (
@@ -350,31 +400,31 @@ export default function Checkout() {
                     </span>
                   )}
                 </div>
-                <span className="font-medium text-slate-900 dark:text-white shrink-0">
+                <span className="font-semibold text-slate-900 dark:text-white shrink-0">
                   {formatPrice(i.price * i.quantity)}
                 </span>
               </div>
             ))}
-            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between text-slate-600 dark:text-slate-400">
+            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-between text-slate-600 dark:text-slate-400 text-sm">
               <span>{t("cart.subtotal", { count: items.length })}</span>
               <span className="font-semibold text-slate-900 dark:text-white">
                 {formatPrice(subtotal)}
               </span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
+              <div className="flex justify-between text-emerald-600 dark:text-emerald-400 text-sm">
                 <span>{t("checkout.discount", { percent: promo.percent })}</span>
                 <span className="font-semibold">−{formatPrice(discount)}</span>
               </div>
             )}
           </div>
-          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between text-lg font-bold text-slate-900 dark:text-white">
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between text-base sm:text-lg font-bold text-slate-900 dark:text-white">
             <span>{t("cart.total")}</span>
-            <span>{formatPrice(total)}</span>
+            <span className="text-emerald-600 dark:text-emerald-400">{formatPrice(total)}</span>
           </div>
 
           {error && (
-            <p className="mt-4 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 animate-fade-in">
+            <p className="mt-4 text-xs sm:text-sm text-rose-600 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 rounded-xl px-3.5 py-2.5 animate-fade-in">
               {error}
             </p>
           )}
@@ -383,13 +433,13 @@ export default function Checkout() {
             type="button"
             onClick={placeOrder}
             disabled={placing}
-            className="mt-6 w-full px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-[0.98] disabled:opacity-60 disabled:active:scale-100"
+            className="mt-5 sm:mt-6 w-full px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm sm:text-base transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-[0.98] disabled:opacity-60 disabled:active:scale-100 shadow-md shadow-emerald-900/20"
           >
             {placing ? t("checkout.placing") : t("checkout.placeOrder")}
           </button>
           <Link
             to="/cart"
-            className="mt-3 block w-full text-center px-6 py-3 rounded-xl border border-slate-300 text-slate-600 font-medium transition-all duration-200 hover:bg-slate-50 active:scale-[0.98]"
+            className="mt-3 block w-full text-center px-6 py-2.5 sm:py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm active:scale-[0.98]"
           >
             {t("checkout.backToCart")}
           </Link>

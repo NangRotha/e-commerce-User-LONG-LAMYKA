@@ -11,7 +11,7 @@ const POLL_MS = 3000;
 const MAX_POLL_MS = 3 * 60 * 1000;
 
 // KHQRcc Checkout Plugin — បង្ហាញ ABA Pay Checkout (KHQR + Deeplink) ជា Modal
-const KHQR_PLUGIN_SRC = "https://khqr.cc/khqrcc-plugin.js";
+const KHQR_PLUGIN_SRC = "https://anajakpay.com/khqrcc-plugin.js";
 
 /** ផ្ទុក Script របស់ KHQRcc Plugin (តែពេលចាំបាច់) */
 function loadKhqrPlugin() {
