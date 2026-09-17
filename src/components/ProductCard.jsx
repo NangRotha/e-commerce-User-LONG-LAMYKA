@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ShoppingBag, Check, Play, Star, Eye } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { effectivePrice, formatPrice } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
@@ -12,119 +13,136 @@ export default function ProductCard({ product }) {
   const outOfStock = product.stock <= 0;
   const onSale = product.is_on_sale && product.sale_percent > 0;
 
-  const handleAdd = () => {
+  // Approximate KHR price (standard 4,100 KHR / USD rate)
+  const khrAmount = Math.round(price * 4100);
+
+  const handleAdd = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
     if (outOfStock) return;
     addItem(product);
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 900);
+    setTimeout(() => setJustAdded(false), 1200);
   };
 
   return (
-    <div className="group relative bg-white rounded-3xl border border-slate-100 shadow-soft overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lift flex flex-col">
-      {/* Image */}
+    <div className="group relative bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-soft hover:shadow-2xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col overflow-hidden">
+      {/* Image container */}
       <Link
         to={`/product/${product.id}`}
-        className="relative block aspect-square bg-slate-100 overflow-hidden"
+        className="relative block aspect-square bg-slate-100 dark:bg-slate-800 overflow-hidden"
       >
         {product.image_url ? (
           <img
             src={product.image_url}
             alt={product.name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-5xl">
-            📦
+            🛍️
           </div>
         )}
 
         {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Sale badge */}
         {onSale && (
-          <span className="absolute top-3 left-3 bg-gradient-to-r from-rose-600 to-rose-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md animate-pop-in">
+          <div className="absolute top-3 left-3 bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 text-white text-[11px] font-extrabold px-2.5 py-1 rounded-full shadow-lg shadow-rose-600/30 animate-pop-in tracking-wide">
             -{Math.round(product.sale_percent)}%
-          </span>
+          </div>
         )}
 
         {/* Stock badge */}
         {outOfStock && (
-          <span className="absolute top-3 right-3 bg-slate-900/80 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur">
+          <span className="absolute top-3 right-3 bg-slate-900/90 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-md border border-white/10">
             {t("product.soldOut")}
           </span>
         )}
 
-        {/* Video badge (បើ Admin បាន Upload វីដេអូ) */}
+        {/* Video badge */}
         {product.video_url && (
-          <span className="absolute bottom-3 right-3 bg-emerald-600/90 text-white text-[11px] font-bold px-2 py-1 rounded-full shadow-md backdrop-blur flex items-center gap-1">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-3 h-3 fill-current"
-              aria-hidden="true"
-            >
-              <polygon points="6 3 20 12 6 21 6 3" />
-            </svg>
+          <span className="absolute bottom-3 right-3 bg-emerald-600/95 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
+            <Play className="w-3 h-3 fill-current" />
             VIDEO
           </span>
         )}
 
-        {/* Quick view hint on hover */}
-        <div className="absolute bottom-3 inset-x-3 flex justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          <span className="bg-white/90 backdrop-blur text-slate-800 text-xs font-semibold px-4 py-2 rounded-full shadow-md">
+        {/* Quick view button on hover */}
+        <div className="absolute bottom-3 inset-x-3 flex justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
+          <span className="inline-flex items-center gap-1.5 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-lg backdrop-blur-md border border-slate-200/60 dark:border-slate-700">
+            <Eye className="w-3.5 h-3.5" />
             {t("product.viewDetails")}
           </span>
         </div>
       </Link>
 
-      {/* Info */}
-      <div className="p-4 flex flex-col flex-1">
-        {product.category && (
-          <p className="text-[11px] text-slate-400 uppercase tracking-widest font-semibold">
-            {product.category}
-          </p>
-        )}
+      {/* Product info */}
+      <div className="p-4 sm:p-5 flex flex-col flex-1">
+        <div className="flex items-center justify-between gap-2">
+          {product.category ? (
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md truncate">
+              {product.category}
+            </span>
+          ) : (
+            <span />
+          )}
+          <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold">
+            <Star className="w-3 h-3 fill-current" />
+            <span>4.9</span>
+          </div>
+        </div>
+
         <Link
           to={`/product/${product.id}`}
-          className="mt-1.5 font-semibold text-slate-800 line-clamp-2 leading-snug transition-colors duration-200 hover:text-emerald-600"
+          className="mt-2 font-bold text-slate-800 dark:text-white line-clamp-2 leading-snug hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-sm sm:text-base"
         >
           {product.name}
         </Link>
 
-        <div className="mt-auto pt-3 flex items-center justify-between gap-2">
-          <div className="flex flex-wrap items-baseline gap-1.5">
-            <span className="text-lg font-extrabold text-slate-900">
-              {formatPrice(price)}
-            </span>
-            {onSale && (
-              <span className="text-sm text-slate-400 line-through">
-                {formatPrice(product.price)}
+        {/* Price and Cart button */}
+        <div className="mt-auto pt-4 flex items-center justify-between gap-2">
+          <div>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                {formatPrice(price)}
               </span>
-            )}
+              {onSale && (
+                <span className="text-xs sm:text-sm text-slate-400 line-through">
+                  {formatPrice(product.price)}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+              ~{khrAmount.toLocaleString()} ៛
+            </p>
           </div>
 
           <button
+            type="button"
             onClick={handleAdd}
             disabled={outOfStock}
             aria-label={outOfStock ? t("product.soldOut") : t("product.addToCart")}
-            className={`relative px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+            className={`relative flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 shadow-sm ${
               justAdded
-                ? "bg-emerald-600 text-white scale-105"
-                : "bg-slate-900 text-white hover:bg-emerald-600 active:scale-95"
-            } disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed disabled:active:scale-100`}
+                ? "bg-emerald-600 text-white shadow-emerald-600/30 scale-105"
+                : "bg-slate-900 dark:bg-emerald-600 text-white hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:shadow-md"
+            } disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 disabled:cursor-not-allowed disabled:active:scale-100`}
           >
             {justAdded ? (
-              <span className="inline-flex items-center gap-1 animate-pop-in">
-                <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M20 6L9 17l-5-5" />
-                </svg>
-                {t("product.addedShort")}
-              </span>
+              <>
+                <Check className="w-4 h-4 stroke-[3]" />
+                <span>{t("product.addedShort")}</span>
+              </>
             ) : outOfStock ? (
-              t("product.soldOut")
+              <span>{t("product.soldOut")}</span>
             ) : (
-              t("common.add")
+              <>
+                <ShoppingBag className="w-4 h-4" />
+                <span>{t("common.add")}</span>
+              </>
             )}
           </button>
         </div>
@@ -132,4 +150,3 @@ export default function ProductCard({ product }) {
     </div>
   );
 }
-

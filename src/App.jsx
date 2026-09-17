@@ -5,6 +5,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import ApiStatusBanner from "./components/ApiStatusBanner";
 import AlertCenter from "./components/AlertCenter";
 import ChatWidget from "./components/ChatWidget";
+import SocialContactDock from "./components/SocialContactDock";
 import PageTransition from "./components/PageTransition";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
@@ -37,6 +38,8 @@ export default function App() {
         </PageTransition>
       </main>
       <Footer />
+      {/* Social Media floating dock (Telegram · Facebook · Instagram) */}
+      <SocialContactDock />
       {/* AI Chatbot (DeepSeek) — floating widget */}
       <ChatWidget />
     </div>

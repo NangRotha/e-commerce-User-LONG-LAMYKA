@@ -4,13 +4,17 @@ import { useCart } from "../context/CartContext";
 import { effectivePrice, formatPrice, isVideoUrl } from "../lib/helpers";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
+import useSiteSettings from "../hooks/useSiteSettings";
 import { useI18n } from "../i18n/I18nContext";
+import { TelegramIcon, FacebookIcon } from "../components/SocialIcons";
+import { getTelegramOrderUrl, normalizeFacebook } from "../lib/social";
 
 /** Product Detail (i18n km/en + animation + real-time update) */
 export default function ProductDetail() {
   const { id } = useParams();
   const { addItem } = useCart();
   const { t } = useI18n();
+  const s = useSiteSettings();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
   const [qty, setQty] = useState(1);
@@ -274,6 +278,49 @@ export default function ProductDetail() {
                 ? t("product.added")
                 : t("product.addToCart")}
             </button>
+          </div>
+
+          {/* Direct Social Order / Inquire Buttons */}
+          <div className="mt-4 pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <a
+              href={getTelegramOrderUrl(s.social_telegram || s.telegram_url, product, price)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#229ED9] hover:bg-[#1b8bc2] text-white font-bold text-sm shadow-md shadow-[#229ED9]/25 transition-all active:scale-95"
+            >
+              <TelegramIcon className="w-4 h-4" />
+              <span>{t("social.orderViaTelegram") || "Order via Telegram"}</span>
+            </a>
+
+            <a
+              href={normalizeFacebook(s.social_facebook || s.facebook_url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-[#1877F2] font-bold text-sm border border-blue-200 dark:border-blue-900/60 transition-all active:scale-95"
+            >
+              <FacebookIcon className="w-4 h-4" />
+              <span>{t("social.inquireFacebook") || "Chat on Facebook"}</span>
+            </a>
+          </div>
+
+          {/* Product Guarantee Highlights */}
+          <div className="mt-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-800 grid grid-cols-2 gap-3 text-xs">
+            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚚</span>
+              <span>{t("trust.deliveryDesc") || "Nationwide Delivery"}</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">💎</span>
+              <span>{t("trust.qualityTitle") || "100% Quality Guaranteed"}</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🇰🇭</span>
+              <span>{t("trust.khqrTitle") || "Instant KHQR Payment"}</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">💬</span>
+              <span>{t("trust.supportTitle") || "Telegram & FB Support"}</span>
+            </div>
           </div>
         </div>
       </div>

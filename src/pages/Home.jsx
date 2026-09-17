@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { Search, X, SlidersHorizontal, Sparkles, ShoppingBag, ArrowUpDown, Filter } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import HeroSlider from "../components/HeroSlider";
+import TrustBar from "../components/TrustBar";
 import Reveal from "../components/Reveal";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
@@ -20,7 +22,7 @@ const DEMO_PRODUCTS = [
   { name: "Lipstick Matte", description: "Long-lasting matte lipstick in a range of bold shades.", price: 12.99, stock: 60, category: "Beauty", is_on_sale: false, sale_percent: 0 },
 ];
 
-/** Home — Storefront (i18n km/en + animation + real-time auto-refresh) */
+/** Home — Storefront (i18n km/en + trust bar + sorting + real-time auto-refresh) */
 export default function Home() {
   const { t } = useI18n();
   const [products, setProducts] = useState(null);
@@ -28,6 +30,8 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [inStockOnly, setInStockOnly] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [seedError, setSeedError] = useState("");
 
@@ -84,33 +88,64 @@ export default function Home() {
     }
   };
 
+  // Filter and sort products
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return (products || []).filter((p) => {
+    let list = (products || []).filter((p) => {
       const catOk = category === "All" || p.category === category;
       const searchOk =
         !q ||
         p.name.toLowerCase().includes(q) ||
         (p.description || "").toLowerCase().includes(q);
-      return catOk && searchOk;
+      const stockOk = !inStockOnly || p.stock > 0;
+      return catOk && searchOk && stockOk;
     });
-  }, [products, category, search]);
 
-  // បញ្ជី Category សម្រាប់ Filter៖ យកពី API ជាមុនសិន បើទទេ -> ដកយកពីផលិតផល
+    // Sorting
+    list = [...list].sort((a, b) => {
+      const priceA = a.is_on_sale && a.sale_percent > 0 ? a.price * (1 - a.sale_percent / 100) : a.price;
+      const priceB = b.is_on_sale && b.sale_percent > 0 ? b.price * (1 - b.sale_percent / 100) : b.price;
+
+      if (sortBy === "price_asc") return priceA - priceB;
+      if (sortBy === "price_desc") return priceB - priceA;
+      if (sortBy === "discount") return (b.sale_percent || 0) - (a.sale_percent || 0);
+      return (b.id || 0) - (a.id || 0); // newest first
+    });
+
+    return list;
+  }, [products, category, search, sortBy, inStockOnly]);
+
+  // Categories list
   const categoryOptions = useMemo(() => {
     if (categories.length) return ["All", ...categories];
     const uniq = [...new Set((products || []).map((p) => p.category).filter(Boolean))];
     return ["All", ...uniq.sort()];
   }, [categories, products]);
 
+  // Category items count helper
+  const getCategoryCount = (cat) => {
+    if (!products) return 0;
+    if (cat === "All") return products.length;
+    return products.filter((p) => p.category === cat).length;
+  };
+
   const countLabel =
     filtered.length === 1
       ? t("home.availableCountOne")
       : t("home.availableCount", { count: filtered.length });
 
+  const hasActiveFilters = category !== "All" || search.trim() !== "" || inStockOnly || sortBy !== "newest";
+
+  const resetAllFilters = () => {
+    setCategory("All");
+    setSearch("");
+    setSortBy("newest");
+    setInStockOnly(false);
+  };
+
   return (
-    <div>
-      {/* Hero Slider (រូប / វីដេអូ / YouTube) — បើគ្មាន Slide -> បង្ហាញ Hero ធម្មតា */}
+    <div className="space-y-6">
+      {/* Hero Slider */}
       <HeroSlider
         fallback={
           <section className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 text-white animate-gradient">
@@ -126,87 +161,142 @@ export default function Home() {
         }
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        {/* Search + category filters */}
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6 animate-fade-in-up">
-          <div className="relative w-full lg:w-72">
-            <svg
-              viewBox="0 0 24 24"
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("home.searchPlaceholder")}
-              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 shadow-soft focus:outline-none focus:ring-2 focus:ring-emerald-500 transition duration-200"
-            />
-          </div>
+      {/* Trust & Benefits Bar */}
+      <TrustBar />
 
-          <div className="flex flex-wrap items-center gap-2">
-            {categoryOptions.map((c) => (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-16">
+        {/* Search, Filter & Sort Controls */}
+        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-soft space-y-4">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t("home.searchPlaceholder")}
+                className="w-full pl-10 pr-9 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Sort & In-stock toggle */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              {/* Sort selector */}
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <ArrowUpDown className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-transparent border-none focus:outline-none cursor-pointer text-xs"
+                >
+                  <option value="newest">{t("home.sortNewest") || "Newest"}</option>
+                  <option value="price_asc">{t("home.sortPriceAsc") || "Price: Low to High"}</option>
+                  <option value="price_desc">{t("home.sortPriceDesc") || "Price: High to Low"}</option>
+                  <option value="discount">{t("home.sortDiscount") || "Biggest Discount"}</option>
+                </select>
+              </div>
+
+              {/* In-stock toggle */}
               <button
-                key={c}
                 type="button"
-                onClick={() => setCategory(c)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 active:scale-95 ${
-                  category === c
-                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/25 scale-105"
-                    : "bg-white border border-slate-200 text-slate-600 shadow-soft hover:border-emerald-400 hover:text-emerald-600"
+                onClick={() => setInStockOnly((v) => !v)}
+                className={`px-3 py-2 rounded-2xl text-xs font-semibold border transition-all duration-200 flex items-center gap-1.5 ${
+                  inStockOnly
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
+                    : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:border-emerald-400"
                 }`}
               >
-                {c === "All" ? t("home.all") : c}
+                <span className={`w-2 h-2 rounded-full ${inStockOnly ? "bg-white" : "bg-emerald-500"}`} />
+                {t("home.inStockOnly") || "In stock"}
               </button>
-            ))}
+            </div>
           </div>
 
-          <span
-            className={`ml-auto inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full transition-colors duration-300 ${
-              live ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"
-            }`}
-            title={t("home.liveHint")}
-          >
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                live ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
-              }`}
-            />
-            {t("nav.live")}
-          </span>
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1">
+            {categoryOptions.map((c) => {
+              const count = getCategoryCount(c);
+              const isActive = category === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCategory(c)}
+                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
+                    isActive
+                      ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/25 scale-102"
+                      : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                  }`}
+                >
+                  <span>{c === "All" ? t("home.all") : c}</span>
+                  {count > 0 && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
+                        isActive
+                          ? "bg-white/20 text-white"
+                          : "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetAllFilters}
+                className="shrink-0 text-xs font-semibold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-1.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center gap-1"
+              >
+                <X className="w-3.5 h-3.5" />
+                {t("home.resetFilter") || "Reset"}
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Section title */}
-        <Reveal className="mt-10 mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              {category === "All" ? t("home.featured") : category}
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">{countLabel}</p>
+        {/* Section Title Header */}
+        <Reveal className="mt-8 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                {category === "All" ? t("home.featured") : category}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                {countLabel}
+              </p>
+            </div>
           </div>
         </Reveal>
 
-        {/* Products */}
+        {/* Products Grid */}
         {products === null ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-3xl border border-slate-100 shadow-soft overflow-hidden"
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-soft overflow-hidden"
               >
                 <div className="aspect-square shimmer" />
                 <div className="p-4 space-y-2.5">
-                  <div className="h-3 bg-slate-100 rounded-full w-1/3" />
-                  <div className="h-4 bg-slate-100 rounded-full w-3/4" />
-                  <div className="h-5 bg-slate-100 rounded-full w-1/2" />
+                  <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-1/3" />
+                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-full w-3/4" />
+                  <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded-full w-1/2" />
                 </div>
               </div>
             ))}
@@ -218,7 +308,7 @@ export default function Home() {
                 <div
                   key={p.id}
                   className="animate-fade-in-up"
-                  style={{ animationDelay: `${Math.min(i, 11) * 50}ms` }}
+                  style={{ animationDelay: `${Math.min(i, 11) * 45}ms` }}
                 >
                   <ProductCard product={p} />
                 </div>
@@ -226,28 +316,41 @@ export default function Home() {
             </div>
           </Reveal>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300 animate-fade-in-up">
-            <div className="text-5xl mb-4 animate-float">🛒</div>
-            <h2 className="text-xl font-bold text-slate-800">
-              {search || category !== "All" ? t("home.noMatch") : t("home.noProducts")}
+          <div className="text-center py-16 sm:py-20 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 animate-fade-in-up px-4">
+            <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl mx-auto mb-4">
+              🛍️
+            </div>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">
+              {search || category !== "All" || inStockOnly ? t("home.noMatch") : t("home.noProducts")}
             </h2>
-            <p className="mt-2 text-slate-500">
-              {search || category !== "All"
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+              {search || category !== "All" || inStockOnly
                 ? t("home.noMatchHint")
                 : t("home.noProductsHint")}
             </p>
-            {!(search || category !== "All") && (
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetAllFilters}
+                className="mt-5 px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm hover:bg-emerald-700 transition active:scale-95 shadow-md"
+              >
+                {t("home.resetFilter") || "Clear all filters"}
+              </button>
+            )}
+
+            {!(search || category !== "All" || inStockOnly) && (
               <>
                 <button
                   type="button"
                   onClick={seedDemo}
                   disabled={seeding}
-                  className="mt-6 px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95 disabled:opacity-50"
+                  className="mt-6 px-6 py-3 rounded-2xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95 disabled:opacity-50 text-sm"
                 >
                   {seeding ? t("common.loading") : t("home.loadDemo")}
                 </button>
                 {seedError && (
-                  <p className="mt-3 text-sm text-rose-600 animate-fade-in">
+                  <p className="mt-3 text-xs sm:text-sm text-rose-600 animate-fade-in">
                     {seedError}
                   </p>
                 )}
