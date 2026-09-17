@@ -25,7 +25,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12">
       <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
         {t("cart.title")}{" "}
         <span className="text-base font-medium text-slate-500 dark:text-slate-400">

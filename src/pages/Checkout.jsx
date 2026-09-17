@@ -160,7 +160,7 @@ export default function Checkout() {
     "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 transition-all duration-300 hover:shadow-soft";
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <h1 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
           {t("checkout.title")}

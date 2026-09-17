@@ -125,7 +125,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12">
       <Link
         to="/"
         className="text-sm text-slate-500 hover:text-emerald-600 transition-colors duration-200"
@@ -150,25 +150,38 @@ export default function ProductDetail() {
                   />
                 </div>
               ) : (
-                <video
-                  key={activeItem}
-                  src={activeItem}
-                  poster={product.image_url || undefined}
-                  autoPlay
-                  muted
-                  loop
-                  controls
-                  playsInline
-                  preload="auto"
-                  ref={(el) => {
-                    if (el) {
-                      el.defaultMuted = true;
-                      el.muted = true;
-                      el.play().catch(() => {});
-                    }
-                  }}
-                  className="w-full aspect-square object-contain bg-black"
-                />
+                <div className="relative w-full aspect-square bg-slate-950 flex items-center justify-center overflow-hidden">
+                  {/* Ambient backdrop to eliminate stark black voids on portrait/vertical videos */}
+                  <video
+                    src={activeItem}
+                    poster={product.image_url || undefined}
+                    aria-hidden="true"
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+                  />
+                  <video
+                    key={activeItem}
+                    src={activeItem}
+                    poster={product.image_url || undefined}
+                    autoPlay
+                    muted
+                    loop
+                    controls
+                    playsInline
+                    preload="auto"
+                    ref={(el) => {
+                      if (el) {
+                        el.defaultMuted = true;
+                        el.muted = true;
+                        el.play().catch(() => {});
+                      }
+                    }}
+                    className="relative z-10 w-full h-full object-contain"
+                  />
+                </div>
               )
             ) : activeItem ? (
               <img
@@ -185,16 +198,16 @@ export default function ProductDetail() {
           </div>
 
           {media.length > 1 && (
-            <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+            <div className="mt-3 sm:mt-4 flex gap-2.5 sm:gap-3 overflow-x-auto pb-1 scrollbar-none snap-x">
               {media.map((item, i) => (
                 <button
                   key={`${item.url}-${i}`}
                   type="button"
                   onClick={() => setActiveImage(i)}
-                  className={`relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 active:scale-95 ${
+                  className={`relative shrink-0 snap-start w-15 h-15 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden border-2 transition-all duration-200 active:scale-95 ${
                     i === activeImage
-                      ? "border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900"
-                      : "border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500"
+                      ? "border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900 shadow-md"
+                      : "border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 opacity-80 hover:opacity-100"
                   }`}
                   aria-label={`${product.name} — ${i + 1}`}
                 >

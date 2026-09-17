@@ -30,6 +30,11 @@ export const en = {
     language: "Language",
     selectLanguage: "Select language",
     live: "LIVE",
+    menu: "Menu",
+    appearance: "Appearance",
+    navigation: "Navigation",
+    channels: "Channels & Support",
+    onlineMsg: "Online · Real-time KHQR Payment Active",
   },
   home: {
     featured: "Featured products",
@@ -303,6 +308,11 @@ export const km = {
     language: "ភាសា",
     selectLanguage: "ជ្រើសរើសភាសា",
     live: "ផ្ទាល់",
+    menu: "ម៉ឺនុយ",
+    appearance: "រូបរាង",
+    navigation: "ទំព័រចម្បង",
+    channels: "ទំនាក់ទំនង និងឆាណែល",
+    onlineMsg: "ភ្ជាប់ប្រព័ន្ធ · បង់ប្រាក់ KHQR ស្វ័យប្រវត្តិ",
   },
   home: {
     featured: "ផលិតផលពិសេស",

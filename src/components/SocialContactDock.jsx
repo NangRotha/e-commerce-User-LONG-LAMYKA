@@ -18,10 +18,10 @@ export default function SocialContactDock() {
   const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
   return (
-    <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-40 flex flex-col items-start gap-3 pointer-events-auto">
+    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:left-6 z-40 flex flex-col items-end sm:items-start gap-3 pointer-events-auto">
       {/* Expanded popout menu */}
       {open && (
-        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-3 shadow-2xl border border-slate-200/80 dark:border-slate-800 space-y-2 animate-pop-in min-w-[220px] origin-bottom-left">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-3xl p-3 shadow-2xl border border-slate-200/80 dark:border-slate-800 space-y-2 animate-pop-in min-w-[220px] origin-bottom-right sm:origin-bottom-left">
           <div className="px-2 py-1 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
               {t("social.contactUs") || "Contact Us"}
@@ -123,7 +123,7 @@ export default function SocialContactDock() {
       )}
 
       {/* Main floating trigger button */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-row-reverse sm:flex-row">
         {!open && (
           <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 shadow-lg border border-slate-200/80 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 animate-fade-in backdrop-blur-md pointer-events-none">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />

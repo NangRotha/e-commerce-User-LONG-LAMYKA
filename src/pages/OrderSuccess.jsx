@@ -228,7 +228,7 @@ export default function OrderSuccess() {
   const directCheckoutUrl = order?.payment_checkout_url || order?.payment_url || "";
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12 pb-24 sm:pb-12">
       <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 sm:p-8 text-center animate-fade-in-up">
         {/* Company name (ពី Admin Settings — Bakong Wallet) */}
         {order?.payment_company_name && (
