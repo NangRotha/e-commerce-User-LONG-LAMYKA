@@ -9,6 +9,13 @@ import { useI18n } from "../i18n/I18nContext";
 import { TelegramIcon, FacebookIcon } from "../components/SocialIcons";
 import { getTelegramOrderUrl, normalizeFacebook } from "../lib/social";
 
+// YouTube ID parser
+function getYouTubeId(url) {
+  if (!url) return null;
+  const m = String(url).match(/^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
+  return m && m[2].length === 11 ? m[2] : null;
+}
+
 /** Product Detail (i18n km/en + animation + real-time update) */
 export default function ProductDetail() {
   const { id } = useParams();
@@ -108,6 +115,7 @@ export default function ProductDetail() {
   const activeMedia = media[activeImage] || null;
   const activeItem = activeMedia?.url || product.image_url;
   const activeIsVideo = activeMedia?.type === "video";
+  const ytId = activeIsVideo ? getYouTubeId(activeItem) : null;
 
   const handleAdd = () => {
     addItem(product, qty, selectedVariant);
@@ -129,15 +137,38 @@ export default function ProductDetail() {
         <div className="animate-fade-in">
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft overflow-hidden group">
             {activeItem && activeIsVideo ? (
-              <video
-                key={activeItem}
-                src={activeItem}
-                poster={product.image_url || undefined}
-                controls
-                playsInline
-                preload="metadata"
-                className="w-full aspect-square object-contain bg-black"
-              />
+              ytId ? (
+                <div className="w-full aspect-square bg-black">
+                  <iframe
+                    key={activeItem}
+                    src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&playsinline=1`}
+                    title={product.name}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <video
+                  key={activeItem}
+                  src={activeItem}
+                  poster={product.image_url || undefined}
+                  autoPlay
+                  muted
+                  loop
+                  controls
+                  playsInline
+                  preload="auto"
+                  ref={(el) => {
+                    if (el) {
+                      el.defaultMuted = true;
+                      el.muted = true;
+                      el.play().catch(() => {});
+                    }
+                  }}
+                  className="w-full aspect-square object-contain bg-black"
+                />
+              )
             ) : activeItem ? (
               <img
                 key={activeItem}
@@ -169,11 +200,15 @@ export default function ProductDetail() {
                   {item.type === "video" ? (
                     <>
                       {/* វីដេអូ: បង្ហាញរូបមេ + Icon Play + VIDEO Badge */}
-                      <img
-                        src={product.image_url || ""}
-                        alt=""
-                        className="w-full h-full object-cover opacity-70"
-                      />
+                      {product.image_url ? (
+                        <img
+                          src={product.image_url}
+                          alt=""
+                          className="w-full h-full object-cover opacity-70"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-slate-900 flex items-center justify-center text-slate-500" />
+                      )}
                       <span className="absolute inset-0 flex items-center justify-center">
                         <span className="w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center shadow-md">
                           <svg

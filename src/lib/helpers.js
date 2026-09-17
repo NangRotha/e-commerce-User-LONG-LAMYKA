@@ -15,5 +15,7 @@ export function formatPrice(n) {
 /** ពិនិត្យថា URL ជាវីដេអូ ឬរូបភាព (ប្រើក្នុង Gallery ផលិតផល) */
 export function isVideoUrl(url) {
   if (!url) return false;
-  return /\.(mp4|webm|mov|ogg|m4v)(\?|#|$)/i.test(String(url));
+  const s = String(url);
+  if (/(youtu\.be|youtube\.com)/i.test(s)) return true;
+  return /\.(mp4|webm|mov|ogg|m4v)(\?|#|$)/i.test(s);
 }
