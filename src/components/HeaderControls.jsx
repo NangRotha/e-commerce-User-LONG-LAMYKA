@@ -47,15 +47,15 @@ export default function HeaderControls({ className = "" }) {
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {/* ===== Language ===== */}
+      {/* ===== Language Selector ===== */}
       <div
         role="group"
         aria-label={t("nav.selectLanguage")}
         title={t("nav.language")}
-        className="relative flex items-center rounded-full bg-slate-100 p-0.5 border border-slate-200"
+        className="relative flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 p-0.5 border border-slate-200/80 dark:border-slate-700/80 shadow-inner"
       >
         <span
-          className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-full bg-emerald-600 shadow-sm transition-transform duration-300 ease-out"
+          className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 shadow-sm transition-transform duration-300 ease-out"
           style={{
             transform:
               languages[0].code === lang ? "translateX(2px)" : "translateX(calc(100% + 2px))",
@@ -69,8 +69,8 @@ export default function HeaderControls({ className = "" }) {
             aria-pressed={lang === l.code}
             className={`relative z-10 px-2.5 py-1 text-xs font-bold rounded-full transition-colors duration-300 ${
               lang === l.code
-                ? "text-white"
-                : "text-slate-500 hover:text-slate-800"
+                ? "text-white drop-shadow-xs"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <span className="hidden sm:inline">{l.label}</span>
@@ -79,18 +79,18 @@ export default function HeaderControls({ className = "" }) {
         ))}
       </div>
 
-      {/* ===== Theme (Dark / Light) ===== */}
+      {/* ===== Theme Toggle (Dark / Light) ===== */}
       <button
         type="button"
         onClick={toggleTheme}
         aria-label={isDark ? t("nav.lightMode") : t("nav.darkMode")}
         title={isDark ? t("nav.lightMode") : t("nav.darkMode")}
-        className="group relative w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 transition-all duration-300 hover:border-emerald-400 hover:text-emerald-600 active:scale-90 overflow-hidden"
+        className="group relative w-9 h-9 rounded-full border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800/90 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all duration-300 hover:border-emerald-500 hover:text-emerald-600 dark:hover:border-emerald-400 dark:hover:text-emerald-400 hover:shadow-md hover:shadow-emerald-500/10 active:scale-90 overflow-hidden"
       >
         <span
           className={`absolute transition-all duration-500 ${
             isDark
-              ? "translate-y-0 rotate-0 opacity-100"
+              ? "translate-y-0 rotate-0 opacity-100 text-amber-400"
               : "-translate-y-8 rotate-90 opacity-0"
           }`}
         >
@@ -100,7 +100,7 @@ export default function HeaderControls({ className = "" }) {
           className={`absolute transition-all duration-500 ${
             isDark
               ? "translate-y-8 -rotate-90 opacity-0"
-              : "translate-y-0 rotate-0 opacity-100"
+              : "translate-y-0 rotate-0 opacity-100 text-slate-700"
           }`}
         >
           <MoonIcon className="w-4 h-4" />

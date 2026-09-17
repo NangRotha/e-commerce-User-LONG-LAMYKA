@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { ShoppingBag, Sparkles } from "lucide-react";
+import { ShoppingBag, Store, Sparkles } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { useI18n } from "../i18n/I18nContext";
@@ -9,11 +9,13 @@ import { TelegramIcon, FacebookIcon, InstagramIcon } from "./SocialIcons";
 import { normalizeTelegram, normalizeFacebook, normalizeInstagram } from "../lib/social";
 
 /**
- * Navbar — Storefront
- * ✅ Modern frosted glassmorphism & responsive layout
- * ✅ Social channels quick access (Telegram · Facebook · Instagram)
- * ✅ Real-time Live sync & Cart badge
- * ✅ Language & Theme switchers
+ * Navbar — Storefront Luxury Redesign
+ * ✅ Polished frosted glassmorphism & responsive layout
+ * ✅ Framed logo with high-contrast luxury typography
+ * ✅ Branded social channel pills (Telegram · Facebook · Instagram)
+ * ✅ Interactive Live Radar pulse
+ * ✅ Prominent luxury Cart action pill
+ * ✅ Complete dark mode language & theme controls
  */
 export default function Navbar() {
   const { count } = useCart();
@@ -30,57 +32,70 @@ export default function Navbar() {
   const online = useRealtime("products_changed", () => {});
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-colors">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+    <header className="sticky top-0 z-40 bg-white/85 dark:bg-slate-950/85 backdrop-blur-2xl border-b border-slate-200/70 dark:border-slate-800/80 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] transition-colors duration-300">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between gap-4">
         {/* Brand */}
         <Link
           to="/"
-          className="group flex items-center gap-2.5 text-lg sm:text-xl font-extrabold text-emerald-600 dark:text-emerald-400 shrink-0"
+          className="group flex items-center gap-3 shrink-0 focus:outline-none"
         >
           {siteLogo ? (
-            <img
-              src={siteLogo}
-              alt={siteName}
-              className="h-8 sm:h-9 w-auto max-w-[140px] sm:max-w-[170px] object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
-              onError={(e) => (e.target.style.display = "none")}
-            />
+            <div className="relative p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs transition-transform duration-300 group-hover:scale-105 shrink-0 overflow-hidden">
+              <img
+                src={siteLogo}
+                alt={siteName}
+                className="h-8 sm:h-10 w-auto max-w-[140px] sm:max-w-[170px] object-contain rounded-xl"
+                onError={(e) => (e.target.style.display = "none")}
+              />
+            </div>
           ) : (
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
               <ShoppingBag className="w-5 h-5" />
             </div>
           )}
-          <span className="truncate tracking-tight font-black">{siteName}</span>
+          <div className="flex flex-col min-w-0">
+            <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+              {siteName}
+            </span>
+            <span className="hidden sm:inline-flex text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+              Official Store
+            </span>
+          </div>
         </Link>
 
         {/* Center / Right controls */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Nav links */}
+          {/* Shop Navigation Tab */}
           <NavLink
             to="/"
             end
             className={({ isActive }) =>
-              `relative px-3 py-1.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+              `inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
                 isActive
-                  ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shadow-sm"
-                  : "text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  ? "bg-emerald-600 text-white shadow-sm shadow-emerald-600/30"
+                  : "text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80"
               }`
             }
           >
-            {t("nav.shop")}
+            <Store className="w-4 h-4" />
+            <span>{t("nav.shop")}</span>
           </NavLink>
 
-          {/* Social Icons (Telegram · Facebook · Instagram) */}
-          <div className="hidden lg:flex items-center gap-1 pl-1 border-l border-slate-200 dark:border-slate-800">
+          {/* Divider */}
+          <div className="hidden md:block h-6 w-px bg-slate-200/80 dark:bg-slate-800/90 my-auto" />
+
+          {/* Social Channels (Telegram · Facebook · Instagram) */}
+          <div className="hidden md:flex items-center gap-1.5">
             {/* Telegram */}
             <a
               href={tgUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-xl text-slate-500 hover:text-[#229ED9] hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-all duration-200 group"
+              className="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-slate-500 hover:text-[#229ED9] hover:border-[#229ED9]/40 hover:bg-[#229ED9]/10 shadow-xs transition-all duration-200 active:scale-95 group"
               title="Telegram"
               aria-label="Telegram"
             >
-              <TelegramIcon className="w-4 h-4 transition-transform group-hover:scale-115" />
+              <TelegramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
             </a>
 
             {/* Facebook */}
@@ -88,11 +103,11 @@ export default function Navbar() {
               href={fbUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-xl text-slate-500 hover:text-[#1877F2] hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-all duration-200 group"
+              className="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-slate-500 hover:text-[#1877F2] hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10 shadow-xs transition-all duration-200 active:scale-95 group"
               title="Facebook"
               aria-label="Facebook"
             >
-              <FacebookIcon className="w-4 h-4 transition-transform group-hover:scale-115" />
+              <FacebookIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
             </a>
 
             {/* Instagram */}
@@ -100,53 +115,59 @@ export default function Navbar() {
               href={igUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-xl text-slate-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/40 transition-all duration-200 group"
+              className="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-slate-500 hover:text-pink-500 hover:border-pink-500/40 hover:bg-pink-500/10 shadow-xs transition-all duration-200 active:scale-95 group"
               title="Instagram"
               aria-label="Instagram"
             >
-              <InstagramIcon className="w-4 h-4 transition-transform group-hover:scale-115" />
+              <InstagramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
             </a>
           </div>
 
-          {/* Live indicator */}
-          <span
-            className={`hidden md:inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors duration-300 ${
+          {/* Live Status indicator */}
+          <div
+            className={`hidden lg:inline-flex items-center gap-2 px-2.5 py-1.5 rounded-full text-xs font-bold border transition-colors ${
               online
-                ? "bg-emerald-100/80 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300"
-                : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300"
+                : "bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500"
             }`}
             title={t("home.liveHint")}
           >
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${
-                online ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
-              }`}
-            />
-            {t("nav.live")}
-          </span>
+            <span className="relative flex h-2 w-2">
+              {online && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              )}
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${
+                  online ? "bg-emerald-500" : "bg-slate-400"
+                }`}
+              />
+            </span>
+            <span className="tracking-wider uppercase text-[10px]">{t("nav.live")}</span>
+          </div>
 
-          {/* Cart button */}
+          {/* Divider */}
+          <div className="hidden sm:block h-6 w-px bg-slate-200/80 dark:bg-slate-800/90 my-auto" />
+
+          {/* Cart Action Button */}
           <Link
             to="/cart"
-            className="relative p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-all duration-200 active:scale-95"
+            className="relative inline-flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all duration-200 group"
             aria-label={`${t("nav.cart")}, ${count}`}
           >
-            <ShoppingBag className="w-5 h-5" />
-            {count > 0 && (
-              <span
-                key={count}
-                className="absolute -top-0.5 -right-0.5 bg-gradient-to-r from-emerald-600 to-teal-500 text-white text-[11px] font-extrabold rounded-full h-5 min-w-5 px-1 flex items-center justify-center animate-pop-in shadow-md shadow-emerald-900/20"
-              >
-                {count}
-              </span>
-            )}
+            <ShoppingBag className="w-4 h-4 transition-transform group-hover:-rotate-6" />
+            <span className="hidden sm:inline font-bold">{t("nav.cart")}</span>
+            <span
+              key={count}
+              className="bg-emerald-500 text-white text-[11px] font-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center shadow-xs animate-pop-in"
+            >
+              {count}
+            </span>
           </Link>
 
-          {/* Language + Theme toggles */}
+          {/* Language & Theme toggles */}
           <HeaderControls />
         </div>
       </nav>
     </header>
   );
 }
-

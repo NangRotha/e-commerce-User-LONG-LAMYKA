@@ -144,16 +144,40 @@ export default function HeroSlider({ fallback = null }) {
       onMouseLeave={() => setPaused(false)}
     >
       {/* Slide media + text */}
-      <div className="relative h-[320px] sm:h-[420px] lg:h-[480px]">
-        {current.media_type === "image" && current.media_url && (
-          <img
-            src={current.media_url}
-            alt={current.title || "Slide"}
-            className="absolute inset-0 h-full w-full object-cover"
-            onError={(e) => (e.target.style.display = "none")}
+      <div className="relative w-full flex items-center justify-center bg-slate-950 overflow-hidden min-h-[160px] sm:min-h-[260px] md:min-h-[340px]">
+        {/* Ambient blurred backdrop for ultrawide screens */}
+        {current.media_url && (
+          <div
+            className="absolute inset-0 bg-cover bg-center blur-3xl opacity-30 scale-110 pointer-events-none"
+            style={{ backgroundImage: `url(${current.media_url})` }}
+            aria-hidden="true"
           />
         )}
 
+        {/* Foreground Image - 100% full, uncropped */}
+        {current.media_type === "image" && current.media_url && (
+          <div className="relative z-10 w-full flex items-center justify-center">
+            {current.link_url ? (
+              <a href={current.link_url} className="block w-full text-center">
+                <img
+                  src={current.media_url}
+                  alt={current.title || "Slide banner"}
+                  className="w-full h-auto max-h-[640px] sm:max-h-[720px] object-contain mx-auto block select-none drop-shadow-sm"
+                  onError={(e) => (e.target.style.display = "none")}
+                />
+              </a>
+            ) : (
+              <img
+                src={current.media_url}
+                alt={current.title || "Slide banner"}
+                className="w-full h-auto max-h-[640px] sm:max-h-[720px] object-contain mx-auto block select-none drop-shadow-sm"
+                onError={(e) => (e.target.style.display = "none")}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Video */}
         {current.media_type === "video" && current.media_url && (
           <video
             src={current.media_url}
@@ -161,53 +185,60 @@ export default function HeroSlider({ fallback = null }) {
             muted
             loop
             playsInline
-            className="absolute inset-0 h-full w-full object-cover"
+            className="relative z-10 w-full h-auto max-h-[640px] sm:max-h-[720px] object-contain mx-auto block"
           />
         )}
 
+        {/* YouTube */}
         {current.media_type === "youtube" && ytId && (
-          <iframe
-            key={`yt-${index}`}
-            src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${ytId}&modestbranding=1&rel=0&playsinline=1`}
-            title={current.title || "YouTube video"}
-            className="absolute inset-0 h-full w-full pointer-events-none"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            tabIndex="-1"
-          />
+          <div className="relative z-10 w-full max-w-6xl mx-auto aspect-video max-h-[640px]">
+            <iframe
+              key={`yt-${index}`}
+              src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${ytId}&modestbranding=1&rel=0&playsinline=1`}
+              title={current.title || "YouTube video"}
+              className="absolute inset-0 h-full w-full pointer-events-none"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              tabIndex="-1"
+            />
+          </div>
         )}
 
-        {/* Overlay gradient + text */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-900/40 to-transparent" />
-        <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6">
-            <div className="max-w-xl">
-              {current.title && (
-                <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight drop-shadow">
-                  {current.title}
-                </h1>
-              )}
-              {current.subtitle && (
-                <p className="mt-3 sm:mt-4 text-emerald-100 text-base sm:text-lg drop-shadow max-w-lg">
-                  {current.subtitle}
-                </p>
-              )}
-              {current.link_url && (
-                <a
-                  href={current.link_url}
-                  className="mt-5 sm:mt-7 inline-block px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition"
-                >
-                  {t("product.shopNow")}
-                </a>
-              )}
+        {/* Overlay gradient + text — ONLY show when title or subtitle is provided */}
+        {(current.title || current.subtitle) && (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent z-15 pointer-events-none" />
+            <div className="absolute inset-0 flex items-center z-20 pointer-events-none">
+              <div className="max-w-7xl mx-auto w-full px-4 sm:px-6">
+                <div className="max-w-xl pointer-events-auto">
+                  {current.title && (
+                    <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight drop-shadow-md">
+                      {current.title}
+                    </h1>
+                  )}
+                  {current.subtitle && (
+                    <p className="mt-3 sm:mt-4 text-emerald-100 text-base sm:text-lg drop-shadow max-w-lg">
+                      {current.subtitle}
+                    </p>
+                  )}
+                  {current.link_url && (
+                    <a
+                      href={current.link_url}
+                      className="mt-5 sm:mt-7 inline-block px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition shadow-lg shadow-emerald-950/40"
+                    >
+                      {t("product.shopNow")}
+                    </a>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
 
         {/* YouTube: button to watch WITH sound (browsers only allow autoplay when muted) */}
         {current.media_type === "youtube" && ytId && (
           <button
             onClick={() => setPlayingYt(current)}
-            className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 px-4 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-medium backdrop-blur transition flex items-center gap-2 z-10"
+            className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 px-4 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-medium backdrop-blur transition flex items-center gap-2 z-20"
             aria-label="Watch with sound"
           >
             <PlayIcon className="w-4 h-4 fill-white ml-0.5" />
@@ -221,14 +252,14 @@ export default function HeroSlider({ fallback = null }) {
         <>
           <button
             onClick={() => goTo(index - 1)}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white backdrop-blur transition"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
             aria-label="Previous slide"
           >
             <ChevronLeftIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => goTo(index + 1)}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white backdrop-blur transition"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
             aria-label="Next slide"
           >
             <ChevronRightIcon className="w-5 h-5" />
@@ -238,13 +269,13 @@ export default function HeroSlider({ fallback = null }) {
 
       {/* Dots */}
       {count > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
           {slides.map((s, i) => (
             <button
               key={s.id}
               onClick={() => goTo(i)}
               className={`h-2 rounded-full transition-all ${
-                i === index ? "w-6 bg-emerald-500" : "w-2 bg-white/50 hover:bg-white"
+                i === index ? "w-6 bg-emerald-500 shadow-sm" : "w-2 bg-white/50 hover:bg-white"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
@@ -256,7 +287,7 @@ export default function HeroSlider({ fallback = null }) {
       {count > 1 && (
         <button
           onClick={() => setPaused((p) => !p)}
-          className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur transition"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
           aria-label={paused ? "Play slideshow" : "Pause slideshow"}
           title={paused ? "Play" : "Pause"}
         >
