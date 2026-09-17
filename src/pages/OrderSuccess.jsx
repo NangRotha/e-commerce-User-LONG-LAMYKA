@@ -335,16 +335,25 @@ export default function OrderSuccess() {
               </div>
             )}
 
-            {directCheckoutUrl && (
-              <a
-                href={directCheckoutUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-medium transition-all duration-200 hover:bg-slate-50 active:scale-95"
+            <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
+              {directCheckoutUrl && (
+                <a
+                  href={directCheckoutUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-900/20 transition-all duration-200 active:scale-95"
+                >
+                  <span>📲 {t("pay.openCheckout")}</span>
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={copyLink}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-medium transition-all duration-200 active:scale-95"
               >
-                {t("pay.openCheckout")}
-              </a>
-            )}
+                {copied ? t("pay.copied") : t("pay.copyLink")}
+              </button>
+            </div>
           </div>
         )}
 
