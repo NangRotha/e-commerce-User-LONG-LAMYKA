@@ -83,12 +83,12 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] transition-colors duration-300">
-        <nav className="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
+      <header className="sticky top-0 z-40 w-full max-w-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] transition-colors duration-300">
+        <nav className="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full">
           {/* Brand Logo & Name */}
           <Link
             to="/"
-            className="group flex items-center gap-2.5 sm:gap-3 shrink-0 focus:outline-none min-w-0"
+            className="group flex items-center gap-2 sm:gap-2.5 shrink min-w-0 focus:outline-none"
             aria-label={`${siteName} Home`}
           >
             {siteLogo ? (

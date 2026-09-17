@@ -125,7 +125,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12 w-full min-w-0 max-w-full">
       <Link
         to="/"
         className="text-sm text-slate-500 hover:text-emerald-600 transition-colors duration-200"
@@ -133,9 +133,9 @@ export default function ProductDetail() {
         {t("product.backToShop")}
       </Link>
 
-      <div className="mt-6 grid md:grid-cols-2 gap-8 lg:gap-14">
+      <div className="mt-6 grid md:grid-cols-2 gap-8 lg:gap-14 w-full min-w-0 max-w-full">
         {/* Image gallery (Main + supporting) */}
-        <div className="animate-fade-in">
+        <div className="animate-fade-in w-full min-w-0 max-w-full overflow-hidden">
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft overflow-hidden group">
             {activeItem && activeIsVideo ? (
               ytId ? (
@@ -198,7 +198,7 @@ export default function ProductDetail() {
           </div>
 
           {media.length > 1 && (
-            <div className="mt-3 sm:mt-4 flex gap-2.5 sm:gap-3 overflow-x-auto pb-1 scrollbar-none snap-x">
+            <div className="mt-3 sm:mt-4 flex gap-2.5 sm:gap-3 overflow-x-auto w-full max-w-full pb-1 scrollbar-none snap-x touch-pan-x">
               {media.map((item, i) => (
                 <button
                   key={`${item.url}-${i}`}
@@ -253,7 +253,7 @@ export default function ProductDetail() {
 
         {/* Info */}
         <div
-          className="flex flex-col animate-fade-in-up"
+          className="flex flex-col animate-fade-in-up w-full min-w-0 max-w-full"
           style={{ animationDelay: "100ms" }}
         >
           <div className="flex items-center justify-between gap-3">

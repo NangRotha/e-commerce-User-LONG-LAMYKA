@@ -20,13 +20,13 @@ import NotFound from "./pages/NotFound";
  */
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden overflow-x-clip flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 relative">
       <ScrollToTop />
       <ApiStatusBanner />
       <Navbar />
       {/* Alerts / Popups ពី Admin (real-time auto-update) */}
       <AlertCenter />
-      <main className="flex-1">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden overflow-x-clip">
         <PageTransition>
           <Routes>
             <Route path="/" element={<Home />} />

@@ -224,7 +224,7 @@ export default function Home() {
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1 -mx-3 px-3 sm:mx-0 sm:px-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1 w-full max-w-full touch-pan-x">
             {categoryOptions.map((c) => {
               const count = getCategoryCount(c);
               const isActive = category === c;
