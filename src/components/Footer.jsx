@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { ShoppingBag, ShieldCheck, Heart, Send, Phone, ExternalLink } from "lucide-react";
+import { ShoppingBag, ShieldCheck, Heart, Send, Phone, ExternalLink, MapPin } from "lucide-react";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { useI18n } from "../i18n/I18nContext";
 import { TelegramIcon, FacebookIcon, InstagramIcon } from "./SocialIcons";
 import { normalizeTelegram, normalizeFacebook, normalizeInstagram } from "../lib/social";
+import { STORE_LOCATION } from "../lib/location";
 
 /**
  * Footer — Modern Multi-Column E-Commerce Footer
@@ -14,7 +15,7 @@ import { normalizeTelegram, normalizeFacebook, normalizeInstagram } from "../lib
  */
 export default function Footer() {
   const s = useSiteSettings();
-  const { t } = useI18n();
+  const { t, isKhmer } = useI18n();
   const siteName = s.site_name || "E-Commerce Store";
   const siteLogo = s.site_logo || "";
 
@@ -22,6 +23,7 @@ export default function Footer() {
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
   const phone = (s.contact_phone || "").trim();
+  const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
   return (
     <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 mt-20 transition-colors">
@@ -52,7 +54,7 @@ export default function Footer() {
       {/* Main 4-column footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-          {/* Col 1: Brand */}
+          {/* Col 1: Brand & Store Location */}
           <div className="space-y-4">
             <Link
               to="/"
@@ -88,6 +90,26 @@ export default function Footer() {
                 </a>
               </div>
             )}
+
+            {/* Store Location & Google Maps Link */}
+            <div className="pt-2 border-t border-slate-800/80 space-y-1.5 text-xs text-slate-400">
+              <p className="font-bold text-slate-300 flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>{t("location.address") || "Store Location"}</span>
+              </p>
+              <p className="leading-relaxed text-[11px] text-slate-300">
+                {isKhmer ? STORE_LOCATION.addressKm : STORE_LOCATION.addressEn}
+              </p>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors pt-0.5"
+              >
+                <span>{t("location.openInMaps") || "Open in Google Maps"}</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
 
           {/* Col 2: Quick Links */}

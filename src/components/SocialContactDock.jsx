@@ -1,19 +1,21 @@
 import { useState } from "react";
-import { MessageCircle, X, Phone, Send, ExternalLink } from "lucide-react";
+import { MessageCircle, X, Phone, Send, ExternalLink, MapPin } from "lucide-react";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { TelegramIcon, FacebookIcon, InstagramIcon } from "./SocialIcons";
 import { normalizeTelegram, normalizeFacebook, normalizeInstagram } from "../lib/social";
 import { useI18n } from "../i18n/I18nContext";
+import { STORE_LOCATION } from "../lib/location";
 
 export default function SocialContactDock() {
   const s = useSiteSettings();
-  const { t } = useI18n();
+  const { t, isKhmer } = useI18n();
   const [open, setOpen] = useState(false);
 
   const tgUrl = normalizeTelegram(s.social_telegram || s.telegram_url);
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
   const phone = (s.contact_phone || "").trim();
+  const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
   return (
     <div className="fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-40 flex flex-col items-start gap-3 pointer-events-auto">
@@ -81,6 +83,27 @@ export default function SocialContactDock() {
             <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
 
+          {/* Google Maps Store Location */}
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-600 text-rose-600 dark:text-rose-400 hover:text-white transition-all duration-200 group"
+          >
+            <div className="w-8 h-8 rounded-lg bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110">
+              <MapPin className="w-4 h-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold leading-tight">
+                {isKhmer ? "ទីតាំងហាង Google Maps" : "Store Location"}
+              </p>
+              <p className="text-[10px] opacity-80 leading-tight truncate">
+                {isKhmer ? "ភ្នំពេញ · បើកមើលផែនទី" : "Phnom Penh · Open Map"}
+              </p>
+            </div>
+            <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+
           {/* Phone call if provided */}
           {phone && (
             <a
@@ -104,7 +127,7 @@ export default function SocialContactDock() {
         {!open && (
           <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 shadow-lg border border-slate-200/80 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 animate-fade-in backdrop-blur-md pointer-events-none">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            Telegram · FB · IG
+            Telegram · FB · Maps
           </span>
         )}
 

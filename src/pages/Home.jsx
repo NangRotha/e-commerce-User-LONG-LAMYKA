@@ -4,6 +4,7 @@ import ProductCard from "../components/ProductCard";
 import HeroSlider from "../components/HeroSlider";
 import TrustBar from "../components/TrustBar";
 import Reveal from "../components/Reveal";
+import StoreLocationSection from "../components/StoreLocationSection";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
 import { useI18n } from "../i18n/I18nContext";
@@ -358,6 +359,11 @@ export default function Home() {
             )}
           </div>
         )}
+
+        {/* Physical Store Location & Google Maps */}
+        <Reveal>
+          <StoreLocationSection />
+        </Reveal>
       </div>
     </div>
   );
