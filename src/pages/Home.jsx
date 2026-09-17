@@ -164,12 +164,12 @@ export default function Home() {
       {/* Trust & Benefits Bar */}
       <TrustBar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-2 pb-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-2 pb-16">
         {/* Search, Filter & Sort Controls */}
-        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-soft space-y-4">
+        <div className="p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-soft space-y-3 sm:space-y-4">
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
+            <div className="relative flex-1 w-full md:max-w-md">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
               <input
                 type="search"
@@ -190,7 +190,7 @@ export default function Home() {
             </div>
 
             {/* Sort & In-stock toggle */}
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap xs:flex-nowrap">
               {/* Sort selector */}
               <div className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold text-slate-700 dark:text-slate-300">
                 <ArrowUpDown className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -223,7 +223,7 @@ export default function Home() {
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1 -mx-3 px-3 sm:mx-0 sm:px-0">
             {categoryOptions.map((c) => {
               const count = getCategoryCount(c);
               const isActive = category === c;
@@ -286,7 +286,7 @@ export default function Home() {
 
         {/* Products Grid */}
         {products === null ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
@@ -303,7 +303,7 @@ export default function Home() {
           </div>
         ) : filtered.length > 0 ? (
           <Reveal>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
               {filtered.map((p, i) => (
                 <div
                   key={p.id}

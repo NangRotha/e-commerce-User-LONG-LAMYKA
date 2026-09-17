@@ -25,26 +25,26 @@ export default function Cart() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
         {t("cart.title")}{" "}
-        <span className="text-base font-medium text-slate-500">
+        <span className="text-base font-medium text-slate-500 dark:text-slate-400">
           ({t("cart.itemsCount", { count })})
         </span>
       </h1>
 
-      <div className="mt-8 grid lg:grid-cols-3 gap-8">
+      <div className="mt-6 sm:mt-8 grid lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Items */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-3 sm:space-y-4">
           {items.map((item, i) => (
             <div
               key={`${item.id}-${item.variant || ""}`}
-              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft p-4 flex gap-4 transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 animate-fade-in-up"
+              className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft p-3 sm:p-4 flex gap-3 sm:gap-4 transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}
             >
               <Link
                 to={`/product/${item.id}`}
-                className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 group"
+                className="shrink-0 w-16 h-16 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 group"
               >
                 {item.image_url ? (
                   <img

@@ -33,28 +33,28 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 bg-white/85 dark:bg-slate-950/85 backdrop-blur-2xl border-b border-slate-200/70 dark:border-slate-800/80 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] transition-colors duration-300">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between gap-4">
+      <nav className="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand */}
         <Link
           to="/"
-          className="group flex items-center gap-3 shrink-0 focus:outline-none"
+          className="group flex items-center gap-2 sm:gap-3 shrink-0 focus:outline-none min-w-0"
         >
           {siteLogo ? (
-            <div className="relative p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs transition-transform duration-300 group-hover:scale-105 shrink-0 overflow-hidden">
+            <div className="relative p-1 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs transition-transform duration-300 group-hover:scale-105 shrink-0 overflow-hidden">
               <img
                 src={siteLogo}
                 alt={siteName}
-                className="h-8 sm:h-10 w-auto max-w-[140px] sm:max-w-[170px] object-contain rounded-xl"
+                className="h-7 sm:h-10 w-auto max-w-[100px] xs:max-w-[130px] sm:max-w-[170px] object-contain rounded-lg sm:rounded-xl"
                 onError={(e) => (e.target.style.display = "none")}
               />
             </div>
           ) : (
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
-              <ShoppingBag className="w-5 h-5" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-600/20 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3 shrink-0">
+              <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
           )}
           <div className="flex flex-col min-w-0">
-            <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+            <span className="truncate text-sm sm:text-lg font-black tracking-tight text-slate-900 dark:text-white transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400 max-w-[95px] xs:max-w-[140px] sm:max-w-none">
               {siteName}
             </span>
             <span className="hidden sm:inline-flex text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
@@ -64,20 +64,20 @@ export default function Navbar() {
         </Link>
 
         {/* Center / Right controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Shop Navigation Tab */}
           <NavLink
             to="/"
             end
             className={({ isActive }) =>
-              `inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+              `inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
                 isActive
                   ? "bg-emerald-600 text-white shadow-sm shadow-emerald-600/30"
                   : "text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80"
               }`
             }
           >
-            <Store className="w-4 h-4" />
+            <Store className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>{t("nav.shop")}</span>
           </NavLink>
 
@@ -151,14 +151,14 @@ export default function Navbar() {
           {/* Cart Action Button */}
           <Link
             to="/cart"
-            className="relative inline-flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all duration-200 group"
+            className="relative inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-95 transition-all duration-200 group shrink-0"
             aria-label={`${t("nav.cart")}, ${count}`}
           >
-            <ShoppingBag className="w-4 h-4 transition-transform group-hover:-rotate-6" />
+            <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:-rotate-6" />
             <span className="hidden sm:inline font-bold">{t("nav.cart")}</span>
             <span
               key={count}
-              className="bg-emerald-500 text-white text-[11px] font-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center shadow-xs animate-pop-in"
+              className="bg-emerald-500 text-white text-[10px] sm:text-[11px] font-black rounded-full h-4.5 min-w-4.5 sm:h-5 sm:min-w-5 px-1 sm:px-1.5 flex items-center justify-center shadow-xs animate-pop-in"
             >
               {count}
             </span>

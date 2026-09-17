@@ -116,7 +116,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
       <Link
         to="/"
         className="text-sm text-slate-500 hover:text-emerald-600 transition-colors duration-200"
@@ -285,8 +285,8 @@ export default function ProductDetail() {
             </div>
           )}
 
-          <div className="mt-8 flex items-center gap-4">
-            <div className="flex items-center border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-soft">
+          <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row sm:flex-row items-stretch xs:items-center sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-center justify-between xs:justify-start border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-soft shrink-0">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -314,7 +314,7 @@ export default function ProductDetail() {
               type="button"
               onClick={handleAdd}
               disabled={outOfStock}
-              className={`flex-1 px-6 py-3.5 rounded-2xl text-white font-semibold transition-all duration-200 active:scale-95 ${
+              className={`flex-1 flex items-center justify-center px-6 py-3.5 rounded-2xl text-white font-semibold transition-all duration-200 active:scale-95 text-sm sm:text-base ${
                 added
                   ? "bg-emerald-600 shadow-lift"
                   : "bg-emerald-600 shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-lift"
@@ -329,12 +329,12 @@ export default function ProductDetail() {
           </div>
 
           {/* Direct Social Order / Inquire Buttons */}
-          <div className="mt-4 pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="mt-4 pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
             <a
               href={getTelegramOrderUrl(s.social_telegram || s.telegram_url, product, price, selectedVariant)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#229ED9] hover:bg-[#1b8bc2] text-white font-bold text-sm shadow-md shadow-[#229ED9]/25 transition-all active:scale-95"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-3 sm:py-3.5 rounded-2xl bg-[#229ED9] hover:bg-[#1b8bc2] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#229ED9]/25 transition-all active:scale-95"
             >
               <TelegramIcon className="w-4 h-4" />
               <span>{t("social.orderViaTelegram") || "Order via Telegram"}</span>
@@ -344,7 +344,7 @@ export default function ProductDetail() {
               href={normalizeFacebook(s.social_facebook || s.facebook_url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-[#1877F2] font-bold text-sm border border-blue-200 dark:border-blue-900/60 transition-all active:scale-95"
+              className="flex items-center justify-center gap-2 px-5 py-3 sm:py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-[#1877F2] font-bold text-xs sm:text-sm border border-blue-200 dark:border-blue-900/60 transition-all active:scale-95"
             >
               <FacebookIcon className="w-4 h-4" />
               <span>{t("social.inquireFacebook") || "Chat on Facebook"}</span>
@@ -352,7 +352,7 @@ export default function ProductDetail() {
           </div>
 
           {/* Product Guarantee Highlights */}
-          <div className="mt-6 p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 grid grid-cols-2 gap-3 text-xs">
+          <div className="mt-6 p-3 sm:p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs">
             <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
               <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚚</span>
               <span>{t("trust.deliveryDesc") || "Nationwide Delivery"}</span>

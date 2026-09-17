@@ -80,10 +80,10 @@ export default function ProductCard({ product }) {
       </Link>
 
       {/* Product info */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1">
+      <div className="p-3 sm:p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between gap-2">
           {product.category ? (
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md truncate">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md truncate">
               {product.category}
             </span>
           ) : (
@@ -97,25 +97,25 @@ export default function ProductCard({ product }) {
 
         <Link
           to={`/product/${product.id}`}
-          className="mt-2 font-bold text-slate-800 dark:text-white line-clamp-2 leading-snug hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-sm sm:text-base"
+          className="mt-1.5 sm:mt-2 font-bold text-slate-800 dark:text-white line-clamp-2 leading-snug hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-xs sm:text-base"
         >
           {product.name}
         </Link>
 
         {/* Price and Cart button */}
-        <div className="mt-auto pt-4 flex items-center justify-between gap-2">
-          <div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+        <div className="mt-auto pt-3 sm:pt-4 flex items-center justify-between gap-1.5 sm:gap-2">
+          <div className="min-w-0">
+            <div className="flex items-baseline gap-1 sm:gap-1.5 flex-wrap">
+              <span className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
                 {formatPrice(price)}
               </span>
               {onSale && (
-                <span className="text-xs sm:text-sm text-slate-400 line-through">
+                <span className="text-[11px] sm:text-sm text-slate-400 line-through">
                   {formatPrice(product.price)}
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+            <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-medium truncate">
               ~{khrAmount.toLocaleString()} ៛
             </p>
           </div>
@@ -125,7 +125,7 @@ export default function ProductCard({ product }) {
             onClick={handleAdd}
             disabled={outOfStock}
             aria-label={outOfStock ? t("product.soldOut") : t("product.addToCart")}
-            className={`relative flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 shadow-sm ${
+            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 shadow-sm shrink-0 ${
               justAdded
                 ? "bg-emerald-600 text-white shadow-emerald-600/30 scale-105"
                 : "bg-slate-900 dark:bg-emerald-600 text-white hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:shadow-md"
@@ -133,15 +133,15 @@ export default function ProductCard({ product }) {
           >
             {justAdded ? (
               <>
-                <Check className="w-4 h-4 stroke-[3]" />
-                <span>{t("product.addedShort")}</span>
+                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
+                <span className="text-xs">{t("product.addedShort")}</span>
               </>
             ) : outOfStock ? (
-              <span>{t("product.soldOut")}</span>
+              <span className="text-xs">{t("product.soldOut")}</span>
             ) : (
               <>
-                <ShoppingBag className="w-4 h-4" />
-                <span>{t("common.add")}</span>
+                <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline sm:inline">{t("common.add")}</span>
               </>
             )}
           </button>

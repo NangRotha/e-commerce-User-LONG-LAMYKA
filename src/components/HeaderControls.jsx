@@ -47,13 +47,13 @@ export default function HeaderControls({ className = "" }) {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-1.5 sm:gap-2 ${className}`}>
       {/* ===== Language Selector with Flags ===== */}
       <div
         role="group"
         aria-label={t("nav.selectLanguage")}
         title={t("nav.language")}
-        className="relative flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 p-0.5 border border-slate-200/80 dark:border-slate-700/80 shadow-inner"
+        className="relative flex items-center rounded-full bg-slate-100 dark:bg-slate-800/90 p-0.5 border border-slate-200/80 dark:border-slate-700/80 shadow-inner shrink-0"
       >
         <span
           className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 shadow-sm transition-transform duration-300 ease-out"
@@ -68,16 +68,16 @@ export default function HeaderControls({ className = "" }) {
             type="button"
             onClick={() => setLang(l.code)}
             aria-pressed={lang === l.code}
-            className={`relative z-10 flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-xs font-bold rounded-full transition-colors duration-300 ${
+            className={`relative z-10 flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-0.5 sm:py-1 text-[11px] sm:text-xs font-bold rounded-full transition-colors duration-300 ${
               lang === l.code
                 ? "text-white drop-shadow-xs"
                 : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             {l.code === "km" ? (
-              <CambodiaFlag className="w-4 h-2.5 rounded-xs shadow-2xs shrink-0" />
+              <CambodiaFlag className="w-3.5 h-2.5 sm:w-4 sm:h-2.5 rounded-xs shadow-2xs shrink-0" />
             ) : (
-              <EnglishFlag className="w-4 h-2.5 rounded-xs shadow-2xs shrink-0" />
+              <EnglishFlag className="w-3.5 h-2.5 sm:w-4 sm:h-2.5 rounded-xs shadow-2xs shrink-0" />
             )}
             <span className="hidden sm:inline">{l.label}</span>
             <span className="sm:hidden">{l.short}</span>
@@ -91,7 +91,7 @@ export default function HeaderControls({ className = "" }) {
         onClick={toggleTheme}
         aria-label={isDark ? t("nav.lightMode") : t("nav.darkMode")}
         title={isDark ? t("nav.lightMode") : t("nav.darkMode")}
-        className="group relative w-9 h-9 rounded-full border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800/90 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all duration-300 hover:border-emerald-500 hover:text-emerald-600 dark:hover:border-emerald-400 dark:hover:text-emerald-400 hover:shadow-md hover:shadow-emerald-500/10 active:scale-90 overflow-hidden"
+        className="group relative w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800/90 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all duration-300 hover:border-emerald-500 hover:text-emerald-600 dark:hover:border-emerald-400 dark:hover:text-emerald-400 hover:shadow-md hover:shadow-emerald-500/10 active:scale-90 overflow-hidden shrink-0"
       >
         <span
           className={`absolute transition-all duration-500 ${
@@ -100,7 +100,7 @@ export default function HeaderControls({ className = "" }) {
               : "-translate-y-8 rotate-90 opacity-0"
           }`}
         >
-          <SunIcon className="w-4.5 h-4.5" />
+          <SunIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
         </span>
         <span
           className={`absolute transition-all duration-500 ${
@@ -109,7 +109,7 @@ export default function HeaderControls({ className = "" }) {
               : "translate-y-0 rotate-0 opacity-100 text-slate-700"
           }`}
         >
-          <MoonIcon className="w-4 h-4" />
+          <MoonIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </span>
       </button>
     </div>
