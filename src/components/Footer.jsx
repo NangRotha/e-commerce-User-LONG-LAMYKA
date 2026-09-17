@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { ShoppingBag, ShieldCheck, Heart, Send, Phone, ExternalLink, MapPin } from "lucide-react";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { useI18n } from "../i18n/I18nContext";
-import { TelegramIcon, FacebookIcon, InstagramIcon } from "./SocialIcons";
-import { normalizeTelegram, normalizeFacebook, normalizeInstagram } from "../lib/social";
+import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon } from "./SocialIcons";
+import { normalizeTelegram, normalizeFacebook, normalizeInstagram, normalizeWhatsApp } from "../lib/social";
 import { STORE_LOCATION } from "../lib/location";
 
 /**
@@ -20,6 +20,7 @@ export default function Footer() {
   const siteLogo = s.site_logo || "";
 
   const tgUrl = normalizeTelegram(s.social_telegram || s.telegram_url);
+  const waUrl = normalizeWhatsApp(s.social_whatsapp || s.whatsapp_url || (s.contact_phone ? s.contact_phone : ""));
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
   const phone = (s.contact_phone || "").trim();
@@ -173,6 +174,22 @@ export default function Footer() {
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
               </a>
+
+              {/* WhatsApp */}
+              {waUrl && (
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-[#25D366] text-slate-200 hover:text-white border border-slate-700/60 hover:border-[#25D366] transition-all duration-200 group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <WhatsAppIcon className="w-4 h-4 text-[#25D366] group-hover:text-white transition-colors" />
+                    <span className="text-xs font-bold">WhatsApp Chat</span>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
+                </a>
+              )}
 
               {/* Facebook */}
               <a

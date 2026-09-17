@@ -19,12 +19,13 @@ import { useI18n } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import HeaderControls from "./HeaderControls";
 import { useRealtime } from "../context/RealtimeContext";
-import { TelegramIcon, FacebookIcon, InstagramIcon } from "./SocialIcons";
+import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon } from "./SocialIcons";
 import { CambodiaFlag, EnglishFlag } from "./Flags";
 import {
   normalizeTelegram,
   normalizeFacebook,
   normalizeInstagram,
+  normalizeWhatsApp,
 } from "../lib/social";
 import { STORE_LOCATION } from "../lib/location";
 
@@ -47,6 +48,7 @@ export default function Navbar() {
   const siteLogo = s.site_logo || "";
 
   const tgUrl = normalizeTelegram(s.social_telegram || s.telegram_url);
+  const waUrl = normalizeWhatsApp(s.social_whatsapp || s.whatsapp_url || (s.contact_phone ? s.contact_phone : ""));
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
   const phone = (s.contact_phone || "").trim();
@@ -151,6 +153,19 @@ export default function Navbar() {
               >
                 <TelegramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
               </a>
+
+              {waUrl && (
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-slate-500 hover:text-[#25D366] hover:border-[#25D366]/40 hover:bg-[#25D366]/10 shadow-2xs transition-all duration-200 active:scale-95 group"
+                  title="WhatsApp"
+                  aria-label="WhatsApp"
+                >
+                  <WhatsAppIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                </a>
+              )}
 
               <a
                 href={fbUrl}
@@ -482,6 +497,24 @@ export default function Navbar() {
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
+
+                  {/* WhatsApp */}
+                  {waUrl && (
+                    <a
+                      href={waUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all duration-200 group text-xs font-bold"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-[#25D366] text-white flex items-center justify-center shadow-2xs">
+                          <WhatsAppIcon className="w-4 h-4" />
+                        </div>
+                        <span>WhatsApp Chat</span>
+                      </div>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
+                    </a>
+                  )}
 
                   {/* Facebook */}
                   <a

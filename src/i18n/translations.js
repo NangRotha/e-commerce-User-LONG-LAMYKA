@@ -243,9 +243,11 @@ export const en = {
   social: {
     contactUs: "Contact Us",
     chatTelegram: "Chat on Telegram",
+    chatWhatsApp: "Chat on WhatsApp",
     chatFacebook: "Chat on Facebook",
     followInstagram: "Follow on Instagram",
     orderViaTelegram: "Order via Telegram",
+    orderViaWhatsApp: "Order via WhatsApp",
     inquireFacebook: "Inquire via Facebook",
     channels: "Official Channels",
     communityHint: "Join our social channels for flash deals & new arrivals",
@@ -489,9 +491,11 @@ export const km = {
   social: {
     contactUs: "ទាក់ទងមកយើង",
     chatTelegram: "ជជែកតាម Telegram",
+    chatWhatsApp: "ជជែកតាម WhatsApp",
     chatFacebook: "ជជែកតាម Facebook",
     followInstagram: "តាមដានលើ Instagram",
     orderViaTelegram: "កុម្ម៉ង់តាម Telegram",
+    orderViaWhatsApp: "កុម្ម៉ង់តាម WhatsApp",
     inquireFacebook: "សាកសួរតាម Facebook",
     channels: "បណ្តាញសង្គមផ្លូវការ",
     communityHint: "តាមដានបណ្តាញសង្គមយើងដើម្បីទទួលបានប្រូម៉ូសិនពិសេសៗ",

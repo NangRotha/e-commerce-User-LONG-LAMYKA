@@ -13,6 +13,8 @@ import {
 import { STORE_LOCATION } from "../lib/location";
 import { useI18n } from "../i18n/I18nContext";
 import useSiteSettings from "../hooks/useSiteSettings";
+import { WhatsAppIcon } from "./SocialIcons";
+import { normalizeWhatsApp } from "../lib/social";
 
 export default function StoreLocationSection() {
   const { t, isKhmer } = useI18n();
@@ -24,6 +26,7 @@ export default function StoreLocationSection() {
     ? settings.store_address_km || STORE_LOCATION.addressKm
     : settings.store_address_en || STORE_LOCATION.addressEn;
   const phone = (settings.contact_phone || "").trim();
+  const waUrl = normalizeWhatsApp(settings.social_whatsapp || settings.whatsapp_url || phone);
 
   const handleCopy = () => {
     if (navigator.clipboard) {
@@ -141,31 +144,52 @@ export default function StoreLocationSection() {
                 </p>
               </div>
 
-              {/* Phone if configured */}
-              {phone && (
-                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/60 shadow-xs flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              {/* Phone / WhatsApp if configured */}
+              {(phone || waUrl) && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/60 shadow-xs flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                       <Phone className="w-4 h-4" />
                     </div>
-                    <div>
+                    <div className="min-w-0 truncate">
                       <p className="text-xs text-slate-400 font-medium">
-                        {isKhmer ? "លេខទូរស័ព្ទទំនាក់ទំនង" : "Store Phone"}
+                        {isKhmer ? "ទំនាក់ទំនងហាងផ្ទាល់" : "Direct Contact"}
                       </p>
-                      <a
-                        href={`tel:${phone}`}
-                        className="text-sm font-bold text-slate-800 dark:text-white hover:text-emerald-600 transition"
-                      >
-                        {phone}
-                      </a>
+                      {phone ? (
+                        <a
+                          href={`tel:${phone}`}
+                          className="text-sm font-bold text-slate-800 dark:text-white hover:text-emerald-600 transition truncate block"
+                        >
+                          {phone}
+                        </a>
+                      ) : (
+                        <span className="text-sm font-bold text-slate-800 dark:text-white">
+                          WhatsApp
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <a
-                    href={`tel:${phone}`}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-xs font-semibold hover:bg-emerald-600 hover:text-white transition active:scale-95"
-                  >
-                    {isKhmer ? "ទូរស័ព្ទ" : "Call"}
-                  </a>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {waUrl && (
+                      <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-emerald-200/60 dark:border-emerald-800 text-xs font-semibold transition active:scale-95 flex items-center gap-1"
+                      >
+                        <WhatsAppIcon className="w-3.5 h-3.5" />
+                        <span>WhatsApp</span>
+                      </a>
+                    )}
+                    {phone && (
+                      <a
+                        href={`tel:${phone}`}
+                        className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white text-xs font-semibold hover:bg-emerald-600 hover:text-white transition active:scale-95"
+                      >
+                        {isKhmer ? "ទូរស័ព្ទ" : "Call"}
+                      </a>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
