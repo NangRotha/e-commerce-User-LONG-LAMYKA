@@ -91,7 +91,7 @@ export default function ProductCard({ product }) {
           )}
           <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold">
             <Star className="w-3 h-3 fill-current" />
-            <span>4.9</span>
+            <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"}</span>
           </div>
         </div>
 

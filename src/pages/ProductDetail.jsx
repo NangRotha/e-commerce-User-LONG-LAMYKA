@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { Star } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { effectivePrice, formatPrice, isVideoUrl } from "../lib/helpers";
 import { api } from "../api/client";
@@ -242,9 +243,15 @@ export default function ProductDetail() {
           className="flex flex-col animate-fade-in-up"
           style={{ animationDelay: "100ms" }}
         >
-          <p className="text-sm text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold">
-            {product.category}
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold">
+              {product.category || "—"}
+            </p>
+            <div className="inline-flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 px-2.5 py-1 rounded-full text-amber-600 dark:text-amber-400 text-xs font-bold">
+              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+              <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"}</span>
+            </div>
+          </div>
           <h1 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {product.name}
           </h1>
