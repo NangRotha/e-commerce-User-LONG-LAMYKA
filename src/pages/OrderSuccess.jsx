@@ -113,10 +113,15 @@ export default function OrderSuccess() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [successHash, orderId]);
 
-  // Auto-detect: Poll KHQRcc រហូតដល់ឃើញ success -> Confirm -> Order paid
+  // Auto-detect: Poll KHQRcc រហូតដល់ឃើញ success -> Confirm -> Order paid (skip if COD)
   useEffect(() => {
+    const isCodOrder =
+      order?.payment_method === "cod" ||
+      (order?.shipping_address &&
+        (order.shipping_address.toLowerCase().includes("ភ្នំពេញ") ||
+          order.shipping_address.toLowerCase().includes("phnom penh")));
     const tx = order?.payment_transaction_id;
-    if (!tx || paymentStatus === "paid") return;
+    if (isCodOrder || !tx || paymentStatus === "paid") return;
 
     let stopped = false;
 
@@ -218,9 +223,14 @@ export default function OrderSuccess() {
     );
   }
 
+  const isCod =
+    order?.payment_method === "cod" ||
+    (order?.shipping_address &&
+      (order.shipping_address.toLowerCase().includes("ភ្នំពេញ") ||
+        order.shipping_address.toLowerCase().includes("phnom penh")));
   const isPaid = paymentStatus === "paid";
   const showQr =
-    order?.payment_enabled && order?.payment_qr_url && !isPaid;
+    !isCod && order?.payment_enabled && order?.payment_qr_url && !isPaid;
   const currency = order?.currency || "USD";
   const khrRate = order?.khr_rate || 4100;
   const amount = formatMoney(order?.total_amount ?? 0, currency, khrRate);
@@ -229,10 +239,10 @@ export default function OrderSuccess() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12 pb-24 sm:pb-12">
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-soft p-6 sm:p-8 text-center animate-fade-in-up">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-soft p-6 sm:p-8 text-center animate-fade-in-up">
         {/* Company name (ពី Admin Settings — Bakong Wallet) */}
         {order?.payment_company_name && (
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600">
+          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
             {order.payment_company_name}
           </p>
         )}
@@ -240,53 +250,97 @@ export default function OrderSuccess() {
         {/* Status icon */}
         <div
           className={`mx-auto mt-4 w-16 h-16 rounded-full flex items-center justify-center text-3xl transition-all duration-500 ${
-            isPaid ? "bg-emerald-100 animate-pop-in" : "bg-amber-100 animate-pulse-soft"
+            isPaid || isCod
+              ? "bg-emerald-100 dark:bg-emerald-950/70 animate-pop-in"
+              : "bg-amber-100 dark:bg-amber-950/70 animate-pulse-soft"
           }`}
         >
-          {isPaid ? "✅" : "⏳"}
+          {isPaid ? "✅" : isCod ? "🚚" : "⏳"}
         </div>
 
-        <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold text-slate-900">
+        <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
           {isPaid
             ? t("pay.paidTitle")
+            : isCod
+            ? t("pay.codOrderTitle")
             : showQr
             ? t("pay.scanTitle")
             : t("pay.orderPlacedTitle")}
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
           {isPaid
             ? t("pay.paidHint")
+            : isCod
+            ? t("pay.codOrderHint")
             : showQr
             ? t("pay.scanHint")
             : t("pay.orderPlacedHint")}
         </p>
 
         {/* Order details */}
-        <div className="mt-8 bg-slate-50 rounded-2xl border border-slate-200 p-6 text-left space-y-3">
+        <div className="mt-8 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 text-left space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">{t("pay.orderId")}</span>
-            <span className="font-semibold text-slate-900">#{orderId}</span>
+            <span className="text-slate-500 dark:text-slate-400">{t("pay.orderId")}</span>
+            <span className="font-semibold text-slate-900 dark:text-white">#{orderId}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">{t("pay.status")}</span>
+            <span className="text-slate-500 dark:text-slate-400">{t("pay.status")}</span>
             <span
               className={`font-semibold inline-flex items-center gap-1.5 transition-colors duration-300 ${
-                isPaid ? "text-emerald-600" : "text-amber-600"
+                isPaid || isCod
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-amber-600 dark:text-amber-400"
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isPaid ? "bg-emerald-500" : "bg-amber-500 animate-pulse"
+                  isPaid || isCod ? "bg-emerald-500" : "bg-amber-500 animate-pulse"
                 }`}
               />
-              {isPaid ? t("pay.statusPaid") : t("pay.statusPending")}
+              {isPaid
+                ? t("pay.statusPaid")
+                : isCod
+                ? t("pay.codStatus")
+                : t("pay.statusPending")}
             </span>
           </div>
-          <div className="flex justify-between text-sm pt-2 border-t border-slate-200">
-            <span className="text-slate-500">{t("pay.total")}</span>
-            <span className="font-bold text-emerald-600 text-lg">{amount}</span>
+          <div className="flex justify-between text-sm pt-2 border-t border-slate-200 dark:border-slate-800">
+            <span className="text-slate-500 dark:text-slate-400">{t("pay.total")}</span>
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">{amount}</span>
           </div>
         </div>
+
+        {/* ===== Phnom Penh Cash on Delivery (COD) Card ===== */}
+        {isCod && (
+          <div className="mt-6 bg-gradient-to-b from-emerald-50/80 to-white dark:from-emerald-950/40 dark:to-slate-900 rounded-2xl border-2 border-emerald-500/80 dark:border-emerald-600 p-5 text-left shadow-xs animate-fade-in-up">
+            <div className="flex items-center gap-3">
+              <span className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md shadow-emerald-600/30 shrink-0">
+                💵
+              </span>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                  {t("pay.codBadge")}
+                </h3>
+                <p className="text-xs text-emerald-700 dark:text-emerald-300 font-semibold">
+                  ✓ មិនបាច់បង់ប្រាក់មុនទេ — គិតលុយពេលអីវ៉ាន់ដល់ដៃ
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3.5 pt-3.5 border-t border-emerald-100 dark:border-emerald-900/60 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+              {order?.customer_phone && (
+                <p className="font-medium text-slate-800 dark:text-slate-200">
+                  📞 {t("pay.codDriverNote")} ({order.customer_phone})
+                </p>
+              )}
+              {order?.shipping_address && (
+                <p className="text-slate-500 dark:text-slate-400">
+                  📍 អាសយដ្ឋានដឹកជញ្ជូន៖ <span className="font-semibold text-slate-700 dark:text-slate-200">{order.shipping_address}</span>
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ===== QR Code — Scan & Pay (ABA / Bakong Wallet) ===== */}
         {showQr && (
@@ -358,13 +412,13 @@ export default function OrderSuccess() {
         )}
 
         {/* ===== គ្មានរូប QR ពី Gateway -> បង្ហាញ Managed Checkout (ABA Pay) ===== */}
-        {!showQr && order?.payment_enabled && order?.payment_url && !isPaid && (
-          <div className="mt-8 bg-white rounded-2xl border-2 border-emerald-100 p-5 animate-fade-in-up">
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-2xl">
+        {!showQr && !isCod && order?.payment_enabled && order?.payment_url && !isPaid && (
+          <div className="mt-8 bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900 p-5 animate-fade-in-up">
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-2xl">
               🇰🇭
             </div>
-            <p className="mt-3 text-xl font-bold text-slate-900">{amount}</p>
-            <p className="mt-1 text-sm text-slate-500">{t("pay.checkoutHint")}</p>
+            <p className="mt-3 text-xl font-bold text-slate-900 dark:text-white">{amount}</p>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t("pay.checkoutHint")}</p>
 
             <button
               type="button"
@@ -380,7 +434,7 @@ export default function OrderSuccess() {
                 href={directCheckoutUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="font-medium text-emerald-700 hover:underline"
+                className="font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
               >
                 {t("pay.openCheckout")}
               </a>
@@ -397,7 +451,7 @@ export default function OrderSuccess() {
         )}
 
         {/* ===== Waiting / verifying (ទាំង QR និង Checkout) ===== */}
-        {!isPaid && order?.payment_enabled && (
+        {!isPaid && !isCod && order?.payment_enabled && (
           <div className="mt-6 flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-2 text-sm text-emerald-700">
               {confirming ? (
@@ -453,7 +507,7 @@ export default function OrderSuccess() {
         )}
 
         {/* Fallback payment link (when ABA Pay is not configured) */}
-        {!order?.payment_enabled && order?.payment_url && !isPaid && (
+        {!isCod && !order?.payment_enabled && order?.payment_url && !isPaid && (
           <div className="mt-8 flex flex-col items-center gap-2 text-sm">
             <span className="text-slate-500">{t("pay.payLink")}</span>
             <a
@@ -476,7 +530,7 @@ export default function OrderSuccess() {
           </Link>
         </div>
 
-        <p className="mt-6 text-xs text-slate-400">🔒 {t("pay.secureNote")}</p>
+        {!isCod && <p className="mt-6 text-xs text-slate-400">🔒 {t("pay.secureNote")}</p>}
       </div>
     </div>
   );

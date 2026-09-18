@@ -109,11 +109,15 @@ export default function ProductCard({ product }) {
               <span className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
                 {formatPrice(price)}
               </span>
-              {onSale && (
+              {onSale ? (
                 <span className="text-[11px] sm:text-sm text-slate-400 line-through">
                   {formatPrice(product.price)}
                 </span>
-              )}
+              ) : product.original_price && product.original_price > price ? (
+                <span className="text-[11px] sm:text-sm text-slate-400 dark:text-slate-500 line-through">
+                  {formatPrice(product.original_price)}
+                </span>
+              ) : null}
             </div>
             <p className="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-medium truncate">
               ~{khrAmount.toLocaleString()} ៛

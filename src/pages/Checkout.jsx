@@ -100,6 +100,11 @@ export default function Checkout() {
     setPlacing(true);
     try {
       const shippingAddress = `${province} — ${address.trim()}`;
+      const isPhnomPenh =
+        province.toLowerCase().includes("ភ្នំពេញ") ||
+        province.toLowerCase().includes("phnom penh");
+      const paymentMethod = isPhnomPenh ? "cod" : "aba_pay";
+
       const res = await api.checkout({
         items: items.map((i) => ({
           product_id: i.id,
@@ -111,6 +116,7 @@ export default function Checkout() {
         shipping_address: shippingAddress,
         note: note.trim(),
         promo_code: promo ? promoCode.trim() : null,
+        payment_method: paymentMethod,
       });
       try {
         localStorage.setItem(
@@ -332,50 +338,91 @@ export default function Checkout() {
             )}
           </div>
 
-          {/* 5. Payment (Bakong Wallet / KHQR) */}
+          {/* 5. Payment (Conditional: Phnom Penh COD vs Province Prepayment) */}
           <div
             className={`${card} animate-fade-in-up`}
             style={{ animationDelay: "260ms" }}
           >
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-              {t("checkout.payment")}
-            </h2>
-            <div className="mt-3.5 flex items-start gap-3 rounded-xl border-2 border-emerald-500 dark:border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/40 p-3.5 sm:p-4 transition-all duration-300 hover:shadow-lift">
-              <span className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900 flex items-center justify-center text-lg sm:text-xl shadow-xs">
-                🇰🇭
-              </span>
-              <div className="min-w-0">
-                <p className="font-semibold text-emerald-900 dark:text-emerald-300 text-sm sm:text-base">
-                  {t("checkout.payWith")}
-                </p>
-                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {t("checkout.payWithHint")}
-                </p>
-                {payment?.display_name && (
-                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                    {t("pay.receiver")}:{" "}
-                    <span className="font-semibold text-slate-700 dark:text-slate-200">
-                      {payment.display_name}
-                    </span>
-                    {payment.bakong_id ? (
-                      <>
-                        {" · "}
-                        {t("pay.receiverId")}:{" "}
-                        <span className="font-semibold text-slate-700 dark:text-slate-200">
-                          {payment.bakong_id}
-                        </span>
-                      </>
-                    ) : null}
-                  </p>
-                )}
-                {payment && payment.enabled === false && (
-                  <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-400">
-                    ⚠️ Online payment is not configured yet — we will contact you
-                    to arrange payment.
-                  </p>
-                )}
-              </div>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                {t("checkout.payment")}
+              </h2>
+              {isPhnomPenh ? (
+                <span className="text-[11px] sm:text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/70 px-2.5 py-1 rounded-full border border-emerald-300 dark:border-emerald-800 animate-pop-in">
+                  {t("checkout.codBadge")}
+                </span>
+              ) : province ? (
+                <span className="text-[11px] sm:text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/70 px-2.5 py-1 rounded-full border border-blue-200 dark:border-blue-800 animate-pop-in">
+                  {t("checkout.provincePrepayBadge")}
+                </span>
+              ) : null}
             </div>
+
+            {/* If Phnom Penh -> Cash on Delivery (COD), NO ABA QR payment */}
+            {isPhnomPenh ? (
+              <div className="mt-3.5 flex items-start gap-3 rounded-xl border-2 border-emerald-500 dark:border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/40 p-3.5 sm:p-4 transition-all duration-300">
+                <span className="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-2xl shadow-xs">
+                  💵
+                </span>
+                <div className="min-w-0">
+                  <p className="font-bold text-emerald-950 dark:text-emerald-200 text-sm sm:text-base">
+                    {t("checkout.codTitle")}
+                  </p>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                    {t("checkout.codDesc")}
+                  </p>
+                  <div className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-white/90 dark:bg-slate-850 px-2.5 py-1 rounded-lg border border-emerald-200/80 dark:border-emerald-800/80 shadow-2xs">
+                    <span>✓ មិនមាន ABA QR Payment ទេ (អីវ៉ាន់ដល់ដៃបានគិតលុយ)</span>
+                  </div>
+                </div>
+              </div>
+            ) : province ? (
+              /* If Province -> Prepayment via ABA Pay / KHQR */
+              <div className="mt-3.5 flex items-start gap-3 rounded-xl border-2 border-blue-500/80 dark:border-blue-500 bg-blue-50/60 dark:bg-blue-950/40 p-3.5 sm:p-4 transition-all duration-300">
+                <span className="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 border border-blue-100 dark:border-blue-900 flex items-center justify-center text-xl shadow-xs">
+                  🇰🇭
+                </span>
+                <div className="min-w-0">
+                  <p className="font-bold text-blue-950 dark:text-blue-200 text-sm sm:text-base">
+                    {t("checkout.provincePrepayTitle")}
+                  </p>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                    {t("checkout.provincePrepayDesc")}
+                  </p>
+                  {payment?.display_name && (
+                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      {t("pay.receiver")}:{" "}
+                      <span className="font-semibold text-slate-700 dark:text-slate-200">
+                        {payment.display_name}
+                      </span>
+                      {payment.bakong_id ? (
+                        <>
+                          {" · "}
+                          {t("pay.receiverId")}:{" "}
+                          <span className="font-semibold text-slate-700 dark:text-slate-200">
+                            {payment.bakong_id}
+                          </span>
+                        </>
+                      ) : null}
+                    </p>
+                  )}
+                  {payment && payment.enabled === false && (
+                    <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-400">
+                      ⚠️ Online payment is not configured yet — we will contact you
+                      to arrange payment.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* If no province selected yet -> guide user */
+              <div className="mt-3.5 flex items-center gap-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 p-4">
+                <span className="text-2xl">📍</span>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                  {t("checkout.selectProvinceFirst")}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

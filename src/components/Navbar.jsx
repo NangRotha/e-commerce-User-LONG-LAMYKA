@@ -237,9 +237,30 @@ export default function Navbar() {
 
           {/* =========================================================
               MOBILE CONTROLS (< md:)
-              Clean & Minimal: Quick Cart Button + Modern Hamburger Menu
+              Language button + Quick Cart Button + Modern Hamburger Menu
              ========================================================= */}
-          <div className="flex md:hidden items-center gap-2 shrink-0">
+          <div className="flex md:hidden items-center gap-1.5 xs:gap-2 shrink-0">
+            {/* Mobile Language Button (direct toggle in navbar) */}
+            <button
+              type="button"
+              onClick={() => setLang(lang === "km" ? "en" : "km")}
+              aria-label={lang === "km" ? "Switch language to English" : "ប្តូរភាសាទៅខ្មែរ"}
+              title={lang === "km" ? "Switch to English" : "ប្តូរទៅភាសាខ្មែរ"}
+              className="inline-flex items-center gap-1 xs:gap-1.5 h-10 px-2 xs:px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 font-bold text-xs shadow-2xs active:scale-95 transition-all select-none hover:bg-slate-200/60 dark:hover:bg-slate-700/60"
+            >
+              {lang === "km" ? (
+                <>
+                  <CambodiaFlag className="w-4 h-3 rounded-[2px] shadow-2xs shrink-0" />
+                  <span className="font-semibold text-xs tracking-tight">ខ្មែរ</span>
+                </>
+              ) : (
+                <>
+                  <EnglishFlag className="w-4 h-3 rounded-[2px] shadow-2xs shrink-0" />
+                  <span className="font-semibold text-xs tracking-tight">EN</span>
+                </>
+              )}
+            </button>
+
             {/* Mobile Quick Cart Button */}
             <Link
               to="/cart"

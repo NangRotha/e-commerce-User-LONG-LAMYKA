@@ -277,20 +277,29 @@ export default function ProductDetail() {
             {product.name}
           </h1>
 
-          <div className="mt-4 flex items-baseline gap-3">
+          <div className="mt-4 flex items-baseline gap-3 flex-wrap">
             <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
               {formatPrice(price)}
             </span>
-            {onSale && (
+            {onSale ? (
               <>
                 <span className="text-xl text-slate-400 dark:text-slate-500 line-through">
                   {formatPrice(product.price)}
                 </span>
-                <span className="bg-gradient-to-r from-rose-600 to-rose-500 text-white text-sm font-bold px-2 py-1 rounded-full animate-pop-in">
+                <span className="bg-gradient-to-r from-rose-600 to-rose-500 text-white text-sm font-bold px-2.5 py-1 rounded-full animate-pop-in">
                   -{Math.round(product.sale_percent)}%
                 </span>
               </>
-            )}
+            ) : product.original_price && product.original_price > price ? (
+              <>
+                <span className="text-xl text-slate-400 dark:text-slate-500 line-through">
+                  {formatPrice(product.original_price)}
+                </span>
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold px-2.5 py-1 rounded-full animate-pop-in">
+                  តម្លៃដើម {formatPrice(product.original_price)}
+                </span>
+              </>
+            ) : null}
           </div>
 
           <p className="mt-6 text-slate-600 dark:text-slate-300 leading-relaxed">
