@@ -145,3 +145,4 @@ npm run lint     # run ESLint
 ```
 
 # frontend-user-e-online
+# e-commerce-User-LONG-LAMYKA
