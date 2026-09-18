@@ -48,6 +48,10 @@ export default function Checkout() {
   const [placing, setPlacing] = useState(false);
   const [payment, setPayment] = useState(null);
 
+  const isPhnomPenh =
+    (province || "").toLowerCase().includes("ភ្នំពេញ") ||
+    (province || "").toLowerCase().includes("phnom penh");
+
   // ព័ត៌មាន Bakong Wallet (Company Name / Display Name / Currency) សម្រាប់បង្ហាញ
   useEffect(() => {
     api.getPaymentConfig().then(setPayment).catch(() => {});
@@ -100,9 +104,6 @@ export default function Checkout() {
     setPlacing(true);
     try {
       const shippingAddress = `${province} — ${address.trim()}`;
-      const isPhnomPenh =
-        province.toLowerCase().includes("ភ្នំពេញ") ||
-        province.toLowerCase().includes("phnom penh");
       const paymentMethod = isPhnomPenh ? "cod" : "aba_pay";
 
       const res = await api.checkout({
