@@ -46,7 +46,7 @@ export default function Navbar() {
   const { lang, setLang, t } = useI18n();
   const { isDark, toggleTheme } = useTheme();
 
-  const siteName = s.site_name || "Udom Shop";
+  const siteName = s.site_name || "LONG LAMYKA";
   const siteLogo = s.site_logo || "";
 
   const tgUrl = normalizeTelegram(s.social_telegram || s.telegram_url);
