@@ -78,6 +78,8 @@ export const api = {
   getCategories: () => request("/api/categories"),
   getSlides: () => request("/api/slides"),
   getAlerts: () => request("/api/alerts"),
+  getMilestones: () => request("/api/milestones"),
+
 
   // ===== Orders — Guest Checkout (គ្មាន Token) =====
   checkout: (payload) =>

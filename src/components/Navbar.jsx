@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ShoppingBag,
@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import useSiteSettings from "../hooks/useSiteSettings";
+import { api } from "../api/client";
+import { formatPrice } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import HeaderControls from "./HeaderControls";
@@ -39,7 +41,7 @@ import { STORE_LOCATION } from "../lib/location";
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { count } = useCart();
+  const { count, subtotal } = useCart();
   const s = useSiteSettings();
   const { lang, setLang, t } = useI18n();
   const { isDark, toggleTheme } = useTheme();
@@ -56,6 +58,25 @@ export default function Navbar() {
 
   // Real-time status (WebSocket connection)
   const online = useRealtime("products_changed", () => {});
+
+  // Top delivery milestone banner (real-time)
+  const [milestones, setMilestones] = useState([]);
+  const loadMilestones = useCallback(() => {
+    api.getMilestones().then(setMilestones).catch(() => setMilestones([]));
+  }, []);
+
+  useEffect(() => {
+    loadMilestones();
+  }, [loadMilestones]);
+
+  useRealtime("milestones_changed", loadMilestones);
+
+  const topMilestone = (milestones || []).find(
+    (m) => m.is_active !== false && m.show_on_top === true
+  );
+  const topThreshold = topMilestone ? topMilestone.threshold : 0;
+  const topRemaining = topThreshold > 0 ? Math.max(0, topThreshold - (subtotal || 0)) : 0;
+  const topPercent = topThreshold > 0 ? Math.min(100, Math.round(((subtotal || 0) / topThreshold) * 100)) : 0;
 
   // Close mobile drawer when route changes
   useEffect(() => {
@@ -86,6 +107,24 @@ export default function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-40 w-full max-w-full bg-white/90 dark:bg-[#130D18]/90 backdrop-blur-2xl border-b border-pink-100/80 dark:border-pink-950/60 shadow-marshmallow transition-colors duration-300">
+        {/* Optional Top Milestone Bar */}
+        {topMilestone && (
+          <div className="bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white text-[11px] sm:text-xs font-bold py-1 px-3 flex items-center justify-center gap-2 relative overflow-hidden">
+            <Link to="/cart" className="flex items-center gap-1.5 hover:underline truncate">
+              <span>{topRemaining > 0 ? (topMilestone.icon || "🎁") : (topMilestone.unlocked_icon || "🎉")}</span>
+              <span>
+                {topRemaining > 0
+                  ? `Add ${formatPrice(topRemaining)} more for ${topMilestone.title} (${topPercent}%)`
+                  : topMilestone.reward_text}
+              </span>
+            </Link>
+            <div
+              className="absolute bottom-0 left-0 h-[2px] bg-white/70 transition-all duration-300"
+              style={{ width: `${topPercent}%` }}
+            />
+          </div>
+        )}
+
         <nav className="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full">
           {/* Brand Logo & Name */}
           <Link

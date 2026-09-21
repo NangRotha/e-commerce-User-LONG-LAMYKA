@@ -7,6 +7,7 @@ import Reveal from "../components/Reveal";
 import StoreLocationSection from "../components/StoreLocationSection";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
+import { useRealtime } from "../context/RealtimeContext";
 import { useI18n } from "../i18n/I18nContext";
 
 // ផលិតផលសាកល្បងសម្រាប់បញ្ចូលទិន្នន័យពេល Database ទទេ
@@ -64,8 +65,12 @@ export default function Home() {
   const live = useProductsRealtime(() => {
     loadProducts();
     loadCategories();
-    loadSettings();
   });
+  useRealtime("categories_changed", () => {
+    loadCategories();
+    loadProducts();
+  });
+  useRealtime("settings_changed", loadSettings);
 
   const seedDemo = async () => {
     setSeeding(true);

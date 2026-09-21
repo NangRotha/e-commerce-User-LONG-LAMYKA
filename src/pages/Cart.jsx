@@ -1,16 +1,46 @@
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { formatPrice } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
+import { api } from "../api/client";
+import { useRealtime } from "../context/RealtimeContext";
 
-/** Cart — កន្ត្រកទំនិញ (Clean & Cute Girl UI + Free shipping milestone) */
+/** Cart — កន្ត្រកទំនិញ (Clean & Cute Girl UI + Dynamic Free shipping milestone) */
 export default function Cart() {
   const { items, updateQuantity, removeItem, subtotal, count } = useCart();
   const { t } = useI18n();
 
-  const FREE_SHIPPING_THRESHOLD = 30;
-  const progressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  // Dynamic delivery milestones from backend API
+  const [milestones, setMilestones] = useState(null);
+
+  const loadMilestones = useCallback(() => {
+    api
+      .getMilestones()
+      .then(setMilestones)
+      .catch(() => setMilestones([]));
+  }, []);
+
+  useEffect(() => {
+    loadMilestones();
+  }, [loadMilestones]);
+
+  // Real-time: Admin creates, edits, deletes, or toggles Hide/Show milestone -> updates immediately
+  useRealtime("milestones_changed", loadMilestones);
+
+  // Find the active milestone for Cart display
+  const cartMilestones = (milestones || []).filter(
+    (m) => m.is_active !== false && m.show_on_cart !== false
+  );
+
+  const activeMilestone =
+    cartMilestones.find((m) => m.threshold > subtotal) ||
+    cartMilestones[cartMilestones.length - 1] ||
+    null;
+
+  const threshold = activeMilestone ? activeMilestone.threshold : 0;
+  const progressPercent = threshold > 0 ? Math.min(100, Math.round((subtotal / threshold) * 100)) : 0;
+  const remaining = threshold > 0 ? Math.max(0, threshold - subtotal) : 0;
 
   if (items.length === 0) {
     return (
@@ -42,35 +72,38 @@ export default function Cart() {
         </h1>
       </div>
 
-      {/* Free Delivery Milestone Progress Meter */}
-      <div className="mt-4 p-4 rounded-3xl bg-white/90 dark:bg-[#1A1220]/90 border border-pink-200/70 dark:border-pink-900/50 shadow-marshmallow">
-        <div className="flex items-center justify-between text-xs sm:text-sm font-black mb-2">
-          <span className="flex items-center gap-1.5 text-slate-800 dark:text-pink-100">
-            {remaining > 0 ? (
-              <>
-                <span>🎁</span>
-                <span>
-                  Add <span className="text-pink-600 dark:text-pink-400 font-extrabold">{formatPrice(remaining)}</span> more for Free Sweet Delivery & Gift!
-                </span>
-              </>
-            ) : (
-              <>
-                <span>🎉</span>
-                <span className="text-pink-600 dark:text-pink-300">
-                  Yay! You unlocked Free Sweet Delivery & Gift! 🎁✨
-                </span>
-              </>
-            )}
-          </span>
-          <span className="text-xs font-black text-pink-500">{progressPercent}%</span>
+      {/* Free Delivery Milestone Progress Meter (Can Hide & Show via Admin + Real-time) */}
+      {activeMilestone && (
+        <div className="mt-4 p-4 rounded-3xl bg-white/90 dark:bg-[#1A1220]/90 border border-pink-200/70 dark:border-pink-900/50 shadow-marshmallow animate-fade-in">
+          <div className="flex items-center justify-between text-xs sm:text-sm font-black mb-2">
+            <span className="flex items-center gap-1.5 text-slate-800 dark:text-pink-100">
+              {remaining > 0 ? (
+                <>
+                  <span>{activeMilestone.icon || "🎁"}</span>
+                  <span>
+                    Add <span className="text-pink-600 dark:text-pink-400 font-extrabold">{formatPrice(remaining)}</span> more for {activeMilestone.title || "Free Sweet Delivery & Gift!"}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>{activeMilestone.unlocked_icon || "🎉"}</span>
+                  <span className="text-pink-600 dark:text-pink-300">
+                    {activeMilestone.reward_text || "Yay! You unlocked Free Sweet Delivery & Gift! 🎁✨"}
+                  </span>
+                </>
+              )}
+            </span>
+            <span className="text-xs font-black text-pink-500">{progressPercent}%</span>
+          </div>
+          <div className="h-2.5 w-full bg-pink-100/70 dark:bg-[#130D18] rounded-full overflow-hidden p-0.5 border border-pink-200/50 dark:border-pink-950">
+            <div
+              className="h-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 rounded-full transition-all duration-500 shadow-cute-glow"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
-        <div className="h-2.5 w-full bg-pink-100/70 dark:bg-[#130D18] rounded-full overflow-hidden p-0.5 border border-pink-200/50 dark:border-pink-950">
-          <div
-            className="h-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 rounded-full transition-all duration-500 shadow-cute-glow"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
+      )}
+
 
       <div className="mt-6 sm:mt-8 grid lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Items */}
