@@ -4,9 +4,9 @@
  */
 
 export function normalizeTelegram(val) {
-  if (!val) return "https://t.me/khmerudomet";
+  if (!val) return "https://t.me/Lamykabot";
   const trimmed = val.trim();
-  if (!trimmed) return "https://t.me/khmerudomet";
+  if (!trimmed || trimmed.toLowerCase().includes("khmerudomet")) return "https://t.me/Lamykabot";
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
     return trimmed;
   }
@@ -57,7 +57,8 @@ export function getTelegramOrderUrl(telegramVal, product, price, variant = "") {
   const base = normalizeTelegram(telegramVal);
   // Extract username if it's a t.me link
   const match = base.match(/t\.me\/([^/?#]+)/i);
-  const user = match ? match[1] : "khmerudomet";
+  let user = match ? match[1] : "Lamykabot";
+  if (user.toLowerCase() === "khmerudomet") user = "Lamykabot";
   let text = `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${product?.name || ""}`;
   if (variant) {
     text += `\n🎨 ប្រភេទ/ជម្រើស៖ ${variant}`;
