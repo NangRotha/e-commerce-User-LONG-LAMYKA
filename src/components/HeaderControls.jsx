@@ -65,7 +65,7 @@ export default function HeaderControls({ className = "" }) {
               aria-pressed={active}
               className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs rounded-full transition-all duration-200 select-none ${
                 active
-                  ? "bg-emerald-600 text-white font-bold shadow-xs"
+                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-xs shadow-pink-500/25"
                   : "font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
               }`}
             >
@@ -87,7 +87,7 @@ export default function HeaderControls({ className = "" }) {
         onClick={toggleTheme}
         aria-label={isDark ? t("nav.lightMode") : t("nav.darkMode")}
         title={isDark ? t("nav.lightMode") : t("nav.darkMode")}
-        className="group relative w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-slate-800/90 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all duration-300 hover:border-emerald-500 hover:text-emerald-600 dark:hover:border-emerald-400 dark:hover:text-emerald-400 hover:shadow-md hover:shadow-emerald-500/10 active:scale-90 overflow-hidden shrink-0"
+        className="group relative w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-pink-100/80 dark:border-pink-950/60 bg-white dark:bg-slate-800/90 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all duration-300 hover:border-pink-400 hover:text-pink-600 dark:hover:border-pink-400 dark:hover:text-pink-300 hover:shadow-md hover:shadow-pink-500/15 active:scale-90 overflow-hidden shrink-0"
       >
         <span
           className={`absolute transition-all duration-500 ${

@@ -20,7 +20,12 @@ import NotFound from "./pages/NotFound";
  */
 export default function App() {
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden overflow-x-clip flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 relative">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden overflow-x-clip flex flex-col bg-[#FFF5F8] dark:bg-[#130D18] text-slate-900 dark:text-slate-100 transition-colors duration-300 relative selection:bg-pink-200 selection:text-pink-900">
+      {/* Cute pastel strawberry & lavender cloud orbs */}
+      <div className="fixed -top-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-pink-200/35 dark:bg-pink-900/10 blur-[100px] pointer-events-none -z-10 animate-float" />
+      <div className="fixed top-1/3 -right-40 w-[32rem] h-[32rem] rounded-full bg-rose-200/30 dark:bg-rose-900/10 blur-[90px] pointer-events-none -z-10 animate-pulse-soft" />
+      <div className="fixed -bottom-40 left-1/4 w-[38rem] h-[38rem] rounded-full bg-purple-200/25 dark:bg-purple-900/10 blur-[110px] pointer-events-none -z-10" />
+
       <ScrollToTop />
       <ApiStatusBanner />
       <Navbar />

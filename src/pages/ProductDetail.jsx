@@ -80,7 +80,7 @@ export default function ProductDetail() {
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{error}</h1>
         <Link
           to="/"
-          className="mt-4 inline-block text-emerald-600 dark:text-emerald-400 font-medium hover:underline"
+          className="mt-4 inline-block text-pink-600 dark:text-pink-400 font-medium hover:underline"
         >
           {t("product.backToShop")}
         </Link>
@@ -136,7 +136,7 @@ export default function ProductDetail() {
     <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12 w-full min-w-0 max-w-full">
       <Link
         to="/"
-        className="text-sm text-slate-500 hover:text-emerald-600 transition-colors duration-200"
+        className="text-sm text-slate-500 hover:text-pink-600 transition-colors duration-200"
       >
         {t("product.backToShop")}
       </Link>
@@ -144,7 +144,7 @@ export default function ProductDetail() {
       <div className="mt-6 grid md:grid-cols-2 gap-8 lg:gap-14 w-full min-w-0 max-w-full">
         {/* Image gallery (Main + supporting) */}
         <div className="animate-fade-in w-full min-w-0 max-w-full overflow-hidden">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft overflow-hidden group">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-pink-100/80 dark:border-pink-950/60 shadow-soft overflow-hidden group">
             {activeItem && activeIsVideo ? (
               ytId ? (
                 <div className="w-full aspect-square bg-black">
@@ -214,8 +214,8 @@ export default function ProductDetail() {
                   onClick={() => setActiveImage(i)}
                   className={`relative shrink-0 snap-start w-15 h-15 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden border-2 transition-all duration-200 active:scale-95 ${
                     i === activeImage
-                      ? "border-emerald-500 ring-2 ring-emerald-200 dark:ring-emerald-900 shadow-md"
-                      : "border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 opacity-80 hover:opacity-100"
+                      ? "border-pink-500 ring-2 ring-pink-200 dark:ring-pink-900 shadow-md"
+                      : "border-slate-200 dark:border-slate-700 hover:border-pink-300 dark:hover:border-pink-500 opacity-80 hover:opacity-100"
                   }`}
                   aria-label={`${product.name} — ${i + 1}`}
                 >
@@ -242,7 +242,7 @@ export default function ProductDetail() {
                           </svg>
                         </span>
                       </span>
-                      <span className="absolute bottom-0.5 right-0.5 text-[9px] font-black tracking-wider uppercase px-1 py-0.5 bg-emerald-600 text-white rounded">
+                      <span className="absolute bottom-0.5 right-0.5 text-[9px] font-black tracking-wider uppercase px-1 py-0.5 bg-pink-600 text-white rounded">
                         VIDEO
                       </span>
                     </>
@@ -268,70 +268,70 @@ export default function ProductDetail() {
             <p className="text-sm text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold">
               {product.category || "—"}
             </p>
-            <div className="inline-flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 px-2.5 py-1 rounded-full text-amber-600 dark:text-amber-400 text-xs font-bold">
-              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-              <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"}</span>
+            <div className="inline-flex items-center gap-1.5 bg-pink-50 dark:bg-pink-950/60 border border-pink-200/80 dark:border-pink-800/60 px-3 py-1 rounded-full text-pink-600 dark:text-pink-300 text-xs font-black shadow-xs">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"} (Cute!)</span>
             </div>
           </div>
-          <h1 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="mt-2 text-2xl sm:text-4xl font-black text-slate-900 dark:text-pink-100 tracking-tight leading-snug">
             {product.name}
           </h1>
 
           <div className="mt-4 flex items-baseline gap-3 flex-wrap">
-            <span className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+            <span className="text-3xl sm:text-4xl font-black text-pink-600 dark:text-pink-400 tracking-tight">
               {formatPrice(price)}
             </span>
             {onSale ? (
               <>
-                <span className="text-xl text-slate-400 dark:text-slate-500 line-through">
+                <span className="text-xl text-slate-400 dark:text-slate-500 line-through font-semibold">
                   {formatPrice(product.price)}
                 </span>
-                <span className="bg-gradient-to-r from-rose-600 to-rose-500 text-white text-sm font-bold px-2.5 py-1 rounded-full animate-pop-in">
-                  -{Math.round(product.sale_percent)}%
+                <span className="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-cute-glow animate-pop-in">
+                  🎀 -{Math.round(product.sale_percent)}% Sweet Deal
                 </span>
               </>
             ) : product.original_price && product.original_price > price ? (
               <>
-                <span className="text-xl text-slate-400 dark:text-slate-500 line-through">
+                <span className="text-xl text-slate-400 dark:text-slate-500 line-through font-semibold">
                   {formatPrice(product.original_price)}
                 </span>
-                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold px-2.5 py-1 rounded-full animate-pop-in">
-                  តម្លៃដើម {formatPrice(product.original_price)}
+                <span className="bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs font-black px-3 py-1 rounded-full shadow-cute-glow animate-pop-in">
+                  Original {formatPrice(product.original_price)}
                 </span>
               </>
             ) : null}
           </div>
 
-          <p className="mt-6 text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="mt-5 text-slate-600 dark:text-pink-200/80 leading-relaxed text-sm sm:text-base">
             {product.description || t("product.noDescription")}
           </p>
 
-          <p className="mt-4 text-sm">
+          <p className="mt-4 text-xs sm:text-sm font-bold">
             {outOfStock ? (
-              <span className="text-rose-600 dark:text-rose-400 font-semibold">
+              <span className="text-rose-500 font-bold">
                 {t("product.outOfStock")}
               </span>
             ) : (
-              <span className="text-slate-500 dark:text-slate-400">
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                  {product.stock} {t("product.inStock")}
+              <span className="text-slate-500 dark:text-pink-300/70">
+                <span className="font-extrabold text-pink-600 dark:text-pink-400">
+                  ✨ {product.stock} {t("product.inStock")}
                 </span>{" "}
-                · {t("product.readyToShip")}
+                · 🌸 {t("product.readyToShip")}
               </span>
             )}
           </p>
 
           {/* Variants / Types selection */}
           {variants.length > 0 && (
-            <div className="mt-6 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <div className="mt-6 p-4 rounded-3xl bg-pink-50/40 dark:bg-[#1A1220]/80 border border-pink-200/70 dark:border-pink-900/50 shadow-marshmallow">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-black text-slate-800 dark:text-pink-100 flex items-center gap-1.5">
                   <span>🎨</span>
                   <span>{t("product.selectType") || "ជម្រើសប្រភេទ / ពណ៌ (Select Option)"}:</span>
                 </span>
                 {selectedVariant && (
-                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
-                    {selectedVariant}
+                  <span className="text-xs font-black text-pink-600 dark:text-pink-300 bg-white dark:bg-pink-950/80 px-3 py-0.5 rounded-full border border-pink-300 dark:border-pink-800 shadow-2xs">
+                    🎀 {selectedVariant}
                   </span>
                 )}
               </div>
@@ -343,10 +343,10 @@ export default function ProductDetail() {
                       key={variant}
                       type="button"
                       onClick={() => setSelectedVariant(variant)}
-                      className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 border ${
+                      className={`px-4 py-2 rounded-full text-xs sm:text-sm font-black transition-all duration-200 active:scale-95 border ${
                         isSelected
-                          ? "bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/30 ring-2 ring-emerald-300 dark:ring-emerald-700"
-                          : "bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-white dark:hover:bg-slate-700"
+                          ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white border-transparent shadow-cute-glow scale-102"
+                          : "bg-white dark:bg-[#130D18] text-slate-700 dark:text-pink-200 border-pink-200/80 dark:border-pink-900/50 hover:border-pink-400 hover:bg-pink-50/50"
                       }`}
                     >
                       {variant}
@@ -358,24 +358,24 @@ export default function ProductDetail() {
           )}
 
           <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row sm:flex-row items-stretch xs:items-center sm:items-center gap-3 sm:gap-4">
-            <div className="flex items-center justify-between xs:justify-start border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-soft shrink-0">
+            <div className="flex items-center justify-between xs:justify-start border border-pink-200/80 dark:border-pink-900/50 bg-white dark:bg-[#1A1220] rounded-full overflow-hidden shadow-marshmallow shrink-0">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 disabled={outOfStock}
-                className="px-4 py-2.5 text-lg font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 active:scale-90 disabled:opacity-40"
+                className="px-4 py-2.5 text-lg font-black text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors duration-200 active:scale-90 disabled:opacity-40"
                 aria-label={t("product.decrease")}
               >
                 −
               </button>
-              <span className="px-4 py-2.5 text-lg font-semibold min-w-12 text-center border-x border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 tabular-nums">
+              <span className="px-4 py-2.5 text-base font-black min-w-12 text-center border-x border-pink-100 dark:border-pink-950/80 text-slate-800 dark:text-pink-100 tabular-nums">
                 {qty}
               </span>
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.min(product.stock, q + 1))}
                 disabled={outOfStock}
-                className="px-4 py-2.5 text-lg font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 active:scale-90 disabled:opacity-40"
+                className="px-4 py-2.5 text-lg font-black text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors duration-200 active:scale-90 disabled:opacity-40"
                 aria-label={t("product.increase")}
               >
                 +
@@ -386,27 +386,27 @@ export default function ProductDetail() {
               type="button"
               onClick={handleAdd}
               disabled={outOfStock}
-              className={`flex-1 flex items-center justify-center px-6 py-3.5 rounded-2xl text-white font-semibold transition-all duration-200 active:scale-95 text-sm sm:text-base ${
+              className={`flex-1 flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-white font-black transition-all duration-200 active:scale-95 text-sm sm:text-base ${
                 added
-                  ? "bg-emerald-600 shadow-lift"
-                  : "bg-emerald-600 shadow-md shadow-emerald-600/20 hover:bg-emerald-700 hover:shadow-lift"
+                  ? "bg-rose-500 shadow-rose-500/30 scale-102"
+                  : "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 shadow-cute-glow hover:from-pink-500 hover:to-rose-500 hover:scale-102"
               } disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100`}
             >
               {outOfStock
                 ? t("product.soldOut")
                 : added
-                ? t("product.added")
-                : t("product.addToCart")}
+                ? "Added to Bag! 💖"
+                : `🛍️ ${t("product.addToCart")} 💖`}
             </button>
           </div>
 
           {/* Direct Social Order / Inquire Buttons */}
-          <div className="mt-4 pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3">
+          <div className="mt-4 pt-4 border-t border-pink-100 dark:border-pink-950/70 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3">
             <a
               href={getTelegramOrderUrl(s.social_telegram || s.telegram_url, product, price, selectedVariant)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-2xl bg-[#229ED9] hover:bg-[#1b8bc2] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#229ED9]/25 transition-all active:scale-95"
+              className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-full bg-[#229ED9] hover:bg-[#1b8bc2] text-white font-black text-xs sm:text-sm shadow-md shadow-[#229ED9]/25 transition-all active:scale-95"
             >
               <TelegramIcon className="w-4 h-4" />
               <span>{t("social.orderViaTelegram") || "Order via Telegram"}</span>
@@ -417,7 +417,7 @@ export default function ProductDetail() {
                 href={waOrderUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#25D366]/25 transition-all active:scale-95"
+                className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-black text-xs sm:text-sm shadow-md shadow-[#25D366]/25 transition-all active:scale-95"
               >
                 <WhatsAppIcon className="w-4 h-4" />
                 <span>{t("social.orderViaWhatsApp") || "Order via WhatsApp"}</span>
@@ -428,7 +428,7 @@ export default function ProductDetail() {
               href={normalizeFacebook(s.social_facebook || s.facebook_url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-[#1877F2] font-bold text-xs sm:text-sm border border-blue-200 dark:border-blue-900/60 transition-all active:scale-95"
+              className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-full bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-[#1877F2] font-black text-xs sm:text-sm border border-blue-200 dark:border-blue-900/60 transition-all active:scale-95"
             >
               <FacebookIcon className="w-4 h-4" />
               <span>{t("social.inquireFacebook") || "Chat on Facebook"}</span>
@@ -436,21 +436,21 @@ export default function ProductDetail() {
           </div>
 
           {/* Product Guarantee Highlights */}
-          <div className="mt-6 p-3 sm:p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs">
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🚚</span>
+          <div className="mt-6 p-3.5 sm:p-4 rounded-3xl bg-pink-50/60 dark:bg-[#1A1220]/70 border border-pink-100/90 dark:border-pink-950/70 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs font-bold shadow-marshmallow">
+            <div className="flex items-center gap-2 text-slate-700 dark:text-pink-200">
+              <span className="text-base">🚚</span>
               <span>{t("trust.deliveryDesc") || "Nationwide Delivery"}</span>
             </div>
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">💎</span>
+            <div className="flex items-center gap-2 text-slate-700 dark:text-pink-200">
+              <span className="text-base">🎀</span>
               <span>{t("trust.qualityTitle") || "100% Quality Guaranteed"}</span>
             </div>
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">🇰🇭</span>
+            <div className="flex items-center gap-2 text-slate-700 dark:text-pink-200">
+              <span className="text-base">🇰🇭</span>
               <span>{t("trust.khqrTitle") || "Instant KHQR Payment"}</span>
             </div>
-            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">💬</span>
+            <div className="flex items-center gap-2 text-slate-700 dark:text-pink-200">
+              <span className="text-base">💖</span>
               <span>{t("trust.supportTitle") || "Telegram & FB Support"}</span>
             </div>
           </div>

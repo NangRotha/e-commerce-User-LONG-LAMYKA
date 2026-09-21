@@ -215,7 +215,7 @@ export default function OrderSuccess() {
         <h1 className="text-2xl font-bold text-slate-800">{t("pay.noOrder")}</h1>
         <Link
           to="/"
-          className="mt-4 inline-block text-emerald-600 font-medium hover:underline"
+          className="mt-4 inline-block text-pink-600 dark:text-pink-400 font-semibold hover:underline"
         >
           {t("pay.backToShop")}
         </Link>
@@ -239,35 +239,35 @@ export default function OrderSuccess() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12 pb-24 sm:pb-12">
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-soft p-6 sm:p-8 text-center animate-fade-in-up">
+      <div className="bg-white/95 dark:bg-[#1A1220]/95 rounded-3xl sm:rounded-[36px] border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow p-6 sm:p-10 text-center animate-fade-in-up">
         {/* Company name (ពី Admin Settings — Bakong Wallet) */}
         {order?.payment_company_name && (
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-            {order.payment_company_name}
+          <p className="text-xs font-black uppercase tracking-widest text-pink-600 dark:text-pink-400">
+            🎀 {order.payment_company_name} 🎀
           </p>
         )}
 
-        {/* Status icon */}
+        {/* Status icon with cute glow */}
         <div
-          className={`mx-auto mt-4 w-16 h-16 rounded-full flex items-center justify-center text-3xl transition-all duration-500 ${
+          className={`mx-auto mt-4 w-20 h-20 rounded-full flex items-center justify-center text-4xl transition-all duration-500 shadow-cute-glow ${
             isPaid || isCod
-              ? "bg-emerald-100 dark:bg-emerald-950/70 animate-pop-in"
-              : "bg-amber-100 dark:bg-amber-950/70 animate-pulse-soft"
+              ? "bg-pink-100/80 dark:bg-pink-950/70 animate-pop-in"
+              : "bg-amber-100/80 dark:bg-amber-950/70 animate-pulse-soft"
           }`}
         >
-          {isPaid ? "✅" : isCod ? "🚚" : "⏳"}
+          {isPaid ? "🎉" : isCod ? "🚚" : "⏳"}
         </div>
 
-        <h1 className="mt-4 text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+        <h1 className="mt-5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-pink-100 tracking-tight">
           {isPaid
-            ? t("pay.paidTitle")
+            ? "💖 " + t("pay.paidTitle") + " ✨"
             : isCod
-            ? t("pay.codOrderTitle")
+            ? "🚚 " + t("pay.codOrderTitle") + " 🎀"
             : showQr
-            ? t("pay.scanTitle")
-            : t("pay.orderPlacedTitle")}
+            ? "📱 " + t("pay.scanTitle") + " 🌸"
+            : "✨ " + t("pay.orderPlacedTitle") + " 💖"}
         </h1>
-        <p className="mt-2 text-slate-500 dark:text-slate-400">
+        <p className="mt-2 text-xs sm:text-sm text-pink-600/80 dark:text-pink-300/80 font-semibold">
           {isPaid
             ? t("pay.paidHint")
             : isCod
@@ -278,7 +278,7 @@ export default function OrderSuccess() {
         </p>
 
         {/* Order details */}
-        <div className="mt-8 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 text-left space-y-3">
+        <div className="mt-8 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-pink-100/80 dark:border-pink-950/80 p-6 text-left space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-slate-500 dark:text-slate-400">{t("pay.orderId")}</span>
             <span className="font-semibold text-slate-900 dark:text-white">#{orderId}</span>
@@ -288,13 +288,13 @@ export default function OrderSuccess() {
             <span
               className={`font-semibold inline-flex items-center gap-1.5 transition-colors duration-300 ${
                 isPaid || isCod
-                  ? "text-emerald-600 dark:text-emerald-400"
+                  ? "text-pink-600 dark:text-pink-400"
                   : "text-amber-600 dark:text-amber-400"
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isPaid || isCod ? "bg-emerald-500" : "bg-amber-500 animate-pulse"
+                  isPaid || isCod ? "bg-pink-500" : "bg-amber-500 animate-pulse"
                 }`}
               />
               {isPaid
@@ -306,28 +306,28 @@ export default function OrderSuccess() {
           </div>
           <div className="flex justify-between text-sm pt-2 border-t border-slate-200 dark:border-slate-800">
             <span className="text-slate-500 dark:text-slate-400">{t("pay.total")}</span>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-lg">{amount}</span>
+            <span className="font-bold text-pink-600 dark:text-pink-400 text-lg">{amount}</span>
           </div>
         </div>
 
         {/* ===== Phnom Penh Cash on Delivery (COD) Card ===== */}
         {isCod && (
-          <div className="mt-6 bg-gradient-to-b from-emerald-50/80 to-white dark:from-emerald-950/40 dark:to-slate-900 rounded-2xl border-2 border-emerald-500/80 dark:border-emerald-600 p-5 text-left shadow-xs animate-fade-in-up">
+          <div className="mt-6 bg-gradient-to-b from-rose-50/80 to-white dark:from-rose-950/40 dark:to-slate-900 rounded-2xl border-2 border-rose-300 dark:border-rose-600 p-5 text-left shadow-xs animate-fade-in-up">
             <div className="flex items-center gap-3">
-              <span className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md shadow-emerald-600/30 shrink-0">
+              <span className="w-11 h-11 rounded-xl bg-gradient-to-tr from-pink-500 to-rose-500 text-white flex items-center justify-center text-xl shadow-md shadow-pink-500/30 shrink-0">
                 💵
               </span>
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white text-base">
                   {t("pay.codBadge")}
                 </h3>
-                <p className="text-xs text-emerald-700 dark:text-emerald-300 font-semibold">
+                <p className="text-xs text-rose-700 dark:text-rose-300 font-semibold">
                   ✓ មិនបាច់បង់ប្រាក់មុនទេ — គិតលុយពេលអីវ៉ាន់ដល់ដៃ
                 </p>
               </div>
             </div>
 
-            <div className="mt-3.5 pt-3.5 border-t border-emerald-100 dark:border-emerald-900/60 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <div className="mt-3.5 pt-3.5 border-t border-rose-100 dark:border-rose-900/60 space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
               {order?.customer_phone && (
                 <p className="font-medium text-slate-800 dark:text-slate-200">
                   📞 {t("pay.codDriverNote")} ({order.customer_phone})
@@ -345,43 +345,43 @@ export default function OrderSuccess() {
         {/* ===== QR Code — Scan & Pay (ABA / Bakong Wallet) ===== */}
         {showQr && (
           <div
-            className="mt-8 bg-white rounded-2xl border-2 border-emerald-100 p-5 animate-fade-in-up transition-shadow duration-300 hover:shadow-lift"
+            className="mt-8 bg-white dark:bg-[#1E1324]/95 rounded-[28px] border-2 border-pink-100 dark:border-pink-900/50 p-6 shadow-marshmallow animate-fade-in-up transition-shadow duration-300 hover:shadow-cute-glow"
             style={{ animationDelay: "80ms" }}
           >
-            <div className="relative mx-auto w-56 h-56 sm:w-60 sm:h-60 bg-white rounded-2xl border border-slate-200 shadow-soft p-3 flex items-center justify-center">
+            <div className="relative mx-auto w-56 h-56 sm:w-60 sm:h-60 bg-white rounded-3xl border-2 border-pink-200/80 dark:border-pink-800 shadow-soft p-3.5 flex items-center justify-center">
               {/* Animated scanning line (បង្ហាញថាកំពុងរង់ចាំការស្កេន) */}
               {!isPaid && (
-                <span className="pointer-events-none absolute inset-0 rounded-2xl qr-scan-line" />
+                <span className="pointer-events-none absolute inset-0 rounded-3xl qr-scan-line" />
               )}
               <img
                 src={order.payment_qr_url}
                 alt="KHQR — ABA / Bakong Wallet"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain rounded-2xl"
               />
             </div>
 
-            <p className="mt-4 text-lg font-bold text-slate-900">{amount}</p>
-            <p className="text-xs text-slate-500">{t("pay.amountToPay")}</p>
+            <p className="mt-4 text-xl font-black text-slate-900 dark:text-pink-100 tracking-tight">{amount}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">{t("pay.amountToPay")}</p>
 
             {/* ព័ត៌មានអ្នកទទួលប្រាក់ (Display Name + Bakong Wallet ID) */}
             {(order.payment_display_name || order.payment_bakong_id) && (
-              <div className="mt-4 grid sm:grid-cols-2 gap-2 text-left">
+              <div className="mt-4 grid sm:grid-cols-2 gap-2.5 text-left">
                 {order.payment_display_name && (
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-400">
+                  <div className="rounded-2xl bg-pink-50/60 dark:bg-pink-950/40 border border-pink-100 dark:border-pink-900/60 px-3.5 py-2.5">
+                    <p className="text-[11px] uppercase tracking-wider text-pink-400 dark:text-pink-400/80 font-bold">
                       {t("pay.receiver")}
                     </p>
-                    <p className="text-sm font-semibold text-slate-800 truncate">
+                    <p className="text-sm font-bold text-slate-800 dark:text-pink-100 truncate">
                       {order.payment_display_name}
                     </p>
                   </div>
                 )}
                 {order.payment_bakong_id && (
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-400">
+                  <div className="rounded-2xl bg-pink-50/60 dark:bg-pink-950/40 border border-pink-100 dark:border-pink-900/60 px-3.5 py-2.5">
+                    <p className="text-[11px] uppercase tracking-wider text-pink-400 dark:text-pink-400/80 font-bold">
                       {t("pay.receiverId")}
                     </p>
-                    <p className="text-sm font-semibold text-slate-800 truncate">
+                    <p className="text-sm font-bold text-slate-800 dark:text-pink-100 truncate">
                       {order.payment_bakong_id}
                     </p>
                   </div>
@@ -395,7 +395,7 @@ export default function OrderSuccess() {
                   href={directCheckoutUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-900/20 transition-all duration-200 active:scale-95"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white font-bold text-sm shadow-cute-glow transition-all duration-200 active:scale-95"
                 >
                   <span>📲 {t("pay.openCheckout")}</span>
                 </a>
@@ -403,7 +403,7 @@ export default function OrderSuccess() {
               <button
                 type="button"
                 onClick={copyLink}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-medium transition-all duration-200 active:scale-95"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border-2 border-pink-200 dark:border-pink-800/80 hover:bg-pink-50 dark:hover:bg-pink-950/50 text-slate-700 dark:text-pink-200 text-sm font-bold transition-all duration-200 active:scale-95"
               >
                 {copied ? t("pay.copied") : t("pay.copyLink")}
               </button>
@@ -413,20 +413,20 @@ export default function OrderSuccess() {
 
         {/* ===== គ្មានរូប QR ពី Gateway -> បង្ហាញ Managed Checkout (ABA Pay) ===== */}
         {!showQr && !isCod && order?.payment_enabled && order?.payment_url && !isPaid && (
-          <div className="mt-8 bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900 p-5 animate-fade-in-up">
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-2xl">
+          <div className="mt-8 bg-white dark:bg-[#1E1324]/95 rounded-[28px] border-2 border-pink-100 dark:border-pink-900/50 p-6 shadow-marshmallow animate-fade-in-up">
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-pink-100 dark:bg-pink-950/80 flex items-center justify-center text-2xl shadow-soft">
               🇰🇭
             </div>
-            <p className="mt-3 text-xl font-bold text-slate-900 dark:text-white">{amount}</p>
+            <p className="mt-3 text-xl font-black text-slate-900 dark:text-pink-100">{amount}</p>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t("pay.checkoutHint")}</p>
 
             <button
               type="button"
               onClick={payNow}
               disabled={opening}
-              className="mt-5 w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95 disabled:opacity-60"
+              className="mt-5 w-full sm:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white font-bold transition-all duration-200 hover:from-pink-500 hover:to-rose-500 hover:shadow-cute-glow active:scale-95 disabled:opacity-60 shadow-cute-glow"
             >
-              {opening ? t("common.loading") : `💳 ${t("pay.payNow")}`}
+              {opening ? t("common.loading") : `💳 ${t("pay.payNow")} ✨`}
             </button>
 
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
@@ -434,7 +434,7 @@ export default function OrderSuccess() {
                 href={directCheckoutUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
+                className="font-bold text-pink-600 dark:text-pink-400 hover:underline"
               >
                 {t("pay.openCheckout")}
               </a>
@@ -442,7 +442,7 @@ export default function OrderSuccess() {
               <button
                 type="button"
                 onClick={copyLink}
-                className="font-medium text-slate-500 hover:text-slate-700 transition-colors"
+                className="font-medium text-slate-500 dark:text-slate-400 hover:text-pink-600 transition-colors"
               >
                 {copied ? t("pay.copied") : t("pay.copyLink")}
               </button>
@@ -453,37 +453,37 @@ export default function OrderSuccess() {
         {/* ===== Waiting / verifying (ទាំង QR និង Checkout) ===== */}
         {!isPaid && !isCod && order?.payment_enabled && (
           <div className="mt-6 flex flex-col items-center gap-2">
-            <div className="flex items-center justify-center gap-2 text-sm text-emerald-700">
+            <div className="flex items-center justify-center gap-2 text-sm font-bold text-pink-600 dark:text-pink-400">
               {confirming ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
                   {t("pay.verifying")}
                 </>
               ) : (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-pink-500 animate-pulse" />
                   {t("pay.waiting")}
                 </>
               )}
             </div>
-            <p className="text-xs text-slate-400">{t("pay.scanNote")}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">{t("pay.scanNote")}</p>
 
             {expired && (
               <div className="mt-2 flex flex-col items-center gap-2">
-                <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                <p className="text-sm text-amber-700 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl px-4 py-3">
                   ⏰ {t("pay.expired")}
                 </p>
                 <button
                   type="button"
                   onClick={checkNow}
-                  className="px-4 py-2 rounded-xl border border-slate-300 text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-slate-50 active:scale-95"
+                  className="px-5 py-2.5 rounded-full border border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95"
                 >
                   {t("pay.checkNow")}
                 </button>
               </div>
             )}
             {pollError && (
-              <p className="mt-1 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 animate-fade-in">
+              <p className="mt-1 text-sm text-rose-600 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-2xl px-4 py-3 animate-fade-in">
                 {pollError}
               </p>
             )}
@@ -492,15 +492,15 @@ export default function OrderSuccess() {
 
         {/* ===== Paid confirmation ===== */}
         {isPaid && (
-          <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-2xl p-6 animate-pop-in">
-            <p className="text-lg font-bold text-emerald-700">
-              {t("pay.paidBadge")}
+          <div className="mt-8 bg-gradient-to-br from-pink-50 via-rose-50/50 to-pink-50 dark:from-pink-950/40 dark:via-[#1E1324] dark:to-pink-950/30 border-2 border-pink-200 dark:border-pink-800 rounded-3xl p-6 shadow-marshmallow animate-pop-in">
+            <p className="text-lg font-black text-pink-700 dark:text-pink-300">
+              🎀 {t("pay.paidBadge")} ✨
             </p>
-            <p className="mt-1 text-sm text-emerald-700/80">{t("pay.paidNote")}</p>
+            <p className="mt-1 text-sm text-pink-700/80 dark:text-pink-300/80 font-medium">{t("pay.paidNote")}</p>
             {order?.customer_email ? (
-              <p className="mt-3 text-sm text-emerald-700/80 flex items-center justify-center gap-1.5">
+              <p className="mt-3 text-sm text-pink-700/80 dark:text-pink-300/80 flex items-center justify-center gap-1.5 font-medium">
                 {t("pay.receiptSent")}{" "}
-                <span className="font-medium">({order.customer_email})</span>
+                <span className="font-bold">({order.customer_email})</span>
               </p>
             ) : null}
           </div>
@@ -514,7 +514,7 @@ export default function OrderSuccess() {
               href={order.payment_url}
               target="_blank"
               rel="noreferrer"
-              className="text-emerald-600 font-medium hover:underline break-all max-w-full"
+              className="text-pink-600 font-semibold hover:underline break-all max-w-full"
             >
               {order.payment_url}
             </a>
@@ -524,13 +524,15 @@ export default function OrderSuccess() {
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             to="/"
-            className="px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95"
+            className="px-8 py-3.5 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white font-bold transition-all duration-200 hover:from-pink-500 hover:to-rose-500 hover:shadow-cute-glow active:scale-95 shadow-cute-glow text-sm inline-flex items-center justify-center gap-2"
           >
-            {t("pay.backToShop")}
+            <span>🌸</span>
+            <span>{t("pay.backToShop")}</span>
+            <span>💖</span>
           </Link>
         </div>
 
-        {!isCod && <p className="mt-6 text-xs text-slate-400">🔒 {t("pay.secureNote")}</p>}
+        {!isCod && <p className="mt-6 text-xs text-slate-400 dark:text-slate-400 font-medium">🔒 {t("pay.secureNote")}</p>}
       </div>
     </div>
   );

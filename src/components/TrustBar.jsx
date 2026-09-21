@@ -6,53 +6,49 @@ export default function TrustBar() {
 
   const items = [
     {
-      icon: Truck,
-      title: t("trust.deliveryTitle") || "Fast Delivery",
-      desc: t("trust.deliveryDesc") || "Nationwide 25 provinces",
-      color: "from-emerald-500 to-teal-600",
-      bg: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400",
+      emoji: "🚚",
+      title: t("trust.deliveryTitle") || "Cute Fast Delivery",
+      desc: t("trust.deliveryDesc") || "Nationwide 25 provinces 🌸",
+      bg: "bg-pink-100/80 dark:bg-pink-950/60 text-pink-600 dark:text-pink-300",
     },
     {
-      icon: ShieldCheck,
+      emoji: "🎀",
       title: t("trust.qualityTitle") || "100% Authentic",
-      desc: t("trust.qualityDesc") || "Top quality guarantee",
-      color: "from-blue-500 to-indigo-600",
-      bg: "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400",
+      desc: t("trust.qualityDesc") || "Guaranteed with love ✨",
+      bg: "bg-purple-100/80 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300",
     },
     {
-      icon: QrCode,
+      emoji: "🇰🇭",
       title: t("trust.khqrTitle") || "Instant KHQR Pay",
-      desc: t("trust.khqrDesc") || "Bakong & all mobile banking",
-      color: "from-rose-500 to-red-600",
-      bg: "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400",
+      desc: t("trust.khqrDesc") || "Bakong & Mobile Banking 💖",
+      bg: "bg-rose-100/80 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300",
     },
     {
-      icon: MessageSquareHeart,
-      title: t("trust.supportTitle") || "Telegram & FB Support",
-      desc: t("trust.supportDesc") || "Instant replies & guidance",
-      color: "from-sky-500 to-[#229ED9]",
-      bg: "bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400",
+      emoji: "💬",
+      title: t("trust.supportTitle") || "Friendly Support",
+      desc: t("trust.supportDesc") || "Telegram & FB chat 🎀",
+      bg: "bg-amber-100/80 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300",
     },
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 pb-2">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-soft">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 p-3 sm:p-5 rounded-3xl sm:rounded-[32px] bg-white/90 dark:bg-[#1A1220]/90 backdrop-blur-xl border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow">
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-2 sm:gap-3.5 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group min-w-0"
+            className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-3 rounded-2xl sm:rounded-[24px] hover:bg-pink-50/70 dark:hover:bg-pink-950/30 transition-all duration-300 group min-w-0 hover:scale-102"
           >
             <div
-              className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl ${item.bg} flex items-center justify-center shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-110`}
+              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl sm:rounded-[20px] ${item.bg} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}
             >
-              <item.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span>{item.emoji}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="text-[11px] sm:text-sm font-bold text-slate-800 dark:text-white truncate">
+              <h3 className="text-xs sm:text-sm font-black text-slate-800 dark:text-pink-100 truncate">
                 {item.title}
               </h3>
-              <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+              <p className="text-[10px] sm:text-xs text-pink-600/80 dark:text-pink-300/70 font-semibold truncate mt-0.5">
                 {item.desc}
               </p>
             </div>

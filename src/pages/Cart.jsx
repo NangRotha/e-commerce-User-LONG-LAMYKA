@@ -3,22 +3,28 @@ import { useCart } from "../context/CartContext";
 import { formatPrice } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 
-/** Cart — កន្ត្រកទំនិញ (បកប្រែ km/en + animation រលូន) */
+/** Cart — កន្ត្រកទំនិញ (Clean & Cute Girl UI + Free shipping milestone) */
 export default function Cart() {
   const { items, updateQuantity, removeItem, subtotal, count } = useCart();
   const { t } = useI18n();
 
+  const FREE_SHIPPING_THRESHOLD = 30;
+  const progressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+
   if (items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
-        <div className="text-6xl mb-4 animate-bounce-soft">🛒</div>
-        <h1 className="text-2xl font-bold text-slate-800">{t("cart.empty")}</h1>
-        <p className="mt-2 text-slate-500">{t("cart.emptyHint")}</p>
+        <div className="text-6xl mb-4 animate-cute-bounce">🛍️</div>
+        <h1 className="text-2xl font-black text-slate-800 dark:text-pink-100">{t("cart.empty")}</h1>
+        <p className="mt-2 text-pink-600/80 dark:text-pink-300/80 font-semibold">{t("cart.emptyHint")}</p>
         <Link
           to="/"
-          className="mt-6 inline-block px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95"
+          className="mt-6 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white font-black transition-all duration-200 hover:scale-105 active:scale-95 shadow-cute-glow"
         >
-          {t("cart.continueShopping")}
+          <span>🌸</span>
+          <span>{t("cart.continueShopping")}</span>
+          <span>💖</span>
         </Link>
       </div>
     );
@@ -26,12 +32,45 @@ export default function Cart() {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-24 sm:pb-12">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-        {t("cart.title")}{" "}
-        <span className="text-base font-medium text-slate-500 dark:text-slate-400">
-          ({t("cart.itemsCount", { count })})
-        </span>
-      </h1>
+      {/* Title & Badge */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-pink-100 flex items-center gap-2">
+          <span>🛍️ {t("cart.title")}</span>
+          <span className="text-sm font-bold text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/60 px-3 py-1 rounded-full border border-pink-200 dark:border-pink-900">
+            {t("cart.itemsCount", { count })}
+          </span>
+        </h1>
+      </div>
+
+      {/* Free Delivery Milestone Progress Meter */}
+      <div className="mt-4 p-4 rounded-3xl bg-white/90 dark:bg-[#1A1220]/90 border border-pink-200/70 dark:border-pink-900/50 shadow-marshmallow">
+        <div className="flex items-center justify-between text-xs sm:text-sm font-black mb-2">
+          <span className="flex items-center gap-1.5 text-slate-800 dark:text-pink-100">
+            {remaining > 0 ? (
+              <>
+                <span>🎁</span>
+                <span>
+                  Add <span className="text-pink-600 dark:text-pink-400 font-extrabold">{formatPrice(remaining)}</span> more for Free Sweet Delivery & Gift!
+                </span>
+              </>
+            ) : (
+              <>
+                <span>🎉</span>
+                <span className="text-pink-600 dark:text-pink-300">
+                  Yay! You unlocked Free Sweet Delivery & Gift! 🎁✨
+                </span>
+              </>
+            )}
+          </span>
+          <span className="text-xs font-black text-pink-500">{progressPercent}%</span>
+        </div>
+        <div className="h-2.5 w-full bg-pink-100/70 dark:bg-[#130D18] rounded-full overflow-hidden p-0.5 border border-pink-200/50 dark:border-pink-950">
+          <div
+            className="h-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 rounded-full transition-all duration-500 shadow-cute-glow"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      </div>
 
       <div className="mt-6 sm:mt-8 grid lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Items */}
@@ -39,12 +78,12 @@ export default function Cart() {
           {items.map((item, i) => (
             <div
               key={`${item.id}-${item.variant || ""}`}
-              className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft p-3 sm:p-4 flex gap-3 sm:gap-4 transition-all duration-300 hover:shadow-lift hover:-translate-y-0.5 animate-fade-in-up"
+              className="bg-white dark:bg-[#1A1220] rounded-3xl border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow p-3.5 sm:p-4 flex gap-3.5 sm:gap-4 transition-all duration-300 hover:shadow-cute-glow hover:-translate-y-0.5 animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}
             >
               <Link
                 to={`/product/${item.id}`}
-                className="shrink-0 w-16 h-16 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 group"
+                className="shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-pink-50/40 dark:bg-[#130D18] group"
               >
                 {item.image_url ? (
                   <img
@@ -54,7 +93,7 @@ export default function Cart() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-3xl text-slate-400">
-                    📦
+                    🛍️
                   </div>
                 )}
               </Link>
@@ -64,23 +103,23 @@ export default function Cart() {
                   <div>
                     <Link
                       to={`/product/${item.id}`}
-                      className="font-semibold text-slate-800 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200 line-clamp-1"
+                      className="font-black text-slate-800 dark:text-pink-100 hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-200 line-clamp-1 text-sm sm:text-base"
                     >
                       {item.name}
                     </Link>
                     {item.variant && (
-                      <span className="inline-block mt-1 text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                        {item.variant}
+                      <span className="inline-block mt-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-pink-50 text-pink-600 dark:bg-pink-950/80 dark:text-pink-300 border border-pink-200 dark:border-pink-800">
+                        🎀 {item.variant}
                       </span>
                     )}
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-xs sm:text-sm font-bold text-pink-600 dark:text-pink-400 mt-0.5">
                       {formatPrice(item.price)} {t("cart.each")}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeItem(item.id, item.variant)}
-                    className="text-slate-400 hover:text-rose-600 transition-all duration-200 text-sm font-medium active:scale-90"
+                    className="text-pink-300 hover:text-rose-500 transition-all duration-200 text-sm font-bold active:scale-90 p-1"
                     aria-label={t("cart.remove")}
                   >
                     ✕
@@ -88,28 +127,28 @@ export default function Cart() {
                 </div>
 
                 <div className="mt-3 flex items-center justify-between">
-                  <div className="flex items-center border border-slate-300 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800">
+                  <div className="flex items-center border border-pink-200/80 dark:border-pink-900/50 rounded-full overflow-hidden bg-pink-50/40 dark:bg-[#130D18]">
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.id, item.quantity - 1, item.variant)}
-                      className="px-3 py-1.5 font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200 active:scale-90"
+                      className="px-3 py-1 font-black text-pink-600 dark:text-pink-300 hover:bg-pink-100/60 dark:hover:bg-pink-950/40 transition-colors duration-200 active:scale-90"
                       aria-label={t("product.decrease")}
                     >
                       −
                     </button>
-                    <span className="px-3 py-1.5 font-semibold min-w-8 text-center border-x border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 tabular-nums">
+                    <span className="px-3 py-1 font-black min-w-8 text-center border-x border-pink-100 dark:border-pink-950/80 text-slate-800 dark:text-pink-100 tabular-nums text-xs sm:text-sm">
                       {item.quantity}
                     </span>
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.id, item.quantity + 1, item.variant)}
-                      className="px-3 py-1.5 font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200 active:scale-90"
+                      className="px-3 py-1 font-black text-pink-600 dark:text-pink-300 hover:bg-pink-100/60 dark:hover:bg-pink-950/40 transition-colors duration-200 active:scale-90"
                       aria-label={t("product.increase")}
                     >
                       +
                     </button>
                   </div>
-                  <p className="font-bold text-slate-900 dark:text-white">
+                  <p className="font-black text-base sm:text-lg text-slate-900 dark:text-pink-100">
                     {formatPrice(item.price * item.quantity)}
                   </p>
                 </div>
@@ -120,45 +159,46 @@ export default function Cart() {
 
         {/* Summary */}
         <div
-          className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-soft p-6 h-fit lg:sticky lg:top-24 animate-fade-in-up transition-shadow duration-300 hover:shadow-lift"
+          className="bg-white dark:bg-[#1A1220] rounded-3xl border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow p-6 h-fit lg:sticky lg:top-24 animate-fade-in-up transition-all duration-300 hover:shadow-cute-glow"
           style={{ animationDelay: "150ms" }}
         >
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-            {t("cart.orderSummary")}
+          <h2 className="text-lg font-black text-slate-900 dark:text-pink-100 flex items-center gap-1.5">
+            <span>🎀</span>
+            <span>{t("cart.orderSummary")}</span>
           </h2>
-          <div className="mt-4 space-y-2 text-sm">
-            <div className="flex justify-between text-slate-600 dark:text-slate-400">
+          <div className="mt-4 space-y-2.5 text-sm font-semibold">
+            <div className="flex justify-between text-slate-600 dark:text-pink-200/80">
               <span>{t("cart.subtotal", { count })}</span>
-              <span className="font-semibold text-slate-900 dark:text-white">
+              <span className="font-bold text-slate-900 dark:text-pink-100">
                 {formatPrice(subtotal)}
               </span>
             </div>
-            <div className="flex justify-between text-slate-600 dark:text-slate-400">
+            <div className="flex justify-between text-slate-600 dark:text-pink-200/80">
               <span>{t("cart.shipping")}</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                {t("cart.free")}
+              <span className="text-pink-600 dark:text-pink-400 font-black">
+                🌸 {t("cart.free")}
               </span>
             </div>
           </div>
-          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between text-lg font-bold text-slate-900 dark:text-white">
+          <div className="mt-4 pt-4 border-t border-pink-100 dark:border-pink-950/80 flex justify-between text-lg font-black text-slate-900 dark:text-pink-100">
             <span>{t("cart.total")}</span>
-            <span>{formatPrice(subtotal)}</span>
+            <span className="text-pink-600 dark:text-pink-400 text-xl">{formatPrice(subtotal)}</span>
           </div>
 
           <Link
             to="/checkout"
-            className="mt-6 block w-full text-center px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-[0.98]"
+            className="mt-6 block w-full text-center px-6 py-3.5 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white font-black transition-all duration-200 hover:scale-102 active:scale-[0.98] shadow-cute-glow text-sm sm:text-base"
           >
-            {t("cart.checkout")}
+            💖 {t("cart.checkout")} ✨
           </Link>
           <Link
             to="/"
-            className="mt-3 block w-full text-center px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98]"
+            className="mt-3 block w-full text-center px-6 py-3 rounded-full border border-pink-200 dark:border-pink-900/60 text-slate-700 dark:text-pink-200 font-bold transition-all duration-200 hover:bg-pink-50/60 dark:hover:bg-pink-950/40 active:scale-[0.98] text-sm"
           >
-            {t("cart.continueShopping")}
+            🌸 {t("cart.continueShopping")}
           </Link>
 
-          <p className="mt-4 text-center text-xs text-slate-400 dark:text-slate-500">
+          <p className="mt-4 text-center text-xs font-semibold text-pink-400/80">
             🏦 {t("footer.payWith")}
           </p>
         </div>

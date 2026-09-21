@@ -216,16 +216,18 @@ export default function HeroSlider({ fallback = null }) {
                     </h1>
                   )}
                   {current.subtitle && (
-                    <p className="mt-3 sm:mt-4 text-emerald-100 text-base sm:text-lg drop-shadow max-w-lg">
+                    <p className="mt-3 sm:mt-4 text-pink-100 text-base sm:text-lg drop-shadow max-w-lg">
                       {current.subtitle}
                     </p>
                   )}
                   {current.link_url && (
                     <a
                       href={current.link_url}
-                      className="mt-5 sm:mt-7 inline-block px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition shadow-lg shadow-emerald-950/40"
+                      className="mt-5 sm:mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white font-black text-sm sm:text-base transition-all duration-300 shadow-cute-glow hover:scale-105 active:scale-95"
                     >
-                      {t("product.shopNow")}
+                      <span>✨</span>
+                      <span>{t("product.shopNow")}</span>
+                      <span>💖</span>
                     </a>
                   )}
                 </div>
@@ -275,7 +277,7 @@ export default function HeroSlider({ fallback = null }) {
               key={s.id}
               onClick={() => goTo(i)}
               className={`h-2 rounded-full transition-all ${
-                i === index ? "w-6 bg-emerald-500 shadow-sm" : "w-2 bg-white/50 hover:bg-white"
+                i === index ? "w-6 bg-gradient-to-r from-pink-400 to-rose-400 shadow-sm" : "w-2 bg-white/50 hover:bg-white"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
@@ -304,7 +306,7 @@ export default function HeroSlider({ fallback = null }) {
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
           <div
             key={index}
-            className="h-full bg-emerald-500"
+            className="h-full bg-gradient-to-r from-pink-400 to-rose-500"
             style={{ animation: `heroProgress ${INTERVAL_MS}ms linear forwards` }}
           />
         </div>

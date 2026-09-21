@@ -144,17 +144,36 @@ export default function Home() {
     setInStockOnly(false);
   };
 
+  // Helper for category cute icons
+  const getCategoryEmoji = (c) => {
+    const lower = (c || "").toLowerCase();
+    if (lower === "all") return "🌸";
+    if (lower.includes("fashion") || lower.includes("cloth") || lower.includes("top") || lower.includes("dress")) return "👗";
+    if (lower.includes("beauty") || lower.includes("cosmetic") || lower.includes("skin")) return "💄";
+    if (lower.includes("access") || lower.includes("jewelry") || lower.includes("bag")) return "🎀";
+    if (lower.includes("electronic") || lower.includes("phone") || lower.includes("gadget")) return "🎧";
+    if (lower.includes("home") || lower.includes("living") || lower.includes("decor")) return "🕯️";
+    return "✨";
+  };
+
   return (
     <div className="space-y-6">
       {/* Hero Slider */}
       <HeroSlider
         fallback={
-          <section className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-600 text-white animate-gradient">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight max-w-2xl animate-fade-in-up">
+          <section className="relative overflow-hidden bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white animate-gradient py-16 sm:py-24">
+            {/* Soft decorative cloud orbs */}
+            <div className="absolute -top-12 -left-12 w-64 h-64 rounded-full bg-white/20 blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-12 -right-12 w-80 h-80 rounded-full bg-rose-300/30 blur-3xl pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/25 backdrop-blur-md text-white font-black text-xs uppercase tracking-widest shadow-sm mb-4 animate-cute-bounce">
+                <span>🎀</span> Lovely & Sweet Collection
+              </span>
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight max-w-2xl drop-shadow-sm leading-tight animate-fade-in-up">
                 {settings.site_name || t("home.heroTitle")}
               </h1>
-              <p className="mt-4 text-emerald-100 text-lg max-w-xl animate-fade-in-up" style={{ animationDelay: "120ms" }}>
+              <p className="mt-4 text-pink-100 text-base sm:text-xl max-w-xl font-medium drop-shadow animate-fade-in-up" style={{ animationDelay: "120ms" }}>
                 {t("home.heroSubtitle")}
               </p>
             </div>
@@ -167,23 +186,23 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-2 pb-16">
         {/* Search, Filter & Sort Controls */}
-        <div className="p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-soft space-y-3 sm:space-y-4">
+        <div className="p-3.5 sm:p-6 rounded-3xl sm:rounded-[32px] bg-white/95 dark:bg-[#1A1220]/95 border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow space-y-3 sm:space-y-4">
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1 w-full md:max-w-md">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-pink-400" />
               <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("home.searchPlaceholder")}
-                className="w-full pl-10 pr-9 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+                placeholder={t("home.searchPlaceholder") || "Search cute clothes, beauty, gifts... 🌸"}
+                className="w-full pl-11 pr-10 py-3 rounded-full border border-pink-200/80 dark:border-pink-900/50 bg-pink-50/40 dark:bg-[#130D18]/80 text-slate-900 dark:text-pink-100 placeholder:text-pink-300 dark:placeholder:text-pink-400/50 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-white dark:focus:bg-[#1A1220] transition shadow-xs"
               />
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-pink-400 hover:text-pink-600 dark:hover:text-pink-300"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -193,17 +212,17 @@ export default function Home() {
             {/* Sort & In-stock toggle */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap xs:flex-nowrap">
               {/* Sort selector */}
-              <div className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                <ArrowUpDown className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-full border border-pink-200/80 dark:border-pink-900/50 bg-pink-50/40 dark:bg-[#130D18]/80 text-xs font-bold text-slate-700 dark:text-pink-200 shadow-xs">
+                <ArrowUpDown className="w-3.5 h-3.5 text-pink-500" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-transparent border-none focus:outline-none cursor-pointer text-xs"
+                  className="bg-transparent border-none focus:outline-none cursor-pointer text-xs font-bold text-slate-700 dark:text-pink-200"
                 >
-                  <option value="newest">{t("home.sortNewest") || "Newest"}</option>
-                  <option value="price_asc">{t("home.sortPriceAsc") || "Price: Low to High"}</option>
-                  <option value="price_desc">{t("home.sortPriceDesc") || "Price: High to Low"}</option>
-                  <option value="discount">{t("home.sortDiscount") || "Biggest Discount"}</option>
+                  <option value="newest">✨ {t("home.sortNewest") || "Newest Cute"}</option>
+                  <option value="price_asc">🎀 {t("home.sortPriceAsc") || "Price: Low to High"}</option>
+                  <option value="price_desc">💖 {t("home.sortPriceDesc") || "Price: High to Low"}</option>
+                  <option value="discount">🔥 {t("home.sortDiscount") || "Biggest Discount"}</option>
                 </select>
               </div>
 
@@ -211,14 +230,14 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setInStockOnly((v) => !v)}
-                className={`px-3 py-2 rounded-2xl text-xs font-semibold border transition-all duration-200 flex items-center gap-1.5 ${
+                className={`px-4 py-2.5 rounded-full text-xs font-black border transition-all duration-200 flex items-center gap-1.5 shadow-xs ${
                   inStockOnly
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
-                    : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:border-emerald-400"
+                    ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white border-transparent shadow-cute-glow"
+                    : "border-pink-200/80 dark:border-pink-900/50 bg-pink-50/40 dark:bg-[#130D18]/80 text-slate-600 dark:text-pink-200 hover:border-pink-400"
                 }`}
               >
-                <span className={`w-2 h-2 rounded-full ${inStockOnly ? "bg-white" : "bg-emerald-500"}`} />
-                {t("home.inStockOnly") || "In stock"}
+                <span>{inStockOnly ? "💖" : "🤍"}</span>
+                <span>{t("home.inStockOnly") || "In Stock Only"}</span>
               </button>
             </div>
           </div>
@@ -228,24 +247,26 @@ export default function Home() {
             {categoryOptions.map((c) => {
               const count = getCategoryCount(c);
               const isActive = category === c;
+              const emoji = getCategoryEmoji(c);
               return (
                 <button
                   key={c}
                   type="button"
                   onClick={() => setCategory(c)}
-                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
+                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-black transition-all duration-200 active:scale-95 ${
                     isActive
-                      ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/25 scale-102"
-                      : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                      ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-cute-glow scale-102"
+                      : "bg-pink-50/60 dark:bg-[#130D18]/80 text-slate-700 dark:text-pink-200/90 hover:bg-pink-100/70 dark:hover:bg-pink-950/40 border border-pink-100 dark:border-pink-950/60"
                   }`}
                 >
+                  <span>{emoji}</span>
                   <span>{c === "All" ? t("home.all") : c}</span>
                   {count > 0 && (
                     <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
+                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
                         isActive
-                          ? "bg-white/20 text-white"
-                          : "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
+                          ? "bg-white/30 text-white"
+                          : "bg-pink-200/70 dark:bg-pink-900/60 text-pink-700 dark:text-pink-300"
                       }`}
                     >
                       {count}
@@ -259,10 +280,10 @@ export default function Home() {
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="shrink-0 text-xs font-semibold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-1.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center gap-1"
+                className="shrink-0 text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-3.5 py-1.5 rounded-full hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center gap-1"
               >
                 <X className="w-3.5 h-3.5" />
-                {t("home.resetFilter") || "Reset"}
+                <span>{t("home.resetFilter") || "Reset"}</span>
               </button>
             )}
           </div>
@@ -271,14 +292,15 @@ export default function Home() {
         {/* Section Title Header */}
         <Reveal className="mt-8 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-pink-400 to-rose-400 text-white flex items-center justify-center shadow-cute-glow">
+              <span className="text-base">✨</span>
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                {category === "All" ? t("home.featured") : category}
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-pink-100 tracking-tight flex items-center gap-2">
+                <span>{category === "All" ? (t("home.featured") || "Featured Lovely Picks") : category}</span>
+                <span className="text-base animate-cute-bounce">💖</span>
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs sm:text-sm text-pink-600/80 dark:text-pink-300/80 font-semibold mt-0.5">
                 {countLabel}
               </p>
             </div>
@@ -334,7 +356,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="mt-5 px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm hover:bg-emerald-700 transition active:scale-95 shadow-md"
+                className="mt-5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-sm hover:opacity-95 transition active:scale-95 shadow-md shadow-pink-500/25"
               >
                 {t("home.resetFilter") || "Clear all filters"}
               </button>
@@ -346,7 +368,7 @@ export default function Home() {
                   type="button"
                   onClick={seedDemo}
                   disabled={seeding}
-                  className="mt-6 px-6 py-3 rounded-2xl bg-emerald-600 text-white font-semibold transition-all duration-200 hover:bg-emerald-700 hover:shadow-lift active:scale-95 disabled:opacity-50 text-sm"
+                  className="mt-6 px-6 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold transition-all duration-200 hover:opacity-95 hover:shadow-lift active:scale-95 disabled:opacity-50 text-sm shadow-md shadow-pink-500/25"
                 >
                   {seeding ? t("common.loading") : t("home.loadDemo")}
                 </button>
