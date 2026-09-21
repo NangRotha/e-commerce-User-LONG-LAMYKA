@@ -47,6 +47,7 @@ export default function Checkout() {
   const [error, setError] = useState("");
   const [placing, setPlacing] = useState(false);
   const [payment, setPayment] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("aba_pay");
 
   const isPhnomPenh =
     (province || "").toLowerCase().includes("ភ្នំពេញ") ||
@@ -104,7 +105,7 @@ export default function Checkout() {
     setPlacing(true);
     try {
       const shippingAddress = `${province} — ${address.trim()}`;
-      const paymentMethod = isPhnomPenh ? "cod" : "aba_pay";
+      const paymentMethod = isPhnomPenh ? selectedPaymentMethod : "aba_pay";
 
       const res = await api.checkout({
         items: items.map((i) => ({
@@ -341,7 +342,7 @@ export default function Checkout() {
             )}
           </div>
 
-          {/* 5. Payment (Conditional: Phnom Penh COD vs Province Prepayment) */}
+          {/* 5. Payment */}
           <div
             className={`${card} animate-fade-in-up`}
             style={{ animationDelay: "260ms" }}
@@ -351,8 +352,8 @@ export default function Checkout() {
                 {t("checkout.payment")}
               </h2>
               {isPhnomPenh ? (
-                <span className="text-[11px] sm:text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/70 px-2.5 py-1 rounded-full border border-rose-200 dark:border-rose-800 animate-pop-in">
-                  {t("checkout.codBadge")}
+                <span className="text-[11px] sm:text-xs font-bold text-pink-700 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/70 px-2.5 py-1 rounded-full border border-pink-200 dark:border-pink-800 animate-pop-in">
+                  {selectedPaymentMethod === "aba_pay" ? "⚡ Auto Pay KHQR" : "🚚 Cash on Delivery"}
                 </span>
               ) : province ? (
                 <span className="text-[11px] sm:text-xs font-bold text-pink-700 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/70 px-2.5 py-1 rounded-full border border-pink-200 dark:border-pink-800 animate-pop-in">
@@ -361,31 +362,93 @@ export default function Checkout() {
               ) : null}
             </div>
 
-            {/* If Phnom Penh -> Cash on Delivery (COD), NO ABA QR payment */}
+            {/* If Phnom Penh -> User can choose between ABA Pay / KHQR and COD */}
             {isPhnomPenh ? (
-              <div className="mt-3.5 flex items-start gap-3 rounded-xl border-2 border-rose-400 dark:border-rose-600 bg-rose-50/70 dark:bg-rose-950/40 p-3.5 sm:p-4 transition-all duration-300">
-                <span className="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-2xl shadow-xs">
-                  💵
-                </span>
-                <div className="min-w-0">
-                  <p className="font-bold text-rose-950 dark:text-rose-200 text-sm sm:text-base">
-                    {t("checkout.codTitle")}
-                  </p>
-                  <p className="mt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                    {t("checkout.codDesc")}
-                  </p>
-                  <div className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-rose-800 dark:text-rose-300 bg-white/90 dark:bg-slate-850 px-2.5 py-1 rounded-lg border border-rose-200/80 dark:border-rose-800/80 shadow-2xs">
-                    <span>✓ មិនមាន ABA QR Payment ទេ (អីវ៉ាន់ដល់ដៃបានគិតលុយ)</span>
+              <div className="mt-3.5 space-y-3">
+                {/* Option 1: ABA Pay / KHQR */}
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedPaymentMethod("aba_pay")}
+                  onKeyDown={(e) => e.key === "Enter" && setSelectedPaymentMethod("aba_pay")}
+                  className={`cursor-pointer flex items-start gap-3 rounded-2xl border-2 p-3.5 sm:p-4 transition-all duration-200 ${
+                    selectedPaymentMethod === "aba_pay"
+                      ? "border-pink-500 bg-pink-50/80 dark:bg-pink-950/50 shadow-cute-glow"
+                      : "border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-850/50 hover:border-pink-300"
+                  }`}
+                >
+                  <span className="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 border border-pink-100 dark:border-pink-900 flex items-center justify-center text-xl shadow-xs">
+                    🇰🇭
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-slate-900 dark:text-pink-100 text-sm sm:text-base">
+                        ABA Pay / Bakong KHQR (ស្កេនទូទាត់ភ្លាមៗ)
+                      </p>
+                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        selectedPaymentMethod === "aba_pay"
+                          ? "border-pink-500 bg-pink-500"
+                          : "border-slate-300 dark:border-slate-600"
+                      }`}>
+                        {selectedPaymentMethod === "aba_pay" && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        )}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                      ស្កេន QR តាមរយៈ ABA Mobile ឬកម្មវិធី Bakong ណាមួយ — ប្រព័ន្ធនឹងបញ្ជាក់ការបង់ប្រាក់ដោយស្វ័យប្រវត្តិ (Auto Confirm)
+                    </p>
+                    {payment?.display_name && (
+                      <p className="mt-2 text-xs text-pink-600 dark:text-pink-400 font-medium">
+                        ✨ ទទួលប្រាក់៖ {payment.display_name} {payment.bakong_id ? `(${payment.bakong_id})` : ""}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Option 2: Cash on Delivery (COD) */}
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setSelectedPaymentMethod("cod")}
+                  onKeyDown={(e) => e.key === "Enter" && setSelectedPaymentMethod("cod")}
+                  className={`cursor-pointer flex items-start gap-3 rounded-2xl border-2 p-3.5 sm:p-4 transition-all duration-200 ${
+                    selectedPaymentMethod === "cod"
+                      ? "border-rose-400 bg-rose-50/80 dark:bg-rose-950/50 shadow-sm"
+                      : "border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-850/50 hover:border-rose-300"
+                  }`}
+                >
+                  <span className="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-2xl shadow-xs">
+                    💵
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-slate-900 dark:text-rose-100 text-sm sm:text-base">
+                        {t("checkout.codTitle")}
+                      </p>
+                      <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                        selectedPaymentMethod === "cod"
+                          ? "border-rose-500 bg-rose-500"
+                          : "border-slate-300 dark:border-slate-600"
+                      }`}>
+                        {selectedPaymentMethod === "cod" && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                        )}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                      {t("checkout.codDesc")}
+                    </p>
                   </div>
                 </div>
               </div>
             ) : province ? (
               /* If Province -> Prepayment via ABA Pay / KHQR */
-              <div className="mt-3.5 flex items-start gap-3 rounded-xl border-2 border-pink-400/80 dark:border-pink-500 bg-pink-50/60 dark:bg-pink-950/40 p-3.5 sm:p-4 transition-all duration-300">
+              <div className="mt-3.5 flex items-start gap-3 rounded-2xl border-2 border-pink-400/80 dark:border-pink-500 bg-pink-50/60 dark:bg-pink-950/40 p-3.5 sm:p-4 transition-all duration-300 shadow-cute-glow">
                 <span className="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 border border-pink-100 dark:border-pink-900 flex items-center justify-center text-xl shadow-xs">
                   🇰🇭
                 </span>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="font-bold text-pink-950 dark:text-pink-200 text-sm sm:text-base">
                     {t("checkout.provincePrepayTitle")}
                   </p>
