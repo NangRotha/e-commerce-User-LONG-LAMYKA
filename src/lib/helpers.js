@@ -17,5 +17,6 @@ export function isVideoUrl(url) {
   if (!url) return false;
   const s = String(url);
   if (/(youtu\.be|youtube\.com)/i.test(s)) return true;
-  return /\.(mp4|webm|mov|ogg|m4v)(\?|#|$)/i.test(s);
+  if (/\/video\/upload\//i.test(s)) return true;
+  return /\.(mp4|webm|mov|ogg|m4v|mkv|quicktime)(\?|#|$)/i.test(s);
 }

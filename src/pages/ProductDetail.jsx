@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Star, Volume2, VolumeX } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { effectivePrice, formatPrice, isVideoUrl } from "../lib/helpers";
 import { api } from "../api/client";
@@ -107,24 +107,89 @@ export default function ProductDetail() {
   const price = effectivePrice(product);
   const onSale = product.is_on_sale && product.sale_percent > 0;
   const outOfStock = product.stock <= 0;
-  const images =
+
+  // Gallery: រៀបចំ Media ដោយធានាថាវីដេអូស្ថិតនៅមុនគេបង្អស់ (Index 0) សម្រាប់បង្ហាញភ្លាមៗពេលបើក
+  const rawImages =
     product.images && product.images.length
       ? product.images
       : product.image_url
       ? [product.image_url]
       : [];
-  // Gallery = វីដេអូបង្ហាញមុនគេបង្អស់ (បើមាន) + រូបភាពទាំងអស់
-  const media = [
-    ...(product.video_url ? [{ url: product.video_url, type: "video" }] : []),
-    ...images.map((url) => ({
-      url,
-      type: isVideoUrl(url) ? "video" : "image",
-    })),
-  ];
-  const activeMedia = media[activeImage] || null;
+
+  const media = useMemo(() => {
+    if (!product) return [];
+    const list = [];
+    const seen = new Set();
+
+    // 1. វីដេអូចម្បង (video_url) ដាក់មុខគេបង្អស់
+    if (product.video_url && product.video_url.trim()) {
+      list.push({ url: product.video_url.trim(), type: "video" });
+      seen.add(product.video_url.trim());
+    }
+
+    // 2. វីដេអូផ្សេងទៀតក្នុងបញ្ជី images ដាក់បន្ត
+    rawImages.forEach((u) => {
+      const url = (u || "").trim();
+      if (url && !seen.has(url) && isVideoUrl(url)) {
+        seen.add(url);
+        list.push({ url, type: "video" });
+      }
+    });
+
+    // 3. រូបភាពទាំងអស់ដាក់បន្ទាប់
+    rawImages.forEach((u) => {
+      const url = (u || "").trim();
+      if (url && !seen.has(url)) {
+        seen.add(url);
+        list.push({ url, type: "image" });
+      }
+    });
+
+    return list;
+  }, [product, rawImages]);
+
+  const activeMedia = media[activeImage] || media[0] || null;
   const activeItem = activeMedia?.url || product.image_url;
   const activeIsVideo = activeMedia?.type === "video";
   const ytId = activeIsVideo ? getYouTubeId(activeItem) : null;
+
+  const videoRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  // ចាក់វីដេអូភ្លាមៗនៅពេលបើកទំព័រ ឬពេលជ្រើសរើសវីដេអូ (Instant Autoplay)
+  useEffect(() => {
+    if (!activeIsVideo) return;
+    const vid = videoRef.current;
+    if (!vid) return;
+
+    vid.defaultMuted = true;
+    vid.muted = isMuted;
+
+    const playVideo = () => {
+      const p = vid.play();
+      if (p !== undefined) {
+        p.catch(() => {
+          // Browser policy restriction fallback: force mute & replay
+          vid.muted = true;
+          setIsMuted(true);
+          vid.play().catch(() => {});
+        });
+      }
+    };
+
+    playVideo();
+  }, [activeItem, activeIsVideo, isMuted]);
+
+  const toggleMute = () => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    const nextMute = !vid.muted;
+    vid.muted = nextMute;
+    setIsMuted(nextMute);
+    if (!nextMute) {
+      vid.play().catch(() => {});
+    }
+  };
 
   const handleAdd = () => {
     addItem(product, qty, selectedVariant);
@@ -150,7 +215,7 @@ export default function ProductDetail() {
                 <div className="w-full aspect-square bg-black">
                   <iframe
                     key={activeItem}
-                    src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&playsinline=1`}
+                    src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&playsinline=1&enablejsapi=1`}
                     title={product.name}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -159,36 +224,53 @@ export default function ProductDetail() {
                 </div>
               ) : (
                 <div className="relative w-full aspect-square bg-slate-950 flex items-center justify-center overflow-hidden">
-                  {/* Ambient backdrop to eliminate stark black voids on portrait/vertical videos */}
                   <video
-                    src={activeItem}
-                    poster={product.image_url || undefined}
-                    aria-hidden="true"
-                    muted
-                    loop
-                    autoPlay
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
-                  />
-                  <video
+                    ref={videoRef}
                     key={activeItem}
-                    src={activeItem}
-                    poster={product.image_url || undefined}
                     autoPlay
                     muted
                     loop
                     controls
                     playsInline
+                    webkit-playsinline="true"
                     preload="auto"
-                    ref={(el) => {
-                      if (el) {
-                        el.defaultMuted = true;
-                        el.muted = true;
-                        el.play().catch(() => {});
-                      }
+                    onCanPlay={(e) => {
+                      e.currentTarget.muted = isMuted;
+                      e.currentTarget.defaultMuted = true;
+                      e.currentTarget.play().catch(() => {});
+                    }}
+                    onLoadedMetadata={(e) => {
+                      e.currentTarget.muted = isMuted;
+                      e.currentTarget.defaultMuted = true;
+                      e.currentTarget.play().catch(() => {});
                     }}
                     className="relative z-10 w-full h-full object-contain"
-                  />
+                  >
+                    <source src={activeItem} type="video/mp4" />
+                    <source src={activeItem} type="video/quicktime" />
+                    <source src={activeItem} type="video/webm" />
+                    Your browser does not support playing this video.
+                  </video>
+
+                  {/* Sound Toggle Button */}
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full bg-black/65 hover:bg-black/85 text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5 shadow-lg active:scale-95"
+                    title={isMuted ? "Unmute sound" : "Mute sound"}
+                  >
+                    {isMuted ? (
+                      <>
+                        <VolumeX className="w-3.5 h-3.5 text-pink-400" />
+                        <span>Sound Off</span>
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                        <span>Sound On</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               )
             ) : activeItem ? (
