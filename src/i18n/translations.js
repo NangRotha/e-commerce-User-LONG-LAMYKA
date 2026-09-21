@@ -139,7 +139,6 @@ export const en = {
     paymentMethod: "5. Payment method",
     bakongDesc: "Scan with any Bakong-enabled app (ABA, Wing, ACLEDA...)",
     cod: "Cash on delivery",
-    codDesc: "Pay in cash when your order arrives.",
     placeOrder: "Place order",
     placing: "Placing order...",
     placingOrder: "Placing order...",

@@ -6,7 +6,6 @@ import TrustBar from "../components/TrustBar";
 import Reveal from "../components/Reveal";
 import StoreLocationSection from "../components/StoreLocationSection";
 import { api } from "../api/client";
-import useProductsRealtime from "../hooks/useProductsRealtime";
 import { useRealtime } from "../context/RealtimeContext";
 import { useI18n } from "../i18n/I18nContext";
 
@@ -62,7 +61,7 @@ export default function Home() {
   }, []);
 
   // Real-time: ពេល Admin កែផលិតផល / Category / Settings -> ទាញទិន្នន័យថ្មីភ្លាមៗ
-  const live = useRealtime(["products_changed", "categories_changed"], () => {
+  useRealtime(["products_changed", "categories_changed"], () => {
     loadProducts();
     loadCategories();
   });

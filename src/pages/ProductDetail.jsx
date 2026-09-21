@@ -24,7 +24,6 @@ export default function ProductDetail() {
   const { t } = useI18n();
   const s = useSiteSettings();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [qty, setQty] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState("");
@@ -73,48 +72,13 @@ export default function ProductDetail() {
       });
   });
 
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
-        <div className="text-5xl mb-4 animate-float">😕</div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{error}</h1>
-        <Link
-          to="/"
-          className="mt-4 inline-block text-pink-600 dark:text-pink-400 font-medium hover:underline"
-        >
-          {t("product.backToShop")}
-        </Link>
-      </div>
-    );
-  }
-
-  if (!product) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 animate-pulse">
-        <div className="grid md:grid-cols-2 gap-10">
-          <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-3xl" />
-          <div className="space-y-4">
-            <div className="h-3 w-1/4 bg-slate-200 dark:bg-slate-800 rounded" />
-            <div className="h-8 w-3/4 bg-slate-200 dark:bg-slate-800 rounded" />
-            <div className="h-5 w-1/3 bg-slate-200 dark:bg-slate-800 rounded" />
-            <div className="h-24 bg-slate-200 dark:bg-slate-800 rounded" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const price = effectivePrice(product);
-  const onSale = product.is_on_sale && product.sale_percent > 0;
-  const outOfStock = product.stock <= 0;
-
   // Gallery: រៀបចំ Media ដោយធានាថាវីដេអូស្ថិតនៅមុនគេបង្អស់ (Index 0) សម្រាប់បង្ហាញភ្លាមៗពេលបើក
-  const rawImages =
-    product.images && product.images.length
-      ? product.images
-      : product.image_url
-      ? [product.image_url]
-      : [];
+  const rawImages = useMemo(() => {
+    if (!product) return [];
+    if (product.images && product.images.length) return product.images;
+    if (product.image_url) return [product.image_url];
+    return [];
+  }, [product]);
 
   const media = useMemo(() => {
     if (!product) return [];
@@ -149,7 +113,7 @@ export default function ProductDetail() {
   }, [product, rawImages]);
 
   const activeMedia = media[activeImage] || media[0] || null;
-  const activeItem = activeMedia?.url || product.image_url;
+  const activeItem = activeMedia?.url || product?.image_url || "";
   const activeIsVideo = activeMedia?.type === "video";
   const ytId = activeIsVideo ? getYouTubeId(activeItem) : null;
 
@@ -178,7 +142,42 @@ export default function ProductDetail() {
     };
 
     playVideo();
-  }, [activeItem, activeIsVideo, isMuted]);
+  }, [activeIsVideo, activeItem, isMuted]);
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 text-center animate-fade-in-up">
+        <div className="text-5xl mb-4 animate-float">😕</div>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{error}</h1>
+        <Link
+          to="/"
+          className="mt-4 inline-block text-pink-600 dark:text-pink-400 font-medium hover:underline"
+        >
+          {t("product.backToShop")}
+        </Link>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 animate-pulse">
+        <div className="grid md:grid-cols-2 gap-10">
+          <div className="aspect-square bg-slate-200 dark:bg-slate-800 rounded-3xl" />
+          <div className="space-y-4">
+            <div className="h-3 w-1/4 bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-8 w-3/4 bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-5 w-1/3 bg-slate-200 dark:bg-slate-800 rounded" />
+            <div className="h-24 bg-slate-200 dark:bg-slate-800 rounded" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const price = effectivePrice(product);
+  const onSale = product.is_on_sale && product.sale_percent > 0;
+  const outOfStock = product.stock <= 0;
 
   const toggleMute = () => {
     const vid = videoRef.current;

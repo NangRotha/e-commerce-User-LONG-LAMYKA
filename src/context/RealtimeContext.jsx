@@ -71,7 +71,9 @@ export function RealtimeProvider({ children }) {
       set.forEach((fn) => {
         try {
           fn({ type, message: "Sync update on reconnect", sync: true });
-        } catch {}
+        } catch {
+          // ignore notification errors on unmounted components
+        }
       });
     });
   }, []);
@@ -96,7 +98,9 @@ export function RealtimeProvider({ children }) {
           wsRef.current.onclose = null;
           wsRef.current.onerror = null;
           wsRef.current.close();
-        } catch {}
+        } catch {
+          // ignore cleanup errors
+        }
         wsRef.current = null;
       }
 
@@ -104,7 +108,7 @@ export function RealtimeProvider({ children }) {
       try {
         const url = getWsUrl("/ws/products");
         ws = new WebSocket(url);
-      } catch (e) {
+      } catch {
         retryRef.current = setTimeout(connect, RECONNECT_MS);
         return;
       }
@@ -158,7 +162,9 @@ export function RealtimeProvider({ children }) {
       ws.onerror = () => {
         try {
           if (wsRef.current) wsRef.current.close();
-        } catch {}
+        } catch {
+          // ignore socket error during disconnect
+        }
       };
     };
 
@@ -180,6 +186,8 @@ export function RealtimeProvider({ children }) {
     window.addEventListener("online", handleReactivate);
     window.addEventListener("focus", handleReactivate);
 
+    const activeListeners = listenersRef.current;
+
     return () => {
       closedRef.current = true;
       clearTimers();
@@ -188,9 +196,11 @@ export function RealtimeProvider({ children }) {
       window.removeEventListener("focus", handleReactivate);
       try {
         if (wsRef.current) wsRef.current.close();
-      } catch {}
+      } catch {
+        // ignore close error during unmount
+      }
       wsRef.current = null;
-      listenersRef.current.clear();
+      activeListeners.clear();
     };
   }, [notify, syncAllListeners]);
 
@@ -233,13 +243,13 @@ export function RealtimeProvider({ children }) {
  */
 export function useRealtime(type, handler) {
   const ctx = useContext(RealtimeContext);
-  if (!ctx) return false;
-  const { connected, subscribe } = ctx;
   const handlerRef = useRef(handler);
 
   useEffect(() => {
     handlerRef.current = handler;
   }, [handler]);
+
+  const subscribe = ctx?.subscribe;
 
   useEffect(() => {
     if (!type || !subscribe) return;
@@ -252,7 +262,7 @@ export function useRealtime(type, handler) {
     return () => unsubs.forEach((u) => u());
   }, [type, subscribe]);
 
-  return connected;
+  return ctx?.connected ?? false;
 }
 
 export function useEmitRealtime() {
