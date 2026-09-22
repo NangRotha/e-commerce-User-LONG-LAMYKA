@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { MessageCircle, X, Phone, Send, ExternalLink, MapPin } from "lucide-react";
+import { X, Phone, ExternalLink, MapPin } from "lucide-react";
 import useSiteSettings from "../hooks/useSiteSettings";
-import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon } from "./SocialIcons";
-import { normalizeTelegram, normalizeFacebook, normalizeInstagram, normalizeWhatsApp } from "../lib/social";
+import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from "./SocialIcons";
+import { normalizeTelegram, normalizeFacebook, normalizeInstagram, normalizeWhatsApp, normalizeTikTok } from "../lib/social";
 import { useI18n } from "../i18n/I18nContext";
 import { STORE_LOCATION } from "../lib/location";
 
@@ -15,6 +15,7 @@ export default function SocialContactDock() {
   const waUrl = normalizeWhatsApp(s.social_whatsapp || s.whatsapp_url || s.contact_phone);
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
+  const ttUrl = normalizeTikTok(s.social_tiktok);
   const phone = (s.contact_phone || "").trim();
   const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
@@ -105,6 +106,25 @@ export default function SocialContactDock() {
             <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
 
+          {/* TikTok */}
+          {ttUrl && (
+            <a
+              href={ttUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-2xl bg-slate-50/70 dark:bg-slate-950/40 hover:bg-[#010101] text-[#010101] dark:text-slate-300 hover:text-white transition-all duration-200 group border border-slate-100 dark:border-slate-900/40"
+            >
+              <div className="w-8 h-8 rounded-xl bg-[#010101] text-white flex items-center justify-center shrink-0 shadow-xs transition-transform group-hover:scale-110">
+                <TikTokIcon className="w-4 h-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold leading-tight">TikTok</p>
+                <p className="text-[10px] opacity-80 leading-tight">Follow our videos</p>
+              </div>
+              <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </a>
+          )}
+
           {/* Google Maps Store Location */}
           <a
             href={mapsUrl}
@@ -149,7 +169,7 @@ export default function SocialContactDock() {
         {!open && (
           <span className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#1E1324]/95 shadow-marshmallow border-2 border-pink-200/80 dark:border-pink-900/50 text-xs font-bold text-slate-700 dark:text-pink-200 animate-fade-in backdrop-blur-md pointer-events-none">
             <span className="w-2 h-2 rounded-full bg-pink-500 animate-ping" />
-            <span>🌸 Telegram · WhatsApp · Maps ✨</span>
+            <span>🌸 Telegram · WhatsApp · TikTok · Maps ✨</span>
           </span>
         )}
 

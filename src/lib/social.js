@@ -1,7 +1,18 @@
 /**
  * Social Links normalization & utilities
- * Supports Telegram, Facebook, Instagram links or handles
+ * Supports Telegram, Facebook, Instagram, TikTok, WhatsApp links or handles
  */
+
+export function normalizeTikTok(val) {
+  if (!val) return "";
+  const trimmed = val.trim();
+  if (!trimmed) return "";
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  const clean = trimmed.replace(/^@/, "");
+  return `https://tiktok.com/@${clean}`;
+}
 
 export function normalizeTelegram(val) {
   if (!val) return "https://t.me/Lamykabot";

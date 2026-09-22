@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { ShoppingBag, ShieldCheck, Heart, Send, Phone, ExternalLink, MapPin } from "lucide-react";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { useI18n } from "../i18n/I18nContext";
-import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon } from "./SocialIcons";
-import { normalizeTelegram, normalizeFacebook, normalizeInstagram, normalizeWhatsApp } from "../lib/social";
+import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from "./SocialIcons";
+import { normalizeTelegram, normalizeFacebook, normalizeInstagram, normalizeWhatsApp, normalizeTikTok } from "../lib/social";
 import { STORE_LOCATION } from "../lib/location";
 
 /**
@@ -23,6 +23,7 @@ export default function Footer() {
   const waUrl = normalizeWhatsApp(s.social_whatsapp || s.whatsapp_url || (s.contact_phone ? s.contact_phone : ""));
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
+  const ttUrl = normalizeTikTok(s.social_tiktok);
   const phone = (s.contact_phone || "").trim();
   const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
@@ -236,6 +237,22 @@ export default function Footer() {
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
               </a>
+
+              {/* TikTok */}
+              {ttUrl && (
+                <a
+                  href={ttUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-2xl bg-[#1A1020] hover:bg-[#010101] text-slate-200 hover:text-white border border-pink-950/40 hover:border-slate-800 transition-all duration-200 group shadow-2xs"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <TikTokIcon className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                    <span className="text-xs font-bold">TikTok</span>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
+                </a>
+              )}
             </div>
           </div>
         </div>
