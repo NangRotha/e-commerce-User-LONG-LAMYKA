@@ -21,13 +21,14 @@ import { useI18n } from "../i18n/I18nContext";
 import { useTheme } from "../theme/ThemeContext";
 import HeaderControls from "./HeaderControls";
 import { useRealtime } from "../context/RealtimeContext";
-import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon } from "./SocialIcons";
+import { TelegramIcon, FacebookIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from "./SocialIcons";
 import { CambodiaFlag, EnglishFlag } from "./Flags";
 import {
   normalizeTelegram,
   normalizeFacebook,
   normalizeInstagram,
   normalizeWhatsApp,
+  normalizeTikTok,
 } from "../lib/social";
 import { STORE_LOCATION } from "../lib/location";
 
@@ -53,6 +54,7 @@ export default function Navbar() {
   const waUrl = normalizeWhatsApp(s.social_whatsapp || s.whatsapp_url || (s.contact_phone ? s.contact_phone : ""));
   const fbUrl = normalizeFacebook(s.social_facebook || s.facebook_url);
   const igUrl = normalizeInstagram(s.social_instagram || s.instagram_url);
+  const ttUrl = normalizeTikTok(s.social_tiktok);
   const phone = (s.contact_phone || "").trim();
   const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
@@ -230,6 +232,19 @@ export default function Navbar() {
               >
                 <InstagramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
               </a>
+
+              {ttUrl && (
+                <a
+                  href={ttUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:border-black/30 dark:hover:border-white/30 hover:bg-black/5 dark:hover:bg-white/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
+                  title="TikTok"
+                  aria-label="TikTok"
+                >
+                  <TikTokIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                </a>
+              )}
             </div>
 
             {/* Live Indicator */}
@@ -610,6 +625,24 @@ export default function Navbar() {
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
+
+                  {/* TikTok */}
+                  {ttUrl && (
+                    <a
+                      href={ttUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 text-slate-900 dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-200 group text-xs font-bold"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center shadow-2xs">
+                          <TikTokIcon className="w-4 h-4" />
+                        </div>
+                        <span>TikTok</span>
+                      </div>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
+                    </a>
+                  )}
 
                   {/* Store Location */}
                   <a

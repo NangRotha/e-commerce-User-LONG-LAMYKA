@@ -7,8 +7,8 @@ import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { useI18n } from "../i18n/I18nContext";
-import { TelegramIcon, FacebookIcon, WhatsAppIcon } from "../components/SocialIcons";
-import { getTelegramOrderUrl, getWhatsAppOrderUrl, normalizeFacebook } from "../lib/social";
+import { TelegramIcon, FacebookIcon, WhatsAppIcon, TikTokIcon } from "../components/SocialIcons";
+import { getTelegramOrderUrl, getWhatsAppOrderUrl, normalizeFacebook, normalizeTikTok } from "../lib/social";
 
 // YouTube ID parser
 function getYouTubeId(url) {
@@ -36,6 +36,7 @@ export default function ProductDetail() {
     product ? effectivePrice(product) : 0,
     selectedVariant
   );
+  const ttUrl = normalizeTikTok(s.social_tiktok);
 
   const variants = Array.isArray(product?.variants) ? product.variants : [];
 
@@ -514,6 +515,18 @@ export default function ProductDetail() {
               <FacebookIcon className="w-4 h-4" />
               <span>{t("social.inquireFacebook") || "Chat on Facebook"}</span>
             </a>
+
+            {ttUrl && (
+              <a
+                href={ttUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-full bg-black hover:bg-slate-800 text-white font-black text-xs sm:text-sm border border-black/20 shadow-md transition-all active:scale-95 group"
+              >
+                <TikTokIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
+                <span>{t("social.watchTikTok") || "Follow on TikTok"}</span>
+              </a>
+            )}
           </div>
 
           {/* Product Guarantee Highlights */}

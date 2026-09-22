@@ -110,8 +110,8 @@ export default function Cart() {
         <div className="lg:col-span-2 space-y-3 sm:space-y-4">
           {items.map((item, i) => (
             <div
-              key={`${item.id}-${item.variant || ""}`}
-              className="bg-white dark:bg-[#1A1220] rounded-3xl border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow p-3.5 sm:p-4 flex gap-3.5 sm:gap-4 transition-all duration-300 hover:shadow-cute-glow hover:-translate-y-0.5 animate-fade-in-up"
+              key={`${item.id}-${item.variant || "default"}`}
+              className="flex items-center gap-4 p-4 rounded-3xl bg-white dark:bg-[#1A1220] border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow card-hover will-change-transform animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i, 10) * 50}ms` }}
             >
               <Link

@@ -3,7 +3,7 @@ import { api } from "../api/client";
 import useSlidesRealtime from "../hooks/useSlidesRealtime";
 import { useI18n } from "../i18n/I18nContext";
 
-export function getYouTubeId(url) {
+function getYouTubeId(url) {
   if (!url) return null;
   const m = url.match(
     /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/
@@ -143,8 +143,8 @@ export default function HeroSlider({ fallback = null }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Slide media + text */}
-      <div className="relative w-full flex items-center justify-center bg-slate-950 overflow-hidden min-h-[160px] sm:min-h-[260px] md:min-h-[340px]">
+      {/* Slide media + text with smooth key transition */}
+      <div key={index} className="relative w-full flex items-center justify-center bg-slate-950 overflow-hidden min-h-[160px] sm:min-h-[260px] md:min-h-[340px] animate-fade-in transition-all duration-500">
         {/* Ambient blurred backdrop for ultrawide screens */}
         {current.media_url && (
           <div

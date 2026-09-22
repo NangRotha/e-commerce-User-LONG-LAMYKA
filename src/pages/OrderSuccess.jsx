@@ -161,7 +161,7 @@ export default function OrderSuccess() {
       stopped = true;
       clearInterval(timerRef.current);
     };
-  }, [order?.payment_transaction_id, paymentStatus, pollKey, t]);
+  }, [order?.payment_transaction_id, order?.payment_method, order?.shipping_address, paymentStatus, pollKey, t]);
 
   /** បើក ABA Pay Checkout — ប្រើ KHQRcc Plugin Modal (បើផ្ទុកមិនបាន -> បើក Tab ថ្មី) */
   const payNow = async () => {

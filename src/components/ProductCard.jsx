@@ -61,7 +61,7 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="group relative bg-white dark:bg-[#1A1220] rounded-[28px] border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow hover:shadow-cute-glow transition-all duration-300 hover:-translate-y-1.5 flex flex-col overflow-hidden">
+    <div className="group relative bg-white dark:bg-[#1A1220] rounded-[28px] border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow hover:shadow-cute-glow card-hover flex flex-col overflow-hidden will-change-transform">
       {/* Image container with rounded inner border */}
       <div className="p-2 pb-0">
         <Link
@@ -188,9 +188,9 @@ export default function ProductCard({ product }) {
             onClick={handleAdd}
             disabled={outOfStock}
             aria-label={outOfStock ? t("product.soldOut") : t("product.addToCart")}
-            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-black transition-all duration-200 active:scale-95 shadow-xs shrink-0 ${
+            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-black transition-all duration-200 active:scale-95 shadow-xs shrink-0 ripple-container ${
               justAdded
-                ? "bg-rose-500 text-white shadow-rose-500/40 scale-105"
+                ? "bg-rose-500 text-white shadow-rose-500/40 scale-105 animate-spring-pop"
                 : "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white shadow-cute-glow hover:scale-105"
             } disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 disabled:cursor-not-allowed disabled:active:scale-100`}
           >
