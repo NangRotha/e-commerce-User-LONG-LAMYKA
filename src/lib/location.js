@@ -23,3 +23,29 @@ export const STORE_LOCATION = {
   deliveryKm: "សេវាដឹករហ័ស Grab · Foodpanda · Nham24 · ផ្ញើ ២៥ ខេត្ត-ក្រុង",
   deliveryEn: "Fast Delivery via Grab · Foodpanda · Nham24 · 25 Provinces",
 };
+
+/**
+ * Extract clean embed URL from raw text or <iframe ... src="..."> snippet
+ */
+export function extractMapEmbedUrl(raw) {
+  if (!raw) return "";
+  const str = String(raw).trim();
+  if (!str) return "";
+  const match = str.match(/<iframe[^>]*\s+src=["']([^"']+)["']/i);
+  if (match && match[1]) {
+    return match[1].trim();
+  }
+  if (str.startsWith("http://") || str.startsWith("https://")) {
+    return str;
+  }
+  return str;
+}
+
+/**
+ * Resolve the map embed URL with priority to custom embed URL, then default OSM pin
+ */
+export function resolveMapEmbedUrl(customEmbed, fallback = STORE_LOCATION.osmEmbedUrl) {
+  const extracted = extractMapEmbedUrl(customEmbed);
+  if (extracted) return extracted;
+  return fallback;
+}

@@ -10,7 +10,7 @@ import {
   Phone,
   Sparkles,
 } from "lucide-react";
-import { STORE_LOCATION } from "../lib/location";
+import { STORE_LOCATION, resolveMapEmbedUrl } from "../lib/location";
 import { useI18n } from "../i18n/I18nContext";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { WhatsAppIcon } from "./SocialIcons";
@@ -25,6 +25,18 @@ export default function StoreLocationSection() {
   const address = isKhmer
     ? settings.store_address_km || STORE_LOCATION.addressKm
     : settings.store_address_en || STORE_LOCATION.addressEn;
+  const hours = isKhmer
+    ? settings.store_hours_km || STORE_LOCATION.hoursKm
+    : settings.store_hours_en || STORE_LOCATION.hoursEn;
+  const delivery = isKhmer
+    ? settings.store_delivery_km || STORE_LOCATION.deliveryKm
+    : settings.store_delivery_en || STORE_LOCATION.deliveryEn;
+  const embedUrl = resolveMapEmbedUrl(settings.store_maps_embed_url);
+  const isCustomGoogleEmbed = Boolean(
+    settings.store_maps_embed_url &&
+      settings.store_maps_embed_url.includes("google.com/maps")
+  );
+  const directionsUrl = mapsUrl || STORE_LOCATION.directionsUrl;
   const phone = (settings.contact_phone || "").trim();
   const waUrl = normalizeWhatsApp(settings.social_whatsapp || settings.whatsapp_url || phone);
 
@@ -120,7 +132,7 @@ export default function StoreLocationSection() {
                   {t("location.hours")}
                 </span>
                 <p className="text-sm font-bold text-slate-800 dark:text-pink-100">
-                  {isKhmer ? STORE_LOCATION.hoursKm : STORE_LOCATION.hoursEn}
+                  {hours}
                 </p>
                 <div className="flex items-center gap-2 pt-1 text-xs text-pink-600 dark:text-pink-400 font-bold">
                   <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
@@ -139,9 +151,7 @@ export default function StoreLocationSection() {
                   {t("location.delivery")}
                 </span>
                 <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-pink-100">
-                  {isKhmer
-                    ? STORE_LOCATION.deliveryKm
-                    : STORE_LOCATION.deliveryEn}
+                  {delivery}
                 </p>
               </div>
 
@@ -208,7 +218,7 @@ export default function StoreLocationSection() {
               </a>
 
               <a
-                href={STORE_LOCATION.directionsUrl}
+                href={directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-4 py-3.5 rounded-full bg-white dark:bg-[#1E1324] hover:bg-pink-50 dark:hover:bg-pink-950/40 border-2 border-pink-200 dark:border-pink-800 text-slate-800 dark:text-pink-200 font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 shadow-soft"
@@ -224,9 +234,11 @@ export default function StoreLocationSection() {
             {/* Embedded Live Map */}
             <iframe
               title="Store Location Map"
-              src={STORE_LOCATION.osmEmbedUrl}
+              src={embedUrl}
               className="w-full h-full min-h-[340px] sm:min-h-[400px] border-0 flex-1 bg-pink-50/30 dark:bg-slate-950"
               loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
             />
 
             {/* Floating Info Overlay on top of the Map */}
@@ -237,7 +249,13 @@ export default function StoreLocationSection() {
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-pink-500" />
                 </span>
                 <span className="text-xs font-bold text-slate-800 dark:text-pink-100">
-                  {isKhmer ? "🌸 ទីតាំងហាងយើងនៅទីនេះ" : "🌸 Our Sweet Store Pin"}
+                  {isKhmer
+                    ? isCustomGoogleEmbed
+                      ? "🌸 ទីតាំងហាងលើ Google Maps"
+                      : "🌸 ទីតាំងហាងយើងនៅទីនេះ"
+                    : isCustomGoogleEmbed
+                      ? "🌸 Official Google Maps Pin"
+                      : "🌸 Our Sweet Store Pin"}
                 </span>
               </div>
               <span className="text-[10px] text-pink-400 font-bold uppercase tracking-wider hidden sm:inline">

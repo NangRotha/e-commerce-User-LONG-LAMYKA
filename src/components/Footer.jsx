@@ -26,6 +26,9 @@ export default function Footer() {
   const ttUrl = normalizeTikTok(s.social_tiktok);
   const phone = (s.contact_phone || "").trim();
   const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
+  const address = isKhmer
+    ? s.store_address_km || STORE_LOCATION.addressKm
+    : s.store_address_en || STORE_LOCATION.addressEn;
 
   return (
     <footer className="bg-[#120B16] text-slate-300 border-t-2 border-pink-950/40 mt-20 transition-colors">
@@ -101,7 +104,7 @@ export default function Footer() {
                 <span>{t("location.address") || "Store Location"}</span>
               </p>
               <p className="leading-relaxed text-[11px] text-slate-300 font-medium">
-                {isKhmer ? STORE_LOCATION.addressKm : STORE_LOCATION.addressEn}
+                {address}
               </p>
               <a
                 href={mapsUrl}
