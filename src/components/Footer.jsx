@@ -192,7 +192,7 @@ export default function Footer() {
               >
                 <div className="flex items-center gap-2.5">
                   <TelegramIcon className="w-4 h-4 text-[#229ED9] group-hover:text-white transition-colors" />
-                  <span className="text-xs font-bold">Telegram Channel</span>
+                  <span className="text-xs font-bold">{t("footer.tgChannel")}</span>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
               </a>
@@ -207,7 +207,7 @@ export default function Footer() {
                 >
                   <div className="flex items-center gap-2.5">
                     <WhatsAppIcon className="w-4 h-4 text-[#25D366] group-hover:text-white transition-colors" />
-                    <span className="text-xs font-bold">WhatsApp Chat</span>
+                    <span className="text-xs font-bold">{t("footer.waChat")}</span>
                   </div>
                   <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                 </a>
@@ -222,7 +222,7 @@ export default function Footer() {
               >
                 <div className="flex items-center gap-2.5">
                   <FacebookIcon className="w-4 h-4 text-[#1877F2] group-hover:text-white transition-colors" />
-                  <span className="text-xs font-bold">Facebook Page</span>
+                  <span className="text-xs font-bold">{t("footer.fbPage")}</span>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
               </a>
@@ -236,7 +236,7 @@ export default function Footer() {
               >
                 <div className="flex items-center gap-2.5">
                   <InstagramIcon className="w-4 h-4 text-pink-400 group-hover:text-white transition-colors" />
-                  <span className="text-xs font-bold">Instagram</span>
+                  <span className="text-xs font-bold">{t("social.instagram")}</span>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
               </a>
@@ -251,7 +251,7 @@ export default function Footer() {
                 >
                   <div className="flex items-center gap-2.5">
                     <TikTokIcon className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
-                    <span className="text-xs font-bold">TikTok</span>
+                    <span className="text-xs font-bold">{t("social.tiktok")}</span>
                   </div>
                   <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                 </a>
@@ -266,10 +266,10 @@ export default function Footer() {
             © {new Date().getFullYear()} {siteName}. {t("footer.rights")}
           </p>
           <div className="flex items-center gap-1.5 font-medium">
-            <span>Crafted with</span>
+            <span>{t("footer.craftedWith")}</span>
             <Heart className="w-3.5 h-3.5 text-pink-400 fill-pink-400 animate-cute-bounce inline" />
-            <span>for cute girls in</span>
-            <span className="text-pink-300 font-bold">Cambodia 🇰🇭</span>
+            <span>{t("footer.forCuteGirlsIn")}</span>
+            <span className="text-pink-300 font-bold">{t("footer.cambodia")}</span>
           </div>
         </div>
       </div>

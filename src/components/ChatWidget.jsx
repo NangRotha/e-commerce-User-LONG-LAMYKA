@@ -130,7 +130,7 @@ export default function ChatWidget() {
             : "opacity-0 translate-y-6 scale-95 pointer-events-none"
         } inset-x-0 bottom-0 w-full h-[min(580px,85dvh)] rounded-t-[32px] origin-bottom sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(620px,72vh)] sm:w-[410px] sm:max-w-[calc(100vw-2.5rem)] sm:rounded-[32px] sm:origin-bottom-right`}
         role="dialog"
-        aria-label="AI assistant chat"
+        aria-label={t("chat.panelAria")}
       >
         {/* Header */}
         <div className="shrink-0 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white px-5 py-4 flex items-center gap-3 shadow-sm">

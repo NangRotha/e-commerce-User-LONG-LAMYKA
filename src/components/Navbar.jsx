@@ -156,7 +156,7 @@ export default function Navbar() {
                 <span className="text-xs animate-cute-bounce">✨</span>
               </div>
               <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-widest text-pink-500 dark:text-pink-400">
-                <span>🎀</span> Cute & Lovely Store
+                <span>🎀</span> {t("nav.storeTagline")}
               </span>
             </div>
           </Link>
@@ -192,8 +192,8 @@ export default function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-[#229ED9] hover:border-[#229ED9]/40 hover:bg-[#229ED9]/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
-                title="Telegram"
-                aria-label="Telegram"
+                title={t("social.telegram")}
+                aria-label={t("social.telegram")}
               >
                 <TelegramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
               </a>
@@ -204,8 +204,8 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-[#25D366] hover:border-[#25D366]/40 hover:bg-[#25D366]/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
-                  title="WhatsApp"
-                  aria-label="WhatsApp"
+                  title={t("social.whatsapp")}
+                  aria-label={t("social.whatsapp")}
                 >
                   <WhatsAppIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
                 </a>
@@ -216,8 +216,8 @@ export default function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-[#1877F2] hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
-                title="Facebook"
-                aria-label="Facebook"
+                title={t("social.facebook")}
+                aria-label={t("social.facebook")}
               >
                 <FacebookIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
               </a>
@@ -227,8 +227,8 @@ export default function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-pink-500 hover:border-pink-500/40 hover:bg-pink-500/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
-                title="Instagram"
-                aria-label="Instagram"
+                title={t("social.instagram")}
+                aria-label={t("social.instagram")}
               >
                 <InstagramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
               </a>
@@ -239,8 +239,8 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:border-black/30 dark:hover:border-white/30 hover:bg-black/5 dark:hover:bg-white/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
-                  title="TikTok"
-                  aria-label="TikTok"
+                  title={t("social.tiktok")}
+                  aria-label={t("social.tiktok")}
                 >
                   <TikTokIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
                 </a>
@@ -301,8 +301,10 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setLang(lang === "km" ? "en" : "km")}
-              aria-label={lang === "km" ? "Switch language to English" : "ប្តូរភាសាទៅខ្មែរ"}
-              title={lang === "km" ? "Switch to English" : "ប្តូរទៅភាសាខ្មែរ"}
+              aria-label={
+                lang === "km" ? t("nav.switchToEnglish") : t("nav.switchToKhmer")
+              }
+              title={lang === "km" ? t("nav.switchToEnglish") : t("nav.switchToKhmer")}
               className="inline-flex items-center gap-1 xs:gap-1.5 h-10 px-2.5 rounded-2xl bg-pink-50/70 dark:bg-[#1A1220] text-slate-800 dark:text-pink-200 border border-pink-200/80 dark:border-pink-900/50 font-bold text-xs shadow-marshmallow active:scale-95 transition-all select-none hover:bg-pink-100/60"
             >
               {lang === "km" ? (
@@ -371,7 +373,7 @@ export default function Navbar() {
           <aside
             className="relative z-10 w-full max-w-[320px] xs:max-w-[340px] h-full bg-[#FFF5F8]/95 dark:bg-[#130D18]/95 backdrop-blur-2xl border-l border-pink-200/80 dark:border-pink-900/50 shadow-2xl flex flex-col justify-between p-5 overflow-y-auto animate-slide-left select-none"
             role="dialog"
-            aria-label="Mobile Navigation Menu"
+            aria-label={t("nav.mobileNav")}
           >
             {/* Drawer Top / Header */}
             <div className="space-y-5">
@@ -439,7 +441,7 @@ export default function Navbar() {
                     <div className="text-left">
                       <span className="text-sm block">{t("nav.shop")}</span>
                       <span className="text-[10px] opacity-75 font-normal block">
-                        Browse all cute items
+                        {t("home.browseAll")}
                       </span>
                     </div>
                   </div>
@@ -465,7 +467,7 @@ export default function Navbar() {
                     <div className="text-left">
                       <span className="text-sm block">{t("nav.cart")}</span>
                       <span className="text-[10px] opacity-75 font-normal block">
-                        Instant KHQR checkout
+                        {t("home.instantKhqrCheckout")}
                       </span>
                     </div>
                   </div>
@@ -571,7 +573,7 @@ export default function Navbar() {
                       <div className="w-7 h-7 rounded-lg bg-[#229ED9] text-white flex items-center justify-center shadow-2xs">
                         <TelegramIcon className="w-4 h-4" />
                       </div>
-                      <span>Telegram Official Chat</span>
+                      <span>{t("social.tgOfficialChat")}</span>
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
@@ -588,7 +590,7 @@ export default function Navbar() {
                         <div className="w-7 h-7 rounded-lg bg-[#25D366] text-white flex items-center justify-center shadow-2xs">
                           <WhatsAppIcon className="w-4 h-4" />
                         </div>
-                        <span>WhatsApp Chat</span>
+                        <span>{t("social.waChat")}</span>
                       </div>
                       <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                     </a>
@@ -605,7 +607,7 @@ export default function Navbar() {
                       <div className="w-7 h-7 rounded-lg bg-[#1877F2] text-white flex items-center justify-center shadow-2xs">
                         <FacebookIcon className="w-4 h-4" />
                       </div>
-                      <span>Facebook Page</span>
+                      <span>{t("social.fbPage")}</span>
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
@@ -621,7 +623,7 @@ export default function Navbar() {
                       <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 text-white flex items-center justify-center shadow-2xs">
                         <InstagramIcon className="w-4 h-4" />
                       </div>
-                      <span>Instagram</span>
+                      <span>{t("social.instagram")}</span>
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
@@ -638,7 +640,7 @@ export default function Navbar() {
                         <div className="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center shadow-2xs">
                           <TikTokIcon className="w-4 h-4" />
                         </div>
-                        <span>TikTok</span>
+                        <span>{t("social.tiktok")}</span>
                       </div>
                       <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                     </a>
@@ -655,7 +657,7 @@ export default function Navbar() {
                       <div className="w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center shadow-2xs">
                         <MapPin className="w-4 h-4" />
                       </div>
-                      <span>Google Maps Store</span>
+                      <span>{t("social.gmapsStore")}</span>
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>

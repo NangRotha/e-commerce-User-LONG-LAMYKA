@@ -474,8 +474,7 @@ export default function Checkout() {
                   )}
                   {payment && payment.enabled === false && (
                     <p className="mt-2 text-xs font-medium text-amber-700 dark:text-amber-400">
-                      ⚠️ Online payment is not configured yet — we will contact you
-                      to arrange payment.
+                      {t("checkout.onlineNotConfigured")}
                     </p>
                   )}
                 </div>

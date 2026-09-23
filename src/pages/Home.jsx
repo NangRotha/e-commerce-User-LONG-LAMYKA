@@ -168,7 +168,7 @@ export default function Home() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/25 backdrop-blur-md text-white font-black text-xs uppercase tracking-widest shadow-sm mb-4 animate-cute-bounce">
-                <span>🎀</span> Lovely & Sweet Collection
+                <span>🎀</span> {t("home.collectionTagline")}
               </span>
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight max-w-2xl drop-shadow-sm leading-tight animate-fade-in-up">
                 {settings.site_name || t("home.heroTitle")}

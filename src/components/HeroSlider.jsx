@@ -241,7 +241,7 @@ export default function HeroSlider({ fallback = null }) {
           <button
             onClick={() => setPlayingYt(current)}
             className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 px-4 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-medium backdrop-blur transition flex items-center gap-2 z-20"
-            aria-label="Watch with sound"
+            aria-label={t("product.watchWithSound")}
           >
             <PlayIcon className="w-4 h-4 fill-white ml-0.5" />
             {t("product.watchWithSound")}
@@ -255,14 +255,14 @@ export default function HeroSlider({ fallback = null }) {
           <button
             onClick={() => goTo(index - 1)}
             className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
-            aria-label="Previous slide"
+            aria-label={t("hero.previousSlide")}
           >
             <ChevronLeftIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => goTo(index + 1)}
             className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
-            aria-label="Next slide"
+            aria-label={t("hero.nextSlide")}
           >
             <ChevronRightIcon className="w-5 h-5" />
           </button>
@@ -279,7 +279,7 @@ export default function HeroSlider({ fallback = null }) {
               className={`h-2 rounded-full transition-all ${
                 i === index ? "w-6 bg-gradient-to-r from-pink-400 to-rose-400 shadow-sm" : "w-2 bg-white/50 hover:bg-white"
               }`}
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={t("hero.goToSlide", { number: i + 1 })}
             />
           ))}
         </div>
@@ -290,8 +290,8 @@ export default function HeroSlider({ fallback = null }) {
         <button
           onClick={() => setPaused((p) => !p)}
           className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
-          aria-label={paused ? "Play slideshow" : "Pause slideshow"}
-          title={paused ? "Play" : "Pause"}
+          aria-label={paused ? t("hero.playSlideshow") : t("hero.pauseSlideshow")}
+          title={paused ? t("hero.play") : t("hero.pause")}
         >
           {paused ? (
             <PlayIcon className="w-4 h-4 fill-white ml-0.5" />
@@ -320,7 +320,7 @@ export default function HeroSlider({ fallback = null }) {
         >
           <button
             className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/25 text-white transition"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <CloseIcon className="w-5 h-5" />
           </button>
@@ -330,7 +330,7 @@ export default function HeroSlider({ fallback = null }) {
           >
             <iframe
               src={`https://www.youtube.com/embed/${getYouTubeId(playingYt.youtube_url)}?autoplay=1`}
-              title="YouTube video player"
+              title={t("hero.youtubePlayer")}
               className="absolute inset-0 h-full w-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -340,7 +340,7 @@ export default function HeroSlider({ fallback = null }) {
       )}
 
       {/* Screen-reader hint for last slide */}
-      {isLast && <span className="sr-only">Last slide</span>}
+      {isLast && <span className="sr-only">{t("hero.lastSlide")}</span>}
     </div>
   );
 }

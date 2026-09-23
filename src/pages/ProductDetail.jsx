@@ -249,7 +249,7 @@ export default function ProductDetail() {
                     <source src={activeItem} type="video/mp4" />
                     <source src={activeItem} type="video/quicktime" />
                     <source src={activeItem} type="video/webm" />
-                    Your browser does not support playing this video.
+                    {t("product.videoUnsupported")}
                   </video>
 
                   {/* Sound Toggle Button */}
@@ -257,17 +257,17 @@ export default function ProductDetail() {
                     type="button"
                     onClick={toggleMute}
                     className="absolute top-3 right-3 z-20 px-3 py-1.5 rounded-full bg-black/65 hover:bg-black/85 text-white text-xs font-semibold backdrop-blur-md border border-white/20 transition-all flex items-center gap-1.5 shadow-lg active:scale-95"
-                    title={isMuted ? "Unmute sound" : "Mute sound"}
+                    title={isMuted ? t("product.unmuteSound") : t("product.muteSound")}
                   >
                     {isMuted ? (
                       <>
                         <VolumeX className="w-3.5 h-3.5 text-pink-400" />
-                        <span>Sound Off</span>
+                        <span>{t("product.soundOff")}</span>
                       </>
                     ) : (
                       <>
                         <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-                        <span>Sound On</span>
+                        <span>{t("product.soundOn")}</span>
                       </>
                     )}
                   </button>

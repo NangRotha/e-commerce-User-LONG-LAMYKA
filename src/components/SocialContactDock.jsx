@@ -8,7 +8,7 @@ import { STORE_LOCATION } from "../lib/location";
 
 export default function SocialContactDock() {
   const s = useSiteSettings();
-  const { t, isKhmer } = useI18n();
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   const tgUrl = normalizeTelegram(s.social_telegram || s.telegram_url);
@@ -47,8 +47,8 @@ export default function SocialContactDock() {
               <TelegramIcon className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold leading-tight">Telegram</p>
-              <p className="text-[10px] opacity-80 leading-tight">Chat with us</p>
+              <p className="text-xs font-bold leading-tight">{t("social.telegram")}</p>
+              <p className="text-[10px] opacity-80 leading-tight">{t("social.chatWithUs")}</p>
             </div>
             <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
@@ -65,8 +65,8 @@ export default function SocialContactDock() {
                 <WhatsAppIcon className="w-4 h-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold leading-tight">WhatsApp</p>
-                <p className="text-[10px] opacity-80 leading-tight">Chat with us</p>
+                <p className="text-xs font-bold leading-tight">{t("social.whatsapp")}</p>
+                <p className="text-[10px] opacity-80 leading-tight">{t("social.chatWithUs")}</p>
               </div>
               <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
             </a>
@@ -83,8 +83,8 @@ export default function SocialContactDock() {
               <FacebookIcon className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold leading-tight">Facebook</p>
-              <p className="text-[10px] opacity-80 leading-tight">Visit page / message</p>
+              <p className="text-xs font-bold leading-tight">{t("social.facebook")}</p>
+              <p className="text-[10px] opacity-80 leading-tight">{t("social.visitPageMsg")}</p>
             </div>
             <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
@@ -100,8 +100,8 @@ export default function SocialContactDock() {
               <InstagramIcon className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold leading-tight">Instagram</p>
-              <p className="text-[10px] opacity-80 leading-tight">Follow our store</p>
+              <p className="text-xs font-bold leading-tight">{t("social.instagram")}</p>
+              <p className="text-[10px] opacity-80 leading-tight">{t("social.followStore")}</p>
             </div>
             <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </a>
@@ -118,8 +118,8 @@ export default function SocialContactDock() {
                 <TikTokIcon className="w-4 h-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold leading-tight">TikTok</p>
-                <p className="text-[10px] opacity-80 leading-tight">Follow our videos</p>
+                <p className="text-xs font-bold leading-tight">{t("social.tiktok")}</p>
+                <p className="text-[10px] opacity-80 leading-tight">{t("social.followVideos")}</p>
               </div>
               <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
             </a>
@@ -137,10 +137,10 @@ export default function SocialContactDock() {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold leading-tight">
-                {isKhmer ? "ទីតាំងហាង Google Maps" : "Store Location"}
+                {t("social.storeLocation")}
               </p>
               <p className="text-[10px] opacity-80 leading-tight truncate">
-                {isKhmer ? "ភ្នំពេញ · បើកមើលផែនទី" : "Phnom Penh · Open Map"}
+                {t("social.openMap")}
               </p>
             </div>
             <ExternalLink className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -156,7 +156,7 @@ export default function SocialContactDock() {
                 <Phone className="w-4 h-4" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold leading-tight">Call Us</p>
+                <p className="text-xs font-bold leading-tight">{t("social.callUs")}</p>
                 <p className="text-[10px] opacity-80 leading-tight truncate">{phone}</p>
               </div>
             </a>
@@ -176,7 +176,7 @@ export default function SocialContactDock() {
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          aria-label="Social Channels & Chat"
+          aria-label={t("social.channelsAria")}
           className={`relative h-13 w-13 rounded-full flex items-center justify-center shadow-cute-glow transition-all duration-300 active:scale-95 group ${
             open
               ? "bg-slate-800 dark:bg-slate-700 text-white rotate-90"

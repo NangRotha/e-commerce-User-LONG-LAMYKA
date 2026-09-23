@@ -120,7 +120,7 @@ export default function StoreLocationSection() {
                   {address}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 font-medium">
-                  📍 {STORE_LOCATION.areaKm} ({STORE_LOCATION.lat},{" "}
+                  📍 {t("location.area")} ({STORE_LOCATION.lat},{" "}
                   {STORE_LOCATION.lng})
                 </p>
               </div>
@@ -137,9 +137,7 @@ export default function StoreLocationSection() {
                 <div className="flex items-center gap-2 pt-1 text-xs text-pink-600 dark:text-pink-400 font-bold">
                   <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
                   <span>
-                    {isKhmer
-                      ? "🌸 បើកទទួលអតិថិជនជារៀងរាល់ថ្ងៃ 💖"
-                      : "🌸 Open Everyday for Walk-ins & Orders 💖"}
+                    {t("location.openEveryday")}
                   </span>
                 </div>
               </div>
@@ -164,7 +162,7 @@ export default function StoreLocationSection() {
                     </div>
                     <div className="min-w-0 truncate">
                       <p className="text-xs text-slate-400 font-medium">
-                        {isKhmer ? "ទំនាក់ទំនងហាងផ្ទាល់" : "Direct Contact"}
+                        {t("social.directContact")}
                       </p>
                       {phone ? (
                         <a
@@ -189,7 +187,7 @@ export default function StoreLocationSection() {
                         className="px-3.5 py-1.5 rounded-full bg-[#25D366]/10 dark:bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/20 text-xs font-bold transition active:scale-95 flex items-center gap-1"
                       >
                         <WhatsAppIcon className="w-3.5 h-3.5" />
-                        <span>WhatsApp</span>
+                        <span>{t("social.whatsapp")}</span>
                       </a>
                     )}
                     {phone && (
@@ -197,7 +195,7 @@ export default function StoreLocationSection() {
                         href={`tel:${phone}`}
                         className="px-4 py-1.5 rounded-full bg-pink-100 dark:bg-pink-950/80 text-pink-700 dark:text-pink-300 text-xs font-bold hover:bg-pink-500 hover:text-white transition active:scale-95"
                       >
-                        {isKhmer ? "ទូរស័ព្ទ" : "Call"}
+                        {t("common.call")}
                       </a>
                     )}
                   </div>
@@ -233,7 +231,7 @@ export default function StoreLocationSection() {
           <div className="lg:col-span-7 min-h-[360px] sm:min-h-[420px] rounded-[32px] overflow-hidden border-2 border-pink-100 dark:border-pink-900/50 shadow-marshmallow relative group flex flex-col">
             {/* Embedded Live Map */}
             <iframe
-              title="Store Location Map"
+              title={t("location.storeMapTitle")}
               src={embedUrl}
               className="w-full h-full min-h-[340px] sm:min-h-[400px] border-0 flex-1 bg-pink-50/30 dark:bg-slate-950"
               loading="lazy"
@@ -249,17 +247,11 @@ export default function StoreLocationSection() {
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-pink-500" />
                 </span>
                 <span className="text-xs font-bold text-slate-800 dark:text-pink-100">
-                  {isKhmer
-                    ? isCustomGoogleEmbed
-                      ? "🌸 ទីតាំងហាងលើ Google Maps"
-                      : "🌸 ទីតាំងហាងយើងនៅទីនេះ"
-                    : isCustomGoogleEmbed
-                      ? "🌸 Official Google Maps Pin"
-                      : "🌸 Our Sweet Store Pin"}
+                  {isCustomGoogleEmbed ? t("location.officialPin") : t("location.storePin")}
                 </span>
               </div>
               <span className="text-[10px] text-pink-400 font-bold uppercase tracking-wider hidden sm:inline">
-                • {STORE_LOCATION.areaKm}
+                • {t("location.area")}
               </span>
             </div>
 
@@ -270,7 +262,7 @@ export default function StoreLocationSection() {
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-bold truncate">Google Maps</p>
+                  <p className="text-xs font-bold truncate">{t("location.googleMaps")}</p>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate font-medium">
                     11.5385935, 104.8904647
                   </p>
@@ -283,7 +275,7 @@ export default function StoreLocationSection() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white text-xs font-bold transition-all duration-200 active:scale-95 shrink-0 shadow-cute-glow"
               >
-                <span>{isKhmer ? "បើកផែនទី" : "Open Maps"}</span>
+                <span>{t("location.openMaps")}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>

@@ -93,7 +93,7 @@ export default function ProductCard({ product }) {
           ) : (
             <div className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-[#1A1220]/90 text-pink-600 dark:text-pink-300 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs backdrop-blur-md border border-pink-100 dark:border-pink-950/80 flex items-center gap-1">
               <span>✨</span>
-              <span>Cute Pick</span>
+              <span>{t("product.cutePick")}</span>
             </div>
           )}
 
@@ -101,7 +101,7 @@ export default function ProductCard({ product }) {
           <button
             type="button"
             onClick={toggleWishlist}
-            aria-label={isWished ? "Remove from Wishlist" : "Add to Wishlist"}
+            aria-label={isWished ? t("common.wishlistRemove") : t("common.wishlistAdd")}
             className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 active:scale-90 shadow-xs z-10 ${
               isWished
                 ? "bg-rose-500 text-white shadow-rose-500/30"
@@ -197,7 +197,7 @@ export default function ProductCard({ product }) {
             {justAdded ? (
               <>
                 <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
-                <span className="text-xs">Added! 💖</span>
+                <span className="text-xs">{t("product.addedCute")}</span>
               </>
             ) : outOfStock ? (
               <span className="text-xs">{t("product.soldOut")}</span>

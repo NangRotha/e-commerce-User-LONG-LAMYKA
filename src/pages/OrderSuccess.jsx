@@ -355,7 +355,7 @@ export default function OrderSuccess() {
               )}
               <img
                 src={order.payment_qr_url}
-                alt="KHQR — ABA / Bakong Wallet"
+                alt={t("pay.qrAlt")}
                 className="w-full h-full object-contain rounded-2xl"
               />
             </div>
