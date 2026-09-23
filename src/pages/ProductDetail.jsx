@@ -2,7 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Star, Volume2, VolumeX } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { effectivePrice, formatPrice, isVideoUrl } from "../lib/helpers";
+import {
+  effectivePrice,
+  formatPrice,
+  isVideoUrl,
+  localizedName,
+  localizedDescription,
+} from "../lib/helpers";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
 import useSiteSettings from "../hooks/useSiteSettings";
@@ -21,7 +27,7 @@ function getYouTubeId(url) {
 export default function ProductDetail() {
   const { id } = useParams();
   const { addItem } = useCart();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const s = useSiteSettings();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
@@ -216,7 +222,7 @@ export default function ProductDetail() {
                   <iframe
                     key={activeItem}
                     src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1&playsinline=1&enablejsapi=1`}
-                    title={product.name}
+                    title={localizedName(product, lang)}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -277,7 +283,7 @@ export default function ProductDetail() {
               <img
                 key={activeItem}
                 src={activeItem}
-                alt={product.name}
+                alt={localizedName(product, lang)}
                 className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-105"
               />
             ) : (
@@ -299,7 +305,7 @@ export default function ProductDetail() {
                       ? "border-pink-500 ring-2 ring-pink-200 dark:ring-pink-900 shadow-md"
                       : "border-slate-200 dark:border-slate-700 hover:border-pink-300 dark:hover:border-pink-500 opacity-80 hover:opacity-100"
                   }`}
-                  aria-label={`${product.name} — ${i + 1}`}
+                  aria-label={`${localizedName(product, lang)} — ${i + 1}`}
                 >
                   {item.type === "video" ? (
                     <>
@@ -356,7 +362,7 @@ export default function ProductDetail() {
             </div>
           </div>
           <h1 className="mt-2 text-2xl sm:text-4xl font-black text-slate-900 dark:text-pink-100 tracking-tight leading-snug">
-            {product.name}
+            {localizedName(product, lang)}
           </h1>
 
           <div className="mt-4 flex items-baseline gap-3 flex-wrap">
@@ -385,7 +391,7 @@ export default function ProductDetail() {
           </div>
 
           <p className="mt-5 text-slate-600 dark:text-pink-200/80 leading-relaxed text-sm sm:text-base">
-            {product.description || t("product.noDescription")}
+            {localizedDescription(product, lang) || t("product.noDescription")}
           </p>
 
           <p className="mt-4 text-xs sm:text-sm font-bold">

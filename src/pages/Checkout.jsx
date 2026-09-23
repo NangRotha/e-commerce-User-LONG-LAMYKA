@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext";
 import { api } from "../api/client";
 import { useI18n } from "../i18n/I18nContext";
 import { isValidPhone } from "../lib/payment";
-import { formatPrice } from "../lib/helpers";
+import { formatPrice, localizedName } from "../lib/helpers";
 
 const CUSTOMER_KEY = "shop_customer";
 
@@ -33,7 +33,7 @@ export const CAMBODIA_PROVINCES = [
 export default function Checkout() {
   const { items, subtotal, clear } = useCart();
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -504,7 +504,7 @@ export default function Checkout() {
               <div key={`${i.id}-${i.variant || ""}`} className="flex justify-between gap-2 text-slate-600 dark:text-slate-300">
                 <div className="min-w-0">
                   <p className="truncate text-slate-800 dark:text-slate-100 font-medium text-sm sm:text-base">
-                    {i.name} × {i.quantity}
+                    {localizedName(i, lang)} × {i.quantity}
                   </p>
                   {i.variant && (
                     <span className="inline-block mt-0.5 text-xs text-pink-600 dark:text-pink-400 font-semibold">

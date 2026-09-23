@@ -32,6 +32,7 @@ function syncItems(items, products) {
     const updated = {
       ...item,
       name: live.name,
+      name_km: live.name_km || "",
       price,
       originalPrice: live.price,
       image_url: live.image_url,
@@ -41,6 +42,7 @@ function syncItems(items, products) {
     };
     if (
       item.name !== updated.name ||
+      item.name_km !== updated.name_km ||
       item.price !== updated.price ||
       item.image_url !== updated.image_url ||
       item.stock !== updated.stock ||
@@ -79,6 +81,7 @@ export function CartProvider({ children }) {
         {
           id: product.id,
           name: product.name,
+          name_km: product.name_km || "",
           variant: variant || "",
           price: effectivePrice(product),
           originalPrice: product.price,

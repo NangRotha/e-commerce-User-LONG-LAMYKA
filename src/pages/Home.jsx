@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search, X, SlidersHorizontal, Sparkles, ShoppingBag, ArrowUpDown, Filter } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import HeroSlider from "../components/HeroSlider";
@@ -8,6 +8,7 @@ import StoreLocationSection from "../components/StoreLocationSection";
 import { api } from "../api/client";
 import { useRealtime } from "../context/RealtimeContext";
 import { useI18n } from "../i18n/I18nContext";
+import { localizedCategoryName } from "../lib/helpers";
 
 // ផលិតផលសាកល្បងសម្រាប់បញ្ចូលទិន្នន័យពេល Database ទទេ
 const DEMO_PRODUCTS = [
@@ -25,7 +26,7 @@ const DEMO_PRODUCTS = [
 
 /** Home — Storefront (i18n km/en + trust bar + sorting + real-time auto-refresh) */
 export default function Home() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [products, setProducts] = useState(null);
   const [settings, setSettings] = useState({});
   const [categories, setCategories] = useState([]);
@@ -46,7 +47,7 @@ export default function Home() {
   const loadCategories = () => {
     api
       .getCategories()
-      .then((cats) => setCategories(cats.map((c) => c.name)))
+      .then((cats) => setCategories(cats || []))
       .catch(() => {});
   };
 
@@ -89,6 +90,17 @@ export default function Home() {
     }
   };
 
+  // name (EN) -> name_km  សម្រាប់បង្ហាញឈ្មោះ Category តាមភាសាដែលកំពុងប្រើ
+  const catMap = useMemo(
+    () => Object.fromEntries((categories || []).map((c) => [c.name, c.name_km || ""])),
+    [categories]
+  );
+  const catLabel = useCallback(
+    (name) =>
+      name === "All" ? t("home.all") : localizedCategoryName(name, catMap, lang),
+    [catMap, lang, t]
+  );
+
   // Filter and sort products
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -96,8 +108,11 @@ export default function Home() {
       const catOk = category === "All" || p.category === category;
       const searchOk =
         !q ||
-        p.name.toLowerCase().includes(q) ||
-        (p.description || "").toLowerCase().includes(q);
+        (p.name || "").toLowerCase().includes(q) ||
+        (p.name_km || "").toLowerCase().includes(q) ||
+        (p.description || "").toLowerCase().includes(q) ||
+        (p.description_km || "").toLowerCase().includes(q) ||
+        catLabel(p.category || "").toLowerCase().includes(q);
       const stockOk = !inStockOnly || p.stock > 0;
       return catOk && searchOk && stockOk;
     });
@@ -114,14 +129,15 @@ export default function Home() {
     });
 
     return list;
-  }, [products, category, search, sortBy, inStockOnly]);
+  }, [products, category, search, sortBy, inStockOnly, catLabel]);
 
-  // Categories list
+  // Categories list — value នៅតែជា name អង់គ្លេស (Key សម្រាប់ Filter និង API)
   const categoryOptions = useMemo(() => {
-    if (categories.length) return ["All", ...categories];
+    if (categories.length) return ["All", ...categories.map((c) => c.name)];
     const uniq = [...new Set((products || []).map((p) => p.category).filter(Boolean))];
     return ["All", ...uniq.sort()];
   }, [categories, products]);
+
 
   // Category items count helper
   const getCategoryCount = (cat) => {
@@ -260,7 +276,7 @@ export default function Home() {
                   }`}
                 >
                   <span>{emoji}</span>
-                  <span>{c === "All" ? t("home.all") : c}</span>
+                  <span>{catLabel(c)}</span>
                   {count > 0 && (
                     <span
                       className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${

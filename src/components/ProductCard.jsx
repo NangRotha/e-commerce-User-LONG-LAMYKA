@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Check, Play, Star, Eye, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { effectivePrice, formatPrice } from "../lib/helpers";
+import { effectivePrice, formatPrice, localizedName } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [justAdded, setJustAdded] = useState(false);
   const [isWished, setIsWished] = useState(false);
   const [heartAnim, setHeartAnim] = useState(false);
@@ -71,7 +71,7 @@ export default function ProductCard({ product }) {
           {product.image_url ? (
             <img
               src={product.image_url}
-              alt={product.name}
+              alt={localizedName(product, lang)}
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
             />
@@ -158,7 +158,7 @@ export default function ProductCard({ product }) {
           to={`/product/${product.id}`}
           className="mt-2 font-black text-slate-800 dark:text-pink-100 line-clamp-2 leading-snug hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs sm:text-base"
         >
-          {product.name}
+          {localizedName(product, lang)}
         </Link>
 
         {/* Price and Cart button */}

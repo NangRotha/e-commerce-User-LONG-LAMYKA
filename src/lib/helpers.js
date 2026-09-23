@@ -20,3 +20,34 @@ export function isVideoUrl(url) {
   if (/\/video\/upload\//i.test(s)) return true;
   return /\.(mp4|webm|mov|ogg|m4v|mkv|quicktime)(\?|#|$)/i.test(s);
 }
+
+/* ============================================================
+ * ជំនួយពហុភាសា (Khmer 🇰🇭 / English 🇬🇧)
+ * ទិន្នន័យមាន 2 ភាសា៖ name / description (EN) និង name_km / description_km (KM)
+ * បើភាសាដែលកំពុងប្រើមិនទាន់បំពេញ -> Fallback ទៅភាសាមួយទៀត
+ * ============================================================ */
+
+/** ឈ្មោះផលិតផល/ប្រភេទ តាមភាសាដែលកំពុងប្រើ */
+export function localizedName(item, lang) {
+  if (!item) return "";
+  const en = String(item.name || "").trim();
+  const km = String(item.name_km || "").trim();
+  return (lang === "km" ? km || en : en || km) || "";
+}
+
+/** ការពិពណ៌នា តាមភាសាដែលកំពុងប្រើ */
+export function localizedDescription(item, lang) {
+  if (!item) return "";
+  const en = String(item.description || "").trim();
+  const km = String(item.description_km || "").trim();
+  return (lang === "km" ? km || en : en || km) || "";
+}
+
+/** ឈ្មោះប្រភេទ តាមភាសា — value នៅតែជា name (EN) សម្រាប់ Filter/API */
+export function localizedCategoryName(name, catMap, lang) {
+  const en = String(name || "").trim();
+  if (!en) return "";
+  const km = String((catMap && catMap[en]) || "").trim();
+  return (lang === "km" ? km || en : en || km) || "";
+}
+

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { formatPrice } from "../lib/helpers";
+import { formatPrice, localizedName } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 import { api } from "../api/client";
 import { useRealtime } from "../context/RealtimeContext";
@@ -9,7 +9,7 @@ import { useRealtime } from "../context/RealtimeContext";
 /** Cart — កន្ត្រកទំនិញ (Clean & Cute Girl UI + Dynamic Free shipping milestone) */
 export default function Cart() {
   const { items, updateQuantity, removeItem, subtotal, count } = useCart();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   // Dynamic delivery milestones from backend API
   const [milestones, setMilestones] = useState(null);
@@ -121,7 +121,7 @@ export default function Cart() {
                 {item.image_url ? (
                   <img
                     src={item.image_url}
-                    alt={item.name}
+                    alt={localizedName(item, lang)}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 ) : (
@@ -138,7 +138,7 @@ export default function Cart() {
                       to={`/product/${item.id}`}
                       className="font-black text-slate-800 dark:text-pink-100 hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-200 line-clamp-1 text-sm sm:text-base"
                     >
-                      {item.name}
+                      {localizedName(item, lang)}
                     </Link>
                     {item.variant && (
                       <span className="inline-block mt-1 text-xs font-black px-2.5 py-0.5 rounded-full bg-pink-50 text-pink-600 dark:bg-pink-950/80 dark:text-pink-300 border border-pink-200 dark:border-pink-800">
