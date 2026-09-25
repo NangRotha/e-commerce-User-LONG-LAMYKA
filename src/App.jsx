@@ -13,12 +13,16 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
+import useSiteSettings from "./hooks/useSiteSettings";
 
 /**
  * Storefront — គ្មាន Login / Sign Up / Profile
  * អតិថិជនអាចជ្រើសរើសទំនិញ រួចបង់ប្រាក់ជា Guest ដោយស្កេន KHQR (ABA / Bakong)។
  */
 export default function App() {
+  // ភ្ជាប់ Branding (Site Name / Tab Favicon Logo ពី Database)
+  useSiteSettings();
+
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden overflow-x-clip flex flex-col bg-[#FFF5F8] dark:bg-[#130D18] text-slate-900 dark:text-slate-100 transition-colors duration-300 relative selection:bg-pink-200 selection:text-pink-900">
       {/* Cute pastel strawberry & lavender cloud orbs */}

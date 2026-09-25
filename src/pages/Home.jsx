@@ -9,6 +9,7 @@ import { api } from "../api/client";
 import { useRealtime } from "../context/RealtimeContext";
 import { useI18n } from "../i18n/I18nContext";
 import { localizedCategoryName } from "../lib/helpers";
+import useSiteSettings from "../hooks/useSiteSettings";
 
 // ផលិតផលសាកល្បងសម្រាប់បញ្ចូលទិន្នន័យពេល Database ទទេ
 const DEMO_PRODUCTS = [
@@ -28,7 +29,7 @@ const DEMO_PRODUCTS = [
 export default function Home() {
   const { t, lang } = useI18n();
   const [products, setProducts] = useState(null);
-  const [settings, setSettings] = useState({});
+  const settings = useSiteSettings();
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
@@ -51,22 +52,16 @@ export default function Home() {
       .catch(() => {});
   };
 
-  const loadSettings = () => {
-    api.getSettings().then(setSettings).catch(() => {});
-  };
-
   useEffect(() => {
     loadProducts();
-    loadSettings();
     loadCategories();
   }, []);
 
-  // Real-time: ពេល Admin កែផលិតផល / Category / Settings -> ទាញទិន្នន័យថ្មីភ្លាមៗ
+  // Real-time: ពេល Admin កែផលិតផល / Category -> ទាញទិន្នន័យថ្មីភ្លាមៗ
   useRealtime(["products_changed", "categories_changed"], () => {
     loadProducts();
     loadCategories();
   });
-  useRealtime("settings_changed", loadSettings);
 
   const seedDemo = async () => {
     setSeeding(true);

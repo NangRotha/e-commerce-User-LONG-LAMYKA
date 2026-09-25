@@ -2,11 +2,44 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="FeuOmvLBDpqkECcvM8uI59_q7g3rhr9YEJ2Nz-mxLFU" />
     <meta name="description" content="LONG LAMYKA — Cute, Clean & Premium Online Store 🎀" />
     <title>LONG LAMYKA — Official Store 🎀</title>
+
+    <!-- Favicon & Site Icons (Default: LONG LAMYKA logo, dynamically updated from database) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- Open Graph / Social Media Preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="LONG LAMYKA — Official Store 🎀" />
+    <meta property="og:description" content="LONG LAMYKA — Cute, Clean & Premium Online Store 🎀" />
+    <meta property="og:image" content="/logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="LONG LAMYKA — Official Store 🎀" />
+    <meta name="twitter:image" content="/logo.png" />
+
+    <!-- Instant Branding bootstrap from cached database settings (runs before React loads) -->
+    <script>
+      (function () {
+        try {
+          var logo = localStorage.getItem("site_logo");
+          if (logo) {
+            var icons = document.querySelectorAll("link[rel*='icon'], link[rel='apple-touch-icon']");
+            icons.forEach(function (el) { el.href = logo; });
+          }
+          var name = localStorage.getItem("site_name");
+          if (name) {
+            var fullTitle = name.indexOf("Official") !== -1 ? name : name + " — Official Store 🎀";
+            if (document.title !== fullTitle) document.title = fullTitle;
+          }
+        } catch (e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
