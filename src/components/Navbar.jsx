@@ -116,8 +116,8 @@ export default function Navbar() {
       <header className="sticky top-0 z-40 w-full max-w-full bg-white/85 dark:bg-[#160f1c]/85 backdrop-blur-2xl border-b border-purple-100/70 dark:border-purple-950/50 shadow-soft transition-colors duration-300">
         {/* Optional Top Milestone Bar */}
         {topMilestone && (
-          <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white text-[11px] sm:text-xs font-bold py-1 px-3 flex items-center justify-center gap-2 relative overflow-hidden">
-            <Link to="/cart" className="flex items-center gap-1.5 hover:underline truncate">
+          <div className="bg-[#fce7f3] dark:bg-[#2c1223] border-b border-pink-200/80 dark:border-pink-900/50 text-pink-900 dark:text-pink-200 text-[11px] sm:text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2 relative overflow-hidden transition-colors">
+            <Link to="/cart" className="flex items-center gap-1.5 hover:text-pink-700 dark:hover:text-pink-100 hover:underline truncate">
               <span>{topRemaining > 0 ? (topMilestone.icon || "🎁") : (topMilestone.unlocked_icon || "🎉")}</span>
               <span>
                 {topRemaining > 0
@@ -126,7 +126,7 @@ export default function Navbar() {
               </span>
             </Link>
             <div
-              className="absolute bottom-0 left-0 h-[2px] bg-white/70 transition-all duration-300"
+              className="absolute bottom-0 left-0 h-[2px] bg-pink-400 dark:bg-pink-400 transition-all duration-300"
               style={{ width: `${topPercent}%` }}
             />
           </div>
