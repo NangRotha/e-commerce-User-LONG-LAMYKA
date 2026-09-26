@@ -31,26 +31,26 @@ export default function Footer() {
     : s.store_address_en || STORE_LOCATION.addressEn;
 
   return (
-    <footer className="bg-[#120B16] text-slate-300 border-t-2 border-pink-950/40 mt-20 transition-colors">
+    <footer className="bg-[#120e1a] text-slate-300 border-t border-purple-950/40 mt-20 transition-colors font-sans">
       {/* Top Banner inside Footer */}
-      <div className="border-b border-pink-950/40 bg-[#1A1020]/60">
+      <div className="border-b border-purple-950/40 bg-[#160f1c]/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
               <p className="text-sm font-bold text-white flex items-center gap-1.5">
                 <span>🎀</span>
-                <span>{t("footer.guarantee") || "100% Authentic Cute Products"}</span>
+                <span>{t("footer.guarantee") || "100% Authentic Products"}</span>
               </p>
-              <p className="text-xs text-pink-200/70 font-medium">
+              <p className="text-xs text-purple-200/70 font-medium">
                 {t("trust.deliveryDesc") || "Fast Sweet Delivery 25 Provinces"}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full bg-pink-950/60 border border-pink-500/30 text-pink-200 shadow-soft">
+          <div className="flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-2xl bg-[#1c1626] border border-purple-500/30 text-purple-200 shadow-soft">
             <span>🇰🇭</span>
             <span>{t("footer.payWith") || "Bakong KHQR · All Bank Wallets ✨"}</span>
           </div>
@@ -66,19 +66,20 @@ export default function Footer() {
               to="/"
               className="group flex items-center gap-2.5 text-xl font-black text-white"
             >
-              {siteLogo ? (
+              <div
+                className="w-10 h-10 rounded-full overflow-hidden shadow-xs bg-[#f6f0fc] shrink-0"
+                style={{ border: "2px solid white" }}
+              >
                 <img
-                  src={siteLogo}
+                  src={siteLogo || "/avatar_clay.jpg"}
                   alt={siteName}
-                  className="h-9 w-auto max-w-[150px] object-contain transition-transform group-hover:scale-105"
-                  onError={(e) => (e.target.style.display = "none")}
+                  className="w-full h-full object-cover object-top"
+                  onError={(e) => {
+                    e.target.src = "/avatar_clay.jpg";
+                  }}
                 />
-              ) : (
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-pink-400 via-rose-400 to-pink-500 text-white shadow-cute-glow flex items-center justify-center">
-                  <span className="text-base">🎀</span>
-                </div>
-              )}
-              <span className="tracking-tight bg-gradient-to-r from-white via-pink-100 to-pink-200 bg-clip-text text-transparent">{siteName}</span>
+              </div>
+              <span className="tracking-tight text-white">{siteName}</span>
             </Link>
 
             <p className="text-sm text-slate-400 leading-relaxed font-medium">

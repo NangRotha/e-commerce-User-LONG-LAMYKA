@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   ShoppingBag,
@@ -33,11 +33,8 @@ import {
 import { STORE_LOCATION } from "../lib/location";
 
 /**
- * Navbar — Storefront Luxury Redesign
- * ✅ Clean, responsive UI across all screen sizes (Mobile, Tablet, Desktop)
- * ✅ Mobile: Clean brand logo + Quick Cart pill + Modern Hamburger Menu
- * ✅ Mobile Drawer: Navigation, Language segmented toggle, Dark mode toggle, Social hub & Maps
- * ✅ Desktop: Luxury horizontal bar with Store, Social pills, Radar pulse, Cart, and Controls
+ * Navbar — Storefront 3D Claymorphic Redesign (Matched with Frontend-Admin)
+ * Styled with soft lilac borders, 3D avatar, time-of-day greeting, and clay controls.
  */
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -60,6 +57,14 @@ export default function Navbar() {
 
   // Real-time status (WebSocket connection)
   const online = useRealtime("products_changed", () => {});
+
+  // Time-of-day greeting matching admin dashboard
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return { text: t("layout.goodMorning", { name: siteName }), icon: "☁️" };
+    if (hour < 18) return { text: t("layout.goodAfternoon", { name: siteName }), icon: "☀️" };
+    return { text: t("layout.goodEvening", { name: siteName }), icon: "🌙" };
+  }, [siteName, t]);
 
   // Top delivery milestone banner (real-time)
   const [milestones, setMilestones] = useState([]);
@@ -108,10 +113,10 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full max-w-full bg-white/90 dark:bg-[#130D18]/90 backdrop-blur-2xl border-b border-pink-100/80 dark:border-pink-950/60 shadow-marshmallow transition-colors duration-300">
+      <header className="sticky top-0 z-40 w-full max-w-full bg-white/85 dark:bg-[#160f1c]/85 backdrop-blur-2xl border-b border-purple-100/70 dark:border-purple-950/50 shadow-soft transition-colors duration-300">
         {/* Optional Top Milestone Bar */}
         {topMilestone && (
-          <div className="bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 text-white text-[11px] sm:text-xs font-bold py-1 px-3 flex items-center justify-center gap-2 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white text-[11px] sm:text-xs font-bold py-1 px-3 flex items-center justify-center gap-2 relative overflow-hidden">
             <Link to="/cart" className="flex items-center gap-1.5 hover:underline truncate">
               <span>{topRemaining > 0 ? (topMilestone.icon || "🎁") : (topMilestone.unlocked_icon || "🎉")}</span>
               <span>
@@ -128,53 +133,57 @@ export default function Navbar() {
         )}
 
         <nav className="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full">
-          {/* Brand Logo & Name */}
+          {/* Brand Section with 3D Avatar & Greeting (Matched with Admin layout) */}
           <Link
             to="/"
-            className="group flex items-center gap-2 sm:gap-2.5 shrink min-w-0 focus:outline-none"
+            className="group flex items-center gap-2.5 sm:gap-3.5 shrink min-w-0 focus:outline-none"
             aria-label={`${siteName} Home`}
           >
-            {siteLogo ? (
-              <div className="relative p-1 rounded-2xl bg-white dark:bg-[#1A1220] border border-pink-200/70 dark:border-pink-900/50 shadow-marshmallow transition-all duration-300 group-hover:scale-105 group-hover:shadow-cute-glow shrink-0 overflow-hidden">
+            {/* 3D Avatar character in circle with white border (Same as Admin) */}
+            <div className="relative group shrink-0">
+              <div
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-md shadow-purple-300/40 dark:shadow-none bg-[#f6f0fc]"
+                style={{ border: "2.5px solid white" }}
+              >
                 <img
-                  src={siteLogo}
+                  src={siteLogo || "/avatar_clay.jpg"}
                   alt={siteName}
-                  className="h-8 sm:h-10 w-auto max-w-[110px] xs:max-w-[140px] sm:max-w-[180px] object-contain rounded-xl"
-                  onError={(e) => (e.target.style.display = "none")}
+                  className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-110"
+                  onError={(e) => {
+                    e.target.src = "/avatar_clay.jpg";
+                  }}
                 />
               </div>
-            ) : (
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-pink-400 via-rose-400 to-pink-500 text-white flex items-center justify-center shadow-cute-glow transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shrink-0">
-                <span className="text-lg">🎀</span>
-              </div>
-            )}
+            </div>
+
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-pink-100 transition-colors group-hover:text-pink-600 dark:group-hover:text-pink-300 max-w-[130px] xs:max-w-[170px] sm:max-w-none">
+                <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-300 max-w-[130px] xs:max-w-[170px] sm:max-w-none">
                   {siteName}
                 </span>
-                <span className="text-xs animate-cute-bounce">✨</span>
+                <span className="text-xs">✨</span>
               </div>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-widest text-pink-500 dark:text-pink-400">
-                <span>🎀</span> {t("nav.storeTagline")}
+              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 dark:text-purple-200/70 truncate">
+                <span>{greeting.text}</span>
+                <span>{greeting.icon}</span>
               </span>
             </div>
           </Link>
 
           {/* =========================================================
               DESKTOP CONTROLS (md: and above)
-              Full horizontal layout with Store, Social, Cart, and Theme
+              Full horizontal layout matching Frontend-Admin
              ========================================================= */}
           <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
-            {/* Store Navigation Link */}
+            {/* Store Navigation Link with Clay Pill */}
             <NavLink
               to="/"
               end
               className={({ isActive }) =>
-                `inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-black transition-all duration-200 ${
+                `inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 ${
                   isActive
-                    ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-cute-glow scale-102"
-                    : "text-slate-600 dark:text-pink-200/80 hover:text-pink-600 dark:hover:text-pink-300 hover:bg-pink-50/80 dark:hover:bg-pink-950/40"
+                    ? "clay-nav-active"
+                    : "text-slate-600 dark:text-purple-200/70 hover:text-purple-800 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/5"
                 }`
               }
             >
@@ -183,19 +192,19 @@ export default function Navbar() {
             </NavLink>
 
             {/* Divider */}
-            <div className="h-6 w-px bg-pink-200/60 dark:bg-pink-900/40 my-auto" />
+            <div className="h-6 w-px bg-purple-200/60 dark:bg-purple-900/40 my-auto" />
 
-            {/* Social Channels (Telegram · Facebook · Instagram) */}
+            {/* Social Channels (Styled as Clay Buttons) */}
             <div className="flex items-center gap-1.5">
               <a
                 href={tgUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-[#229ED9] hover:border-[#229ED9]/40 hover:bg-[#229ED9]/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
+                className="w-9 h-9 clay-circle-btn flex items-center justify-center text-slate-500 hover:text-[#229ED9] group"
                 title={t("social.telegram")}
                 aria-label={t("social.telegram")}
               >
-                <TelegramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                <TelegramIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
               </a>
 
               {waUrl && (
@@ -203,11 +212,11 @@ export default function Navbar() {
                   href={waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-[#25D366] hover:border-[#25D366]/40 hover:bg-[#25D366]/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
+                  className="w-9 h-9 clay-circle-btn flex items-center justify-center text-slate-500 hover:text-[#25D366] group"
                   title={t("social.whatsapp")}
                   aria-label={t("social.whatsapp")}
                 >
-                  <WhatsAppIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                  <WhatsAppIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
                 </a>
               )}
 
@@ -215,22 +224,22 @@ export default function Navbar() {
                 href={fbUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-[#1877F2] hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
+                className="w-9 h-9 clay-circle-btn flex items-center justify-center text-slate-500 hover:text-[#1877F2] group"
                 title={t("social.facebook")}
                 aria-label={t("social.facebook")}
               >
-                <FacebookIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                <FacebookIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
               </a>
 
               <a
                 href={igUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-500 hover:text-pink-500 hover:border-pink-500/40 hover:bg-pink-500/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
+                className="w-9 h-9 clay-circle-btn flex items-center justify-center text-slate-500 hover:text-pink-500 group"
                 title={t("social.instagram")}
                 aria-label={t("social.instagram")}
               >
-                <InstagramIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                <InstagramIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
               </a>
 
               {ttUrl && (
@@ -238,31 +247,31 @@ export default function Navbar() {
                   href={ttUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-2xl border border-pink-100 dark:border-pink-950/70 bg-pink-50/40 dark:bg-[#1A1220]/80 flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white hover:border-black/30 dark:hover:border-white/30 hover:bg-black/5 dark:hover:bg-white/10 shadow-xs transition-all duration-200 hover:scale-105 active:scale-95 group"
+                  className="w-9 h-9 clay-circle-btn flex items-center justify-center text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white group"
                   title={t("social.tiktok")}
                   aria-label={t("social.tiktok")}
                 >
-                  <TikTokIcon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                  <TikTokIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
                 </a>
               )}
             </div>
 
-            {/* Live Indicator */}
+            {/* Live Indicator Pill */}
             <div
-              className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold border transition-colors ${
+              className={`hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold border transition-colors ${
                 online
-                  ? "bg-pink-50/80 dark:bg-pink-950/50 border-pink-200/80 dark:border-pink-800/60 text-pink-600 dark:text-pink-300"
+                  ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-300"
                   : "bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-500"
               }`}
               title={t("home.liveHint")}
             >
               <span className="relative flex h-2 w-2">
                 {online && (
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 )}
                 <span
                   className={`relative inline-flex rounded-full h-2 w-2 ${
-                    online ? "bg-pink-500" : "bg-slate-400"
+                    online ? "bg-emerald-500" : "bg-slate-400"
                   }`}
                 />
               </span>
@@ -270,34 +279,38 @@ export default function Navbar() {
             </div>
 
             {/* Divider */}
-            <div className="h-6 w-px bg-pink-200/60 dark:bg-pink-900/40 my-auto" />
+            <div className="h-6 w-px bg-purple-200/60 dark:bg-purple-900/40 my-auto" />
 
-            {/* Cart Button with cute pink bubble */}
+            {/* Cart Button Styled as Clay Card Pill */}
             <Link
               to="/cart"
-              className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 text-white dark:bg-pink-950/60 dark:text-pink-100 font-black text-xs shadow-marshmallow hover:shadow-cute-glow hover:scale-105 active:scale-95 transition-all duration-200 group shrink-0 border border-slate-800 dark:border-pink-800/50"
+              className="relative inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-[#1c1626] text-slate-800 dark:text-purple-100 font-bold text-xs shadow-soft hover:shadow-lift hover:scale-105 active:scale-95 transition-all duration-200 group shrink-0 border border-purple-200/80 dark:border-purple-900/40"
               aria-label={`${t("nav.cart")}, ${count}`}
             >
               <span className="text-sm transition-transform group-hover:rotate-12">🛍️</span>
-              <span className="font-extrabold">{t("nav.cart")}</span>
+              <span className="font-bold">{t("nav.cart")}</span>
               <span
                 key={count}
-                className="bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-[11px] font-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center shadow-xs shadow-pink-500/40 animate-cute-bounce"
+                className="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white text-[11px] font-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center shadow-xs shadow-purple-500/30 animate-cute-bounce"
               >
                 {count}
               </span>
+              {subtotal > 0 && (
+                <span className="text-purple-600 dark:text-purple-300 text-xs font-black hidden lg:inline">
+                  {formatPrice(subtotal)}
+                </span>
+              )}
             </Link>
 
-            {/* Language & Theme toggles */}
+            {/* Language & Theme toggles matching admin */}
             <HeaderControls />
           </div>
 
           {/* =========================================================
               MOBILE CONTROLS (< md:)
-              Language button + Quick Cart Button + Modern Hamburger Menu
              ========================================================= */}
           <div className="flex md:hidden items-center gap-1.5 xs:gap-2 shrink-0">
-            {/* Mobile Language Button (direct toggle in navbar) */}
+            {/* Mobile Language Button (direct toggle with flag) */}
             <button
               type="button"
               onClick={() => setLang(lang === "km" ? "en" : "km")}
@@ -305,7 +318,7 @@ export default function Navbar() {
                 lang === "km" ? t("nav.switchToEnglish") : t("nav.switchToKhmer")
               }
               title={lang === "km" ? t("nav.switchToEnglish") : t("nav.switchToKhmer")}
-              className="inline-flex items-center gap-1 xs:gap-1.5 h-10 px-2.5 rounded-2xl bg-pink-50/70 dark:bg-[#1A1220] text-slate-800 dark:text-pink-200 border border-pink-200/80 dark:border-pink-900/50 font-bold text-xs shadow-marshmallow active:scale-95 transition-all select-none hover:bg-pink-100/60"
+              className="clay-circle-btn inline-flex items-center gap-1 xs:gap-1.5 h-10 px-2.5 rounded-2xl text-slate-800 dark:text-purple-200 font-bold text-xs select-none"
             >
               {lang === "km" ? (
                 <>
@@ -323,13 +336,13 @@ export default function Navbar() {
             {/* Mobile Quick Cart Button */}
             <Link
               to="/cart"
-              className="relative inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-400 via-rose-400 to-pink-500 text-white font-bold shadow-cute-glow active:scale-95 transition-all"
+              className="clay-circle-btn relative inline-flex items-center justify-center w-10 h-10 rounded-2xl text-slate-800 dark:text-purple-100 font-bold"
               aria-label={`${t("nav.cart")}, ${count}`}
             >
               <span className="text-base">🛍️</span>
               <span
                 key={count}
-                className="absolute -top-1 -right-1 bg-white text-pink-600 dark:bg-slate-900 dark:text-pink-400 text-[10px] font-black rounded-full h-4.5 min-w-4.5 px-1 flex items-center justify-center shadow-xs ring-2 ring-pink-400 dark:ring-pink-600 animate-cute-bounce"
+                className="absolute -top-1 -right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-black rounded-full h-4.5 min-w-4.5 px-1 flex items-center justify-center shadow-xs ring-2 ring-white dark:ring-[#160f1c] animate-cute-bounce"
               >
                 {count}
               </span>
@@ -341,16 +354,16 @@ export default function Navbar() {
               onClick={() => setMobileOpen((prev) => !prev)}
               aria-label={mobileOpen ? t("common.close") : t("nav.menu") || "Menu"}
               aria-expanded={mobileOpen}
-              className={`w-10 h-10 rounded-2xl flex items-center justify-center border transition-all duration-200 active:scale-95 ${
+              className={`clay-circle-btn w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-200 ${
                 mobileOpen
-                  ? "bg-pink-500 text-white border-transparent shadow-cute-glow"
-                  : "bg-pink-50/70 dark:bg-[#1A1220] text-slate-700 dark:text-pink-200 border-pink-200/80 dark:border-pink-900/50 hover:bg-pink-100/60"
+                  ? "bg-purple-500 text-white"
+                  : "text-slate-700 dark:text-purple-200"
               }`}
             >
               {mobileOpen ? (
-                <X className="w-5 h-5 animate-scale-in" />
+                <X className="w-5 h-5 text-current" />
               ) : (
-                <Menu className="w-5 h-5 animate-scale-in" />
+                <Menu className="w-5 h-5 text-current" />
               )}
             </button>
           </div>
@@ -358,7 +371,7 @@ export default function Navbar() {
       </header>
 
       {/* =========================================================
-          MOBILE NAVIGATION DRAWER (Slide from right with frosted glass)
+          MOBILE NAVIGATION DRAWER (Slide from right with 3D clay aesthetic)
          ========================================================= */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex justify-end">
@@ -369,55 +382,50 @@ export default function Navbar() {
             aria-hidden="true"
           />
 
-          {/* Drawer Container */}
+          {/* Drawer Container styled like admin sidebar */}
           <aside
-            className="relative z-10 w-full max-w-[320px] xs:max-w-[340px] h-full bg-[#FFF5F8]/95 dark:bg-[#130D18]/95 backdrop-blur-2xl border-l border-pink-200/80 dark:border-pink-900/50 shadow-2xl flex flex-col justify-between p-5 overflow-y-auto animate-slide-left select-none"
+            className="relative z-10 w-full max-w-[320px] xs:max-w-[340px] h-full admin-mesh-bg border-l border-purple-200/80 dark:border-purple-900/50 shadow-2xl flex flex-col justify-between p-4 overflow-y-auto animate-slide-left select-none font-sans"
             role="dialog"
             aria-label={t("nav.mobileNav")}
           >
-            {/* Drawer Top / Header */}
-            <div className="space-y-5">
-              <div className="flex items-center justify-between pb-4 border-b border-pink-100 dark:border-pink-950/80">
-                <Link
-                  to="/"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2.5 min-w-0"
-                >
-                  {siteLogo ? (
-                    <img
-                      src={siteLogo}
-                      alt={siteName}
-                      className="h-8 w-auto max-w-[110px] object-contain rounded-xl"
-                      onError={(e) => (e.target.style.display = "none")}
-                    />
-                  ) : (
-                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-pink-400 via-rose-400 to-pink-500 text-white flex items-center justify-center shadow-cute-glow">
-                      <span>🎀</span>
-                    </div>
-                  )}
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-black text-sm text-slate-900 dark:text-pink-100 truncate">
-                      {siteName}
-                    </span>
-                    <span className="text-[10px] font-extrabold text-pink-500 dark:text-pink-400 uppercase tracking-wider">
-                      🎀 Official Store
-                    </span>
-                  </div>
-                </Link>
-
+            <div className="space-y-4">
+              {/* Drawer Top / Profile Box (Same as Frontend-Admin Sidebar) */}
+              <div className="clay-card-purple p-4 flex flex-col items-center text-center relative border border-white/80 dark:border-purple-900/30">
                 <button
                   type="button"
                   onClick={() => setMobileOpen(false)}
-                  className="w-9 h-9 rounded-2xl bg-pink-100/60 hover:bg-pink-200/60 dark:bg-pink-950/60 dark:hover:bg-pink-900/60 text-slate-600 dark:text-pink-300 flex items-center justify-center transition-colors active:scale-95"
+                  className="clay-circle-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-800 dark:text-purple-300"
                   aria-label={t("common.close")}
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
+
+                <div
+                  className="w-16 h-16 rounded-full overflow-hidden shadow-md shadow-purple-300/40 dark:shadow-none bg-[#f6f0fc] mb-2"
+                  style={{ border: "3px solid white" }}
+                >
+                  <img
+                    src={siteLogo || "/avatar_clay.jpg"}
+                    alt={siteName}
+                    className="w-full h-full object-cover object-top"
+                    onError={(e) => {
+                      e.target.src = "/avatar_clay.jpg";
+                    }}
+                  />
+                </div>
+
+                <h2 className="text-sm font-black text-slate-800 dark:text-white tracking-tight flex items-center justify-center gap-1.5">
+                  <span>{t("layout.hi", { name: siteName })}</span>
+                  <span className="inline-block animate-bounce" style={{ animationDuration: "2s" }}>👋</span>
+                </h2>
+                <p className="text-[11px] text-slate-500 dark:text-purple-200/70 font-medium mt-0.5">
+                  {t("layout.goodToSeeYou")}
+                </p>
               </div>
 
               {/* Navigation Cards */}
-              <div className="space-y-2">
-                <p className="text-[11px] font-extrabold uppercase tracking-wider text-pink-400 dark:text-pink-500 px-1">
+              <div className="space-y-1.5">
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-purple-400 dark:text-purple-400 px-1">
                   🌸 {t("nav.navigation") || "Navigation"}
                 </p>
 
@@ -427,19 +435,19 @@ export default function Navbar() {
                   end
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center justify-between p-3.5 rounded-2xl font-black transition-all duration-200 ${
+                    `flex items-center justify-between p-3 rounded-2xl font-bold transition-all duration-200 ${
                       isActive
-                        ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-cute-glow"
-                        : "bg-white dark:bg-[#1A1220]/80 text-slate-800 dark:text-pink-100 hover:bg-pink-50 dark:hover:bg-pink-950/30 border border-pink-100 dark:border-pink-950/80 shadow-marshmallow"
+                        ? "clay-nav-active"
+                        : "clay-card text-slate-800 dark:text-purple-100 hover:bg-white/80"
                     }`
                   }
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-2xl bg-pink-100/60 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 flex items-center justify-center shrink-0">
                       <span>🌸</span>
                     </div>
                     <div className="text-left">
-                      <span className="text-sm block">{t("nav.shop")}</span>
+                      <span className="text-xs font-black block">{t("nav.shop")}</span>
                       <span className="text-[10px] opacity-75 font-normal block">
                         {t("home.browseAll")}
                       </span>
@@ -453,26 +461,26 @@ export default function Navbar() {
                   to="/cart"
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center justify-between p-3.5 rounded-2xl font-black transition-all duration-200 ${
+                    `flex items-center justify-between p-3 rounded-2xl font-bold transition-all duration-200 ${
                       isActive
-                        ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-cute-glow"
-                        : "bg-white dark:bg-[#1A1220]/80 text-slate-800 dark:text-pink-100 hover:bg-pink-50 dark:hover:bg-pink-950/30 border border-pink-100 dark:border-pink-950/80 shadow-marshmallow"
+                        ? "clay-nav-active"
+                        : "clay-card text-slate-800 dark:text-purple-100 hover:bg-white/80"
                     }`
                   }
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-2xl bg-rose-100/60 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 flex items-center justify-center shrink-0">
                       <span>🛍️</span>
                     </div>
                     <div className="text-left">
-                      <span className="text-sm block">{t("nav.cart")}</span>
+                      <span className="text-xs font-black block">{t("nav.cart")}</span>
                       <span className="text-[10px] opacity-75 font-normal block">
                         {t("home.instantKhqrCheckout")}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-xs animate-cute-bounce">
+                    <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full shadow-xs">
                       {count}
                     </span>
                     <ChevronRight className="w-4 h-4 opacity-70" />
@@ -481,21 +489,21 @@ export default function Navbar() {
               </div>
 
               {/* Language & Appearance Control Hub */}
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 space-y-3">
+              <div className="clay-card p-3 space-y-3">
                 {/* Language Segmented Toggle */}
                 <div>
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-purple-300/80 mb-1.5 flex items-center gap-1">
                     <span>🌐</span>
                     <span>{t("nav.language") || "Language"}</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60">
+                  <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/30">
                     <button
                       type="button"
                       onClick={() => setLang("km")}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all ${
                         lang === "km"
-                          ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs"
-                          : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xs"
+                          : "text-slate-600 dark:text-slate-300"
                       }`}
                     >
                       <CambodiaFlag className="w-4 h-3 rounded-[2px] shrink-0" />
@@ -504,10 +512,10 @@ export default function Navbar() {
                     <button
                       type="button"
                       onClick={() => setLang("en")}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all ${
                         lang === "en"
-                          ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-xs"
-                          : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-xs"
+                          : "text-slate-600 dark:text-slate-300"
                       }`}
                     >
                       <EnglishFlag className="w-4 h-3 rounded-[2px] shrink-0" />
@@ -518,20 +526,20 @@ export default function Navbar() {
 
                 {/* Appearance / Theme Segmented Toggle */}
                 <div>
-                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
+                  <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-purple-300/80 mb-1.5 flex items-center gap-1">
                     <span>🎨</span>
                     <span>{t("nav.appearance") || "Appearance"}</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-700/60">
+                  <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/30">
                     <button
                       type="button"
                       onClick={() => {
                         if (isDark) toggleTheme();
                       }}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all ${
                         !isDark
-                          ? "bg-white text-rose-600 shadow-xs border border-pink-200/60"
-                          : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                          ? "bg-white text-purple-700 shadow-xs border border-purple-200/60"
+                          : "text-slate-600 dark:text-slate-300"
                       }`}
                     >
                       <Sun className="w-3.5 h-3.5 text-amber-500" />
@@ -542,13 +550,13 @@ export default function Navbar() {
                       onClick={() => {
                         if (!isDark) toggleTheme();
                       }}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
+                      className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-bold transition-all ${
                         isDark
-                          ? "bg-slate-800 text-pink-400 shadow-xs border border-pink-900/50"
-                          : "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+                          ? "bg-[#1c1626] text-purple-300 shadow-xs border border-purple-800/40"
+                          : "text-slate-600 dark:text-slate-300"
                       }`}
                     >
-                      <Moon className="w-3.5 h-3.5 text-pink-400" />
+                      <Moon className="w-3.5 h-3.5 text-purple-400" />
                       <span>{t("nav.darkMode")}</span>
                     </button>
                   </div>
@@ -556,39 +564,37 @@ export default function Navbar() {
               </div>
 
               {/* Channels & Support */}
-              <div className="space-y-2">
-                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1">
+              <div className="space-y-1.5">
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-purple-400 px-1">
                   {t("nav.channels") || "Channels & Support"}
                 </p>
 
-                <div className="grid grid-cols-1 gap-1.5">
-                  {/* Telegram */}
+                <div className="grid grid-cols-1 gap-1">
                   <a
                     href={tgUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-100 dark:border-sky-900/40 text-[#229ED9] hover:bg-[#229ED9] hover:text-white transition-all duration-200 group text-xs font-bold"
+                    className="flex items-center justify-between p-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-100 dark:border-sky-900/40 text-[#229ED9] hover:bg-[#229ED9] hover:text-white transition-all duration-200 group text-xs font-bold"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-[#229ED9] text-white flex items-center justify-center shadow-2xs">
-                        <TelegramIcon className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-[#229ED9] text-white flex items-center justify-center shadow-2xs">
+                        <TelegramIcon className="w-3.5 h-3.5" />
                       </div>
                       <span>{t("social.tgOfficialChat")}</span>
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
 
-                  {/* WhatsApp */}
                   {waUrl && (
                     <a
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-[#25D366]/10 dark:bg-[#25D366]/20 border border-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all duration-200 group text-xs font-bold"
+                      className="flex items-center justify-between p-2 rounded-xl bg-[#25D366]/10 dark:bg-[#25D366]/20 border border-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all duration-200 group text-xs font-bold"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-[#25D366] text-white flex items-center justify-center shadow-2xs">
-                          <WhatsAppIcon className="w-4 h-4" />
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-[#25D366] text-white flex items-center justify-center shadow-2xs">
+                          <WhatsAppIcon className="w-3.5 h-3.5" />
                         </div>
                         <span>{t("social.waChat")}</span>
                       </div>
@@ -596,107 +602,39 @@ export default function Navbar() {
                     </a>
                   )}
 
-                  {/* Facebook */}
                   <a
                     href={fbUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-all duration-200 group text-xs font-bold"
+                    className="flex items-center justify-between p-2 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-all duration-200 group text-xs font-bold"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-[#1877F2] text-white flex items-center justify-center shadow-2xs">
-                        <FacebookIcon className="w-4 h-4" />
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-[#1877F2] text-white flex items-center justify-center shadow-2xs">
+                        <FacebookIcon className="w-3.5 h-3.5" />
                       </div>
-                      <span>{t("social.fbPage")}</span>
+                      <span>{t("social.fbOfficialPage")}</span>
                     </div>
                     <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                   </a>
-
-                  {/* Instagram */}
-                  <a
-                    href={igUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-pink-50 dark:bg-pink-950/40 border border-pink-100 dark:border-pink-900/40 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-200 group text-xs font-bold"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 text-white flex items-center justify-center shadow-2xs">
-                        <InstagramIcon className="w-4 h-4" />
-                      </div>
-                      <span>{t("social.instagram")}</span>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
-                  </a>
-
-                  {/* TikTok */}
-                  {ttUrl && (
-                    <a
-                      href={ttUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 text-slate-900 dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-200 group text-xs font-bold"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center shadow-2xs">
-                          <TikTokIcon className="w-4 h-4" />
-                        </div>
-                        <span>{t("social.tiktok")}</span>
-                      </div>
-                      <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
-                    </a>
-                  )}
-
-                  {/* Store Location */}
-                  <a
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white transition-all duration-200 group text-xs font-bold"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-rose-500 text-white flex items-center justify-center shadow-2xs">
-                        <MapPin className="w-4 h-4" />
-                      </div>
-                      <span>{t("social.gmapsStore")}</span>
-                    </div>
-                    <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
-                  </a>
-
-                  {/* Direct Phone Call */}
-                  {phone && (
-                    <a
-                      href={`tel:${phone}`}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-pink-50 dark:bg-pink-950/40 border border-pink-100 dark:border-pink-900/40 text-pink-700 dark:text-pink-300 hover:bg-rose-500 hover:text-white transition-all duration-200 group text-xs font-bold"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-pink-500 text-white flex items-center justify-center shadow-2xs">
-                          <Phone className="w-4 h-4" />
-                        </div>
-                        <span>Call: {phone}</span>
-                      </div>
-                      <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
-                    </a>
-                  )}
                 </div>
               </div>
             </div>
 
-            {/* Drawer Bottom / Footer */}
-            <div className="pt-4 border-t border-slate-200/70 dark:border-slate-800/80 mt-4 space-y-2">
-              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                <span className="flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500" />
-                  </span>
-                  <span className="font-semibold text-pink-600 dark:text-pink-400">
-                    {t("nav.onlineMsg") || "System Online · KHQR Ready"}
-                  </span>
-                </span>
+            {/* Bottom Store Card matching Admin's plant_clay bottom card */}
+            <div className="pt-3 border-t border-purple-200/50 dark:border-purple-900/40">
+              <div className="clay-card p-2.5 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-white dark:border-purple-900/30">
+                  <img src="/plant_clay.jpg" alt="Store mascot" className="w-full h-full object-cover" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-black text-slate-800 dark:text-white truncate">
+                    {siteName} 🌸
+                  </p>
+                  <p className="text-[10px] text-slate-500 dark:text-purple-200/60 font-medium truncate">
+                    {t("nav.onlineMsg")}
+                  </p>
+                </div>
               </div>
-              <p className="text-[10px] text-slate-400 dark:text-slate-600">
-                © {new Date().getFullYear()} {siteName}. All rights reserved.
-              </p>
             </div>
           </aside>
         </div>

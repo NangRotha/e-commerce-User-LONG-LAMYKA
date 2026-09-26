@@ -39,21 +39,25 @@ function MoonIcon({ className }) {
 }
 
 /**
- * ប៊ូតុងប្តូរភាសា (ខ្មែរ 🇰🇭 / English 🇬🇧) និងប្តូរ Theme (ភ្លឺ / ងងឹត)
- * រចនា Segmented Pill ស្រស់ស្អាត មិនធ្លាយ ឬកាត់ផ្តាច់ទង់ជាតិលើគ្រប់អេក្រង់
+ * ប៊ូតុងប្តូរភាសា (ខ្មែរ 🇰🇭 / English 🇬🇧) និង Theme (ភ្លឺ/ងងឹត)
+ * Matches frontend-admin with rounded-2xl clay borders and shadows.
  */
-export default function HeaderControls({ className = "" }) {
+export default function HeaderControls({ dark = false, className = "" }) {
   const { lang, setLang, languages, t } = useI18n();
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div className={`flex items-center gap-1.5 sm:gap-2 ${className}`}>
+    <div className={`flex items-center gap-1.5 sm:gap-2.5 ${className}`}>
       {/* ===== Language Selector with Flags ===== */}
       <div
         role="group"
         aria-label={t("nav.selectLanguage")}
         title={t("nav.language")}
-        className="inline-flex items-center gap-0.5 p-1 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-xs shrink-0"
+        className={`inline-flex items-center gap-0.5 p-1 rounded-2xl border shadow-2xs shrink-0 transition-all ${
+          dark
+            ? "bg-[#181120] border-purple-950/60"
+            : "bg-white/90 dark:bg-[#181120] border-purple-100/80 dark:border-purple-950/70"
+        }`}
       >
         {languages.map((l) => {
           const active = lang === l.code;
@@ -63,10 +67,12 @@ export default function HeaderControls({ className = "" }) {
               type="button"
               onClick={() => setLang(l.code)}
               aria-pressed={active}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs rounded-full transition-all duration-200 select-none ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs rounded-xl transition-all duration-200 select-none ${
                 active
-                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-xs shadow-pink-500/25"
-                  : "font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
+                  ? "bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white font-bold shadow-xs shadow-purple-500/25 scale-[1.02]"
+                  : dark
+                  ? "font-medium text-slate-400 hover:text-white hover:bg-white/10"
+                  : "font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-50/70 dark:hover:bg-white/10"
               }`}
             >
               {l.code === "km" ? (
@@ -81,13 +87,17 @@ export default function HeaderControls({ className = "" }) {
         })}
       </div>
 
-      {/* ===== Theme Toggle (Dark / Light) ===== */}
+      {/* ===== Theme Toggle ===== */}
       <button
         type="button"
         onClick={toggleTheme}
         aria-label={isDark ? t("nav.lightMode") : t("nav.darkMode")}
         title={isDark ? t("nav.lightMode") : t("nav.darkMode")}
-        className="group relative w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-pink-100/80 dark:border-pink-950/60 bg-white dark:bg-slate-800/90 flex items-center justify-center text-slate-700 dark:text-slate-200 transition-all duration-300 hover:border-pink-400 hover:text-pink-600 dark:hover:border-pink-400 dark:hover:text-pink-300 hover:shadow-md hover:shadow-pink-500/15 active:scale-90 overflow-hidden shrink-0"
+        className={`relative w-8 h-8 sm:w-9 sm:h-9 rounded-2xl border flex items-center justify-center transition-all duration-300 active:scale-95 overflow-hidden shrink-0 shadow-2xs clay-circle-btn ${
+          dark
+            ? "border-purple-950/60 bg-[#1e1526] text-slate-300 hover:text-white hover:border-purple-500/50 hover:shadow-xs hover:shadow-purple-500/20"
+            : "border-purple-100/90 dark:border-purple-950/70 bg-white dark:bg-[#181120] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-xs hover:shadow-purple-500/20"
+        }`}
       >
         <span
           className={`absolute transition-all duration-500 ${
@@ -102,10 +112,10 @@ export default function HeaderControls({ className = "" }) {
           className={`absolute transition-all duration-500 ${
             isDark
               ? "translate-y-8 -rotate-90 opacity-0"
-              : "translate-y-0 rotate-0 opacity-100 text-slate-700"
+              : "translate-y-0 rotate-0 opacity-100 text-slate-700 dark:text-slate-200"
           }`}
         >
-          <MoonIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <MoonIcon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
         </span>
       </button>
     </div>

@@ -25,6 +25,13 @@ export const en = {
     wishlistAdd: "Add to Wishlist",
     wishlistRemove: "Remove from Wishlist",
   },
+  layout: {
+    goodMorning: "Good morning, {name}!",
+    goodAfternoon: "Good afternoon, {name}!",
+    goodEvening: "Good evening, {name}!",
+    hi: "Hi, {name}!",
+    goodToSeeYou: "Welcome to our cute store!",
+  },
   nav: {
     shop: "Shop",
     cart: "Cart",
@@ -381,6 +388,13 @@ export const km = {
     call: "ទូរស័ព្ទ",
     wishlistAdd: "បន្ថែមទៅបញ្ជីចូលចិត្ត",
     wishlistRemove: "លុបចេញពីបញ្ជីចូលចិត្ត",
+  },
+  layout: {
+    goodMorning: "អរុណសួស្តី, {name}!",
+    goodAfternoon: "ទិវាសួស្តី, {name}!",
+    goodEvening: "សាយណ្ហសួស្តី, {name}!",
+    hi: "សួស្តី, {name}!",
+    goodToSeeYou: "រីករាយដែលបានជួបអ្នកម្ដងទៀត!",
   },
   nav: {
     shop: "ហាង",

@@ -5,6 +5,10 @@ import { useCart } from "../context/CartContext";
 import { effectivePrice, formatPrice, localizedName } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 
+/**
+ * ProductCard — 3D Claymorphic Card Matched with Frontend-Admin
+ * Features rounded-[28px], clay bevel, soft purple-pink accents, and responsive layout.
+ */
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const { t, lang } = useI18n();
@@ -61,12 +65,12 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="group relative bg-white dark:bg-[#1A1220] rounded-[28px] border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow hover:shadow-cute-glow card-hover flex flex-col overflow-hidden will-change-transform">
+    <div className="group relative clay-card card-hover flex flex-col overflow-hidden will-change-transform">
       {/* Image container with rounded inner border */}
       <div className="p-2 pb-0">
         <Link
           to={`/product/${product.id}`}
-          className="relative block aspect-square rounded-[22px] bg-pink-50/40 dark:bg-[#130D18] overflow-hidden"
+          className="relative block aspect-square rounded-[22px] bg-purple-50/40 dark:bg-[#120e1a] overflow-hidden"
         >
           {product.image_url ? (
             <img
@@ -82,47 +86,47 @@ export default function ProductCard({ product }) {
           )}
 
           {/* Gradient overlay on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-pink-950/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-purple-950/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Cute Sticker Pill */}
           {onSale ? (
-            <div className="absolute top-2.5 left-2.5 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-full shadow-cute-glow animate-pop-in tracking-wide flex items-center gap-1">
+            <div className="absolute top-2.5 left-2.5 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-full shadow-xs animate-pop-in tracking-wide flex items-center gap-1">
               <span>🎀</span>
               <span>-{Math.round(product.sale_percent)}% OFF</span>
             </div>
           ) : (
-            <div className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-[#1A1220]/90 text-pink-600 dark:text-pink-300 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs backdrop-blur-md border border-pink-100 dark:border-pink-950/80 flex items-center gap-1">
+            <div className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-[#1c1626]/90 text-purple-700 dark:text-purple-300 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs backdrop-blur-md border border-purple-100 dark:border-purple-950/80 flex items-center gap-1">
               <span>✨</span>
-              <span>{t("product.cutePick")}</span>
+              <span>{t("product.cutePick") || "Cute Pick"}</span>
             </div>
           )}
 
-          {/* Wishlist Heart Button */}
+          {/* Wishlist Heart Button Styled with clay-circle-btn */}
           <button
             type="button"
             onClick={toggleWishlist}
             aria-label={isWished ? t("common.wishlistRemove") : t("common.wishlistAdd")}
-            className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 active:scale-90 shadow-xs z-10 ${
+            className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 active:scale-90 shadow-xs z-10 clay-circle-btn ${
               isWished
-                ? "bg-rose-500 text-white shadow-rose-500/30"
-                : "bg-white/85 dark:bg-[#1A1220]/85 text-pink-400 hover:text-rose-500 hover:bg-white border border-pink-200/60 dark:border-pink-900/60"
+                ? "bg-rose-500 text-white shadow-rose-500/30 !border-rose-400"
+                : "text-purple-400 hover:text-rose-500"
             } ${heartAnim ? "animate-heartbeat" : ""}`}
           >
             <Heart
-              className={`w-4 h-4 ${isWished ? "fill-white" : "hover:scale-110"}`}
+              className={`w-4 h-4 ${isWished ? "fill-white text-white" : "hover:scale-110"}`}
             />
           </button>
 
           {/* Stock badge */}
           {outOfStock && (
-            <span className="absolute bottom-2.5 left-2.5 bg-slate-900/85 text-pink-100 text-[10px] font-extrabold px-2.5 py-1 rounded-full backdrop-blur-md border border-white/10">
+            <span className="absolute bottom-2.5 left-2.5 bg-slate-900/85 text-purple-100 text-[10px] font-extrabold px-2.5 py-1 rounded-full backdrop-blur-md border border-white/10">
               {t("product.soldOut")}
             </span>
           )}
 
           {/* Video badge */}
           {product.video_url && (
-            <span className="absolute bottom-2.5 right-2.5 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
+            <span className="absolute bottom-2.5 right-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
               <Play className="w-2.5 h-2.5 fill-current" />
               VIDEO
             </span>
@@ -130,7 +134,7 @@ export default function ProductCard({ product }) {
 
           {/* Quick view button on hover */}
           <div className="absolute bottom-3 inset-x-3 flex justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 bg-white/95 dark:bg-[#1A1220]/95 text-pink-600 dark:text-pink-200 text-xs font-black px-3.5 py-1.5 rounded-full shadow-marshmallow backdrop-blur-md border border-pink-200/60 dark:border-pink-900/60">
+            <span className="clay-card inline-flex items-center gap-1.5 text-purple-700 dark:text-purple-200 text-xs font-black px-3.5 py-1.5 rounded-full backdrop-blur-md border border-purple-200/60 dark:border-purple-900/60 shadow-soft">
               <Eye className="w-3.5 h-3.5" />
               <span>{t("product.viewDetails")} 🌸</span>
             </span>
@@ -142,13 +146,13 @@ export default function ProductCard({ product }) {
       <div className="p-3.5 sm:p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between gap-2">
           {product.category ? (
-            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-pink-600 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/60 border border-pink-200/50 dark:border-pink-900/50 px-2 py-0.5 rounded-full truncate">
+            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-200/50 dark:border-purple-900/50 px-2 py-0.5 rounded-xl truncate">
               🌸 {product.category}
             </span>
           ) : (
             <span />
           )}
-          <div className="flex items-center gap-1 text-amber-500 text-xs font-black bg-amber-50/60 dark:bg-amber-950/40 px-2 py-0.5 rounded-full border border-amber-200/60 dark:border-amber-900/50">
+          <div className="flex items-center gap-1 text-amber-600 dark:text-amber-300 text-xs font-black bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-xl border border-amber-200/60 dark:border-amber-900/50">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"}</span>
           </div>
@@ -156,7 +160,7 @@ export default function ProductCard({ product }) {
 
         <Link
           to={`/product/${product.id}`}
-          className="mt-2 font-black text-slate-800 dark:text-pink-100 line-clamp-2 leading-snug hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-xs sm:text-base"
+          className="mt-2 font-black text-slate-800 dark:text-white line-clamp-2 leading-snug hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-xs sm:text-base"
         >
           {localizedName(product, lang)}
         </Link>
@@ -165,7 +169,7 @@ export default function ProductCard({ product }) {
         <div className="mt-auto pt-3 sm:pt-4 flex items-center justify-between gap-1.5 sm:gap-2">
           <div className="min-w-0">
             <div className="flex items-baseline gap-1 sm:gap-1.5 flex-wrap">
-              <span className="text-base sm:text-xl font-black text-pink-600 dark:text-pink-300 tracking-tight">
+              <span className="text-base sm:text-xl font-black text-purple-700 dark:text-purple-300 tracking-tight">
                 {formatPrice(price)}
               </span>
               {onSale ? (
@@ -178,7 +182,7 @@ export default function ProductCard({ product }) {
                 </span>
               ) : null}
             </div>
-            <p className="text-[10px] sm:text-[11px] text-pink-400/80 dark:text-pink-400/60 font-semibold truncate">
+            <p className="text-[10px] sm:text-[11px] text-purple-400/80 dark:text-purple-400/60 font-semibold truncate">
               ~{khrAmount.toLocaleString()} ៛
             </p>
           </div>
@@ -188,10 +192,10 @@ export default function ProductCard({ product }) {
             onClick={handleAdd}
             disabled={outOfStock}
             aria-label={outOfStock ? t("product.soldOut") : t("product.addToCart")}
-            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-black transition-all duration-200 active:scale-95 shadow-xs shrink-0 ripple-container ${
+            className={`relative flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 shadow-soft shrink-0 ripple-container ${
               justAdded
                 ? "bg-rose-500 text-white shadow-rose-500/40 scale-105 animate-spring-pop"
-                : "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white shadow-cute-glow hover:scale-105"
+                : "clay-nav-active hover:scale-105"
             } disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 disabled:cursor-not-allowed disabled:active:scale-100`}
           >
             {justAdded ? (

@@ -94,29 +94,29 @@ export default function ChatWidget() {
       {/* Floating launcher button */}
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-1.5 pointer-events-none">
         {!open && (
-          <div className="pointer-events-auto animate-bounce-soft hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-[#1E1324] border-2 border-pink-200 dark:border-pink-800 text-[11px] font-bold text-pink-600 dark:text-pink-300 shadow-marshmallow">
-            <span>✨ Need help, sweetie? 💖</span>
+          <div className="pointer-events-auto animate-bounce-soft hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#120e1a]/95 border border-purple-200 dark:border-purple-900 text-xs font-bold text-purple-700 dark:text-purple-300 shadow-soft">
+            <span>✨ Need help? Chat with AI 💬</span>
           </div>
         )}
         <button
           onClick={() => setOpen((o) => !o)}
-          className="pointer-events-auto w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white dark:bg-[#1E1324] border-2 border-pink-300 dark:border-pink-700 shadow-cute-glow flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group"
+          className="pointer-events-auto clay-circle-btn !w-14 !h-14 sm:!w-16 sm:!h-16 shadow-soft flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 group"
           aria-label={open ? t("chat.close") : t("chat.open")}
         >
           {open ? (
-            <CloseIcon className="w-6 h-6 text-pink-600 dark:text-pink-400 animate-pop-in" />
+            <CloseIcon className="w-6 h-6 text-purple-600 dark:text-purple-400 animate-pop-in" />
           ) : (
             <div className="relative w-full h-full p-2">
               {/* Fallback icon while the Lottie animation loads */}
-              <BotIcon className="absolute inset-0 m-auto w-8 h-8 text-pink-400" />
+              <BotIcon className="absolute inset-0 m-auto w-8 h-8 text-purple-500" />
               <DotLottieReact
                 src={LOTTIE_URL}
                 loop
                 autoplay
                 className="absolute inset-0"
               />
-              <span className="absolute 1 top-1 right-1 w-3.5 h-3.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 border-2 border-white dark:border-[#1E1324] animate-ping" />
-              <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-pink-500 border-2 border-white dark:border-[#1E1324]" />
+              <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-purple-500 border-2 border-white dark:border-[#120e1a] animate-ping" />
+              <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-purple-600 border-2 border-white dark:border-[#120e1a]" />
             </div>
           )}
         </button>
@@ -124,16 +124,16 @@ export default function ChatWidget() {
 
       {/* Chat panel — mobile: bottom sheet full width / desktop: bottom-right card */}
       <div
-        className={`fixed z-50 flex flex-col overflow-hidden border-2 border-pink-200/80 dark:border-pink-900/60 bg-white/95 dark:bg-[#1A1122]/95 backdrop-blur-xl shadow-marshmallow transition-all duration-300 ${
+        className={`fixed z-50 flex flex-col overflow-hidden clay-card shadow-soft transition-all duration-300 ${
           open
             ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
             : "opacity-0 translate-y-6 scale-95 pointer-events-none"
-        } inset-x-0 bottom-0 w-full h-[min(580px,85dvh)] rounded-t-[32px] origin-bottom sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(620px,72vh)] sm:w-[410px] sm:max-w-[calc(100vw-2.5rem)] sm:rounded-[32px] sm:origin-bottom-right`}
+        } inset-x-0 bottom-0 w-full h-[min(580px,85dvh)] !rounded-t-[32px] sm:!rounded-b-[0px] origin-bottom sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(620px,72vh)] sm:w-[410px] sm:max-w-[calc(100vw-2.5rem)] sm:!rounded-[32px] sm:origin-bottom-right`}
         role="dialog"
         aria-label={t("chat.panelAria")}
       >
         {/* Header */}
-        <div className="shrink-0 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white px-5 py-4 flex items-center gap-3 shadow-sm">
+        <div className="shrink-0 clay-nav-active text-white px-5 py-4 flex items-center gap-3 shadow-sm">
           <div className="relative w-11 h-11 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center overflow-hidden border border-white/30 shadow-inner">
             <DotLottieReact
               src={LOTTIE_URL}
@@ -144,11 +144,10 @@ export default function ChatWidget() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-black text-base leading-tight flex items-center gap-1.5">
-              <span>🎀</span>
-              <span>{t("chat.title")}</span>
               <span>✨</span>
+              <span>{t("chat.title")}</span>
             </p>
-            <p className="text-xs text-pink-100/90 font-medium flex items-center gap-1.5 truncate mt-0.5">
+            <p className="text-xs text-purple-100/90 font-medium flex items-center gap-1.5 truncate mt-0.5">
               <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse shrink-0" />
               <span>{t("chat.subtitle")}</span>
             </p>
@@ -163,23 +162,23 @@ export default function ChatWidget() {
         </div>
 
         {/* Messages */}
-        <div className="px-4 py-4 space-y-3 overflow-y-auto flex-1 min-h-0 bg-[#FFF9FA]/60 dark:bg-[#160E1C]/60">
+        <div className="px-4 py-4 space-y-3 overflow-y-auto flex-1 min-h-0 admin-mesh-bg">
           {messages.length === 0 && (
             <div className="text-center text-slate-400 text-sm pt-2">
-              <div className="w-14 h-14 mx-auto rounded-full bg-pink-100 dark:bg-pink-950/70 border border-pink-200 dark:border-pink-800 flex items-center justify-center text-2xl mb-2 shadow-soft animate-bounce-soft">
-                🌸
+              <div className="w-14 h-14 mx-auto rounded-full bg-purple-100 dark:bg-purple-950/70 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-2xl mb-2 shadow-soft animate-bounce-soft">
+                💬
               </div>
-              <p className="font-bold text-slate-800 dark:text-pink-100">{t("chat.greeting")}</p>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("chat.askAnything")}</p>
+              <p className="font-extrabold text-slate-800 dark:text-purple-100">{t("chat.greeting")}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 font-medium">{t("chat.askAnything")}</p>
               <div className="mt-4 space-y-2">
                 {t("chat.suggestions").map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className="w-full text-left text-xs bg-white dark:bg-[#1E1324] hover:bg-pink-50 dark:hover:bg-pink-950/60 hover:text-pink-600 dark:hover:text-pink-300 border border-pink-200/80 dark:border-pink-900/50 rounded-2xl px-3.5 py-2.5 transition-all duration-200 hover:translate-x-1 text-slate-700 dark:text-pink-100 font-medium shadow-2xs flex items-center justify-between group"
+                    className="w-full text-left text-xs bg-white/90 dark:bg-[#120e1a]/90 hover:bg-purple-50 dark:hover:bg-[#1f152b] hover:text-purple-600 dark:hover:text-purple-300 border border-purple-200/80 dark:border-purple-900/50 rounded-2xl px-4 py-3 transition-all duration-200 hover:translate-x-1 text-slate-700 dark:text-purple-100 font-bold shadow-2xs flex items-center justify-between group"
                   >
                     <span>{s}</span>
-                    <span className="text-pink-400 opacity-60 group-hover:opacity-100 transition-opacity">💖</span>
+                    <span className="text-purple-400 opacity-60 group-hover:opacity-100 transition-opacity">✨</span>
                   </button>
                 ))}
               </div>
@@ -189,10 +188,10 @@ export default function ChatWidget() {
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-[85%] px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap animate-fade-in-up font-medium ${
+                className={`max-w-[85%] px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap animate-fade-in-up font-semibold ${
                   m.role === "user"
-                    ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white rounded-3xl rounded-br-sm shadow-soft"
-                    : "bg-white dark:bg-[#1E1324] text-slate-800 dark:text-pink-100 border border-pink-100 dark:border-pink-900/60 rounded-3xl rounded-bl-sm shadow-2xs"
+                    ? "clay-nav-active text-white rounded-3xl rounded-br-sm shadow-soft"
+                    : "clay-card text-slate-800 dark:text-purple-100 rounded-3xl rounded-bl-sm shadow-2xs"
                 }`}
               >
                 {m.content}
@@ -202,10 +201,10 @@ export default function ChatWidget() {
 
           {typing && (
             <div className="flex justify-start">
-              <div className="bg-white dark:bg-[#1E1324] border border-pink-100 dark:border-pink-900/60 rounded-3xl rounded-bl-sm px-4 py-3 flex items-center gap-1.5 shadow-2xs">
-                <span className="w-2 h-2 rounded-full bg-pink-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full bg-rose-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+              <div className="clay-card rounded-3xl rounded-bl-sm px-4 py-3 flex items-center gap-1.5 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           )}
@@ -213,7 +212,7 @@ export default function ChatWidget() {
         </div>
 
         {error && (
-          <p className="px-4 pb-2 text-xs text-rose-500 font-medium">{error}</p>
+          <p className="px-4 pb-2 text-xs text-rose-500 font-bold">{error}</p>
         )}
 
         {/* Input */}
@@ -222,7 +221,7 @@ export default function ChatWidget() {
             e.preventDefault();
             send();
           }}
-          className="shrink-0 border-t border-pink-100 dark:border-pink-900/50 p-3 flex items-center gap-2 bg-white dark:bg-[#1A1122]"
+          className="shrink-0 border-t border-purple-100 dark:border-purple-900/50 p-3 flex items-center gap-2 bg-white/95 dark:bg-[#120e1a]/95"
           style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))" }}
         >
           <input
@@ -230,12 +229,12 @@ export default function ChatWidget() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("chat.placeholder")}
-            className="flex-1 px-4 py-2.5 rounded-full border border-pink-200 dark:border-pink-900/60 bg-pink-50/50 dark:bg-[#20142A] text-slate-900 dark:text-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:bg-white dark:focus:bg-[#20142A] text-sm placeholder:text-pink-300 dark:placeholder:text-pink-700/60 transition duration-200 font-medium"
+            className="flex-1 px-4 py-2.5 rounded-2xl border border-purple-200/80 dark:border-purple-900/60 bg-white/90 dark:bg-[#181124] text-slate-900 dark:text-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm placeholder:text-purple-300 dark:placeholder:text-purple-600 transition duration-200 font-semibold"
           />
           <button
             type="submit"
             disabled={!input.trim() || typing}
-            className="shrink-0 w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white flex items-center justify-center transition-all duration-200 hover:from-pink-500 hover:to-rose-500 disabled:opacity-40 active:scale-90 shadow-cute-glow"
+            className="shrink-0 w-10 h-10 rounded-2xl clay-nav-active text-white flex items-center justify-center transition-all duration-200 hover:scale-105 disabled:opacity-40 active:scale-95 shadow-soft"
             aria-label={t("chat.send")}
           >
             <SendIcon className="w-4.5 h-4.5" />

@@ -172,48 +172,60 @@ export default function Home() {
       {/* Hero Slider */}
       <HeroSlider
         fallback={
-          <section className="relative overflow-hidden bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white animate-gradient py-16 sm:py-24">
-            {/* Soft decorative cloud orbs */}
-            <div className="absolute -top-12 -left-12 w-64 h-64 rounded-full bg-white/20 blur-2xl pointer-events-none" />
-            <div className="absolute -bottom-12 -right-12 w-80 h-80 rounded-full bg-rose-300/30 blur-3xl pointer-events-none" />
-
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/25 backdrop-blur-md text-white font-black text-xs uppercase tracking-widest shadow-sm mb-4 animate-cute-bounce">
-                <span>🎀</span> {t("home.collectionTagline")}
-              </span>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight max-w-2xl drop-shadow-sm leading-tight animate-fade-in-up">
-                {settings.site_name || t("home.heroTitle")}
-              </h1>
-              <p className="mt-4 text-pink-100 text-base sm:text-xl max-w-xl font-medium drop-shadow animate-fade-in-up" style={{ animationDelay: "120ms" }}>
-                {t("home.heroSubtitle")}
-              </p>
+          <section className="relative overflow-hidden luxury-card clay-card py-10 sm:py-14 px-6 sm:px-12 mx-3 sm:mx-6 rounded-3xl sm:rounded-[32px] shadow-soft">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+              <div className="max-w-xl text-left">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full clay-nav-active text-white font-black text-xs uppercase tracking-widest shadow-2xs mb-3 animate-pop-in">
+                  <span>✨</span> {t("home.collectionTagline")}
+                </span>
+                <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                  {settings.site_name || t("home.heroTitle")}
+                </h1>
+                <p className="mt-3 text-slate-600 dark:text-purple-200 text-base sm:text-lg font-semibold max-w-lg">
+                  {t("home.heroSubtitle")}
+                </p>
+                <div className="mt-6 flex items-center gap-3">
+                  <a
+                    href="#products-section"
+                    className="clay-nav-active px-6 py-3 rounded-2xl text-white font-bold text-sm shadow-soft inline-flex items-center gap-2 hover:scale-105 active:scale-95 transition-all"
+                  >
+                    <span>🛍️</span>
+                    <span>{t("product.shopNow") || "Shop Now"}</span>
+                  </a>
+                </div>
+              </div>
+              <div className="shrink-0 relative">
+                <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-4 border-white dark:border-purple-900/60 shadow-soft bg-gradient-to-tr from-purple-100 to-pink-100 dark:from-purple-950 dark:to-indigo-950 flex items-center justify-center animate-float">
+                  <img src="/avatar_clay.jpg" alt="LONG LAMYKA" className="w-full h-full object-cover" />
+                </div>
+              </div>
             </div>
           </section>
         }
       />
 
-      {/* Trust & Benefits Bar */}
+      {/* Trust & Benefits Bar — 4 Clay Stat Cards Matched with Frontend-Admin */}
       <TrustBar />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-2 pb-16">
-        {/* Search, Filter & Sort Controls */}
-        <div className="p-3.5 sm:p-6 rounded-3xl sm:rounded-[32px] bg-white/95 dark:bg-[#1A1220]/95 border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow space-y-3 sm:space-y-4">
+        {/* Search, Filter & Sort Controls — 3D Clay Card */}
+        <div className="clay-card p-4 sm:p-6 space-y-3 sm:space-y-4">
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1 w-full md:max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-pink-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-purple-400" />
               <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("home.searchPlaceholder") || "Search cute clothes, beauty, gifts... 🌸"}
-                className="w-full pl-11 pr-10 py-3 rounded-full border border-pink-200/80 dark:border-pink-900/50 bg-pink-50/40 dark:bg-[#130D18]/80 text-slate-900 dark:text-pink-100 placeholder:text-pink-300 dark:placeholder:text-pink-400/50 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-pink-400 focus:bg-white dark:focus:bg-[#1A1220] transition shadow-xs"
+                placeholder={t("home.searchPlaceholder") || "Search products... 🌸"}
+                className="w-full pl-11 pr-10 py-3 rounded-2xl border border-purple-200/80 dark:border-purple-900/50 bg-purple-50/30 dark:bg-[#120e1a] text-slate-800 dark:text-purple-100 placeholder:text-purple-300 dark:placeholder:text-purple-400/50 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-purple-400 focus:bg-white dark:focus:bg-[#1c1626] transition shadow-2xs"
               />
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-pink-400 hover:text-pink-600 dark:hover:text-pink-300"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-purple-400 hover:text-purple-600 dark:hover:text-purple-300"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -223,14 +235,14 @@ export default function Home() {
             {/* Sort & In-stock toggle */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap xs:flex-nowrap">
               {/* Sort selector */}
-              <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-full border border-pink-200/80 dark:border-pink-900/50 bg-pink-50/40 dark:bg-[#130D18]/80 text-xs font-bold text-slate-700 dark:text-pink-200 shadow-xs">
-                <ArrowUpDown className="w-3.5 h-3.5 text-pink-500" />
+              <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl border border-purple-200/80 dark:border-purple-900/50 bg-purple-50/40 dark:bg-[#120e1a] text-xs font-bold text-slate-700 dark:text-purple-200 shadow-2xs">
+                <ArrowUpDown className="w-3.5 h-3.5 text-purple-500" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-transparent border-none focus:outline-none cursor-pointer text-xs font-bold text-slate-700 dark:text-pink-200"
+                  className="bg-transparent border-none focus:outline-none cursor-pointer text-xs font-bold text-slate-700 dark:text-purple-200"
                 >
-                  <option value="newest">✨ {t("home.sortNewest") || "Newest Cute"}</option>
+                  <option value="newest">✨ {t("home.sortNewest") || "Newest"}</option>
                   <option value="price_asc">🎀 {t("home.sortPriceAsc") || "Price: Low to High"}</option>
                   <option value="price_desc">💖 {t("home.sortPriceDesc") || "Price: High to Low"}</option>
                   <option value="discount">🔥 {t("home.sortDiscount") || "Biggest Discount"}</option>
@@ -241,10 +253,10 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setInStockOnly((v) => !v)}
-                className={`px-4 py-2.5 rounded-full text-xs font-black border transition-all duration-200 flex items-center gap-1.5 shadow-xs ${
+                className={`px-4 py-2.5 rounded-2xl text-xs font-bold border transition-all duration-200 flex items-center gap-1.5 shadow-2xs ${
                   inStockOnly
-                    ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white border-transparent shadow-cute-glow"
-                    : "border-pink-200/80 dark:border-pink-900/50 bg-pink-50/40 dark:bg-[#130D18]/80 text-slate-600 dark:text-pink-200 hover:border-pink-400"
+                    ? "clay-nav-active shadow-soft"
+                    : "border-purple-200/80 dark:border-purple-900/50 bg-purple-50/40 dark:bg-[#120e1a] text-slate-600 dark:text-purple-200 hover:border-purple-400"
                 }`}
               >
                 <span>{inStockOnly ? "💖" : "🤍"}</span>
@@ -264,10 +276,10 @@ export default function Home() {
                   key={c}
                   type="button"
                   onClick={() => setCategory(c)}
-                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-black transition-all duration-200 active:scale-95 ${
+                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
                     isActive
-                      ? "bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white shadow-cute-glow scale-102"
-                      : "bg-pink-50/60 dark:bg-[#130D18]/80 text-slate-700 dark:text-pink-200/90 hover:bg-pink-100/70 dark:hover:bg-pink-950/40 border border-pink-100 dark:border-pink-950/60"
+                      ? "clay-nav-active shadow-soft scale-102"
+                      : "clay-circle-btn text-slate-700 dark:text-purple-200"
                   }`}
                 >
                   <span>{emoji}</span>
@@ -277,7 +289,7 @@ export default function Home() {
                       className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
                         isActive
                           ? "bg-white/30 text-white"
-                          : "bg-pink-200/70 dark:bg-pink-900/60 text-pink-700 dark:text-pink-300"
+                          : "bg-purple-200/70 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300"
                       }`}
                     >
                       {count}
@@ -291,7 +303,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="shrink-0 text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-3.5 py-1.5 rounded-full hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center gap-1"
+                className="shrink-0 text-xs font-bold text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 px-3.5 py-1.5 rounded-2xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition flex items-center gap-1"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>{t("home.resetFilter") || "Reset"}</span>
@@ -303,15 +315,15 @@ export default function Home() {
         {/* Section Title Header */}
         <Reveal className="mt-8 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-pink-400 to-rose-400 text-white flex items-center justify-center shadow-cute-glow">
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-purple-500 to-pink-500 text-white flex items-center justify-center shadow-soft">
               <span className="text-base">✨</span>
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-pink-100 tracking-tight flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
                 <span>{category === "All" ? (t("home.featured") || "Featured Lovely Picks") : category}</span>
-                <span className="text-base animate-cute-bounce">💖</span>
+                <span className="text-base">💖</span>
               </h2>
-              <p className="text-xs sm:text-sm text-pink-600/80 dark:text-pink-300/80 font-semibold mt-0.5">
+              <p className="text-xs sm:text-sm text-purple-600/80 dark:text-purple-300/80 font-bold mt-0.5">
                 {countLabel}
               </p>
             </div>
@@ -324,13 +336,13 @@ export default function Home() {
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-soft overflow-hidden"
+                className="clay-card overflow-hidden"
               >
                 <div className="aspect-square shimmer" />
                 <div className="p-4 space-y-2.5">
-                  <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full w-1/3" />
-                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded-full w-3/4" />
-                  <div className="h-5 bg-slate-100 dark:bg-slate-800 rounded-full w-1/2" />
+                  <div className="h-3 bg-purple-100 dark:bg-purple-950/60 rounded-full w-1/3" />
+                  <div className="h-4 bg-purple-100 dark:bg-purple-950/60 rounded-full w-3/4" />
+                  <div className="h-5 bg-purple-100 dark:bg-purple-950/60 rounded-full w-1/2" />
                 </div>
               </div>
             ))}
@@ -350,14 +362,14 @@ export default function Home() {
             </div>
           </Reveal>
         ) : (
-          <div className="text-center py-16 sm:py-20 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 animate-fade-in-up px-4">
-            <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl mx-auto mb-4">
+          <div className="text-center py-16 sm:py-20 clay-card border border-purple-200/60 dark:border-purple-900/30 animate-fade-in-up px-4">
+            <div className="w-16 h-16 rounded-3xl bg-purple-50 dark:bg-purple-950/50 flex items-center justify-center text-3xl mx-auto mb-4 shadow-soft">
               🛍️
             </div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">
               {search || category !== "All" || inStockOnly ? t("home.noMatch") : t("home.noProducts")}
             </h2>
-            <p className="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-purple-300/70 max-w-sm mx-auto font-medium">
               {search || category !== "All" || inStockOnly
                 ? t("home.noMatchHint")
                 : t("home.noProductsHint")}
@@ -367,7 +379,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="mt-5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold text-sm hover:opacity-95 transition active:scale-95 shadow-md shadow-pink-500/25"
+                className="mt-5 px-5 py-2.5 rounded-2xl clay-nav-active font-bold text-sm hover:opacity-95 transition active:scale-95 shadow-soft"
               >
                 {t("home.resetFilter") || "Clear all filters"}
               </button>
@@ -379,7 +391,7 @@ export default function Home() {
                   type="button"
                   onClick={seedDemo}
                   disabled={seeding}
-                  className="mt-6 px-6 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold transition-all duration-200 hover:opacity-95 hover:shadow-lift active:scale-95 disabled:opacity-50 text-sm shadow-md shadow-pink-500/25"
+                  className="mt-6 px-6 py-3 rounded-2xl clay-nav-active font-bold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 text-sm shadow-soft"
                 >
                   {seeding ? t("common.loading") : t("home.loadDemo")}
                 </button>

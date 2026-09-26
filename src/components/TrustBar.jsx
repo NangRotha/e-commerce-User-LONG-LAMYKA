@@ -1,60 +1,82 @@
-import { Truck, ShieldCheck, QrCode, MessageSquareHeart } from "lucide-react";
+import { CheckmarkBox3D, Calendar3D, Flag3D, Star3D } from "./ClayIcons";
 import { useI18n } from "../i18n/I18nContext";
 
+/**
+ * TrustBar — 4 Claymorphic Pastel Cards Matching Frontend-Admin Dashboard
+ * Features CheckmarkBox3D, Calendar3D, Flag3D, and Star3D with smooth lift hover.
+ */
 export default function TrustBar() {
   const { t } = useI18n();
 
-  const items = [
+  const cards = [
     {
-      emoji: "🚚",
-      title: t("trust.deliveryTitle") || "Cute Fast Delivery",
-      desc: t("trust.deliveryDesc") || "Nationwide 25 provinces 🌸",
-      bg: "bg-pink-100/80 dark:bg-pink-950/60 text-pink-600 dark:text-pink-300",
+      icon: <CheckmarkBox3D className="w-10 h-10 sm:w-11 sm:h-11" />,
+      title: t("trust.deliveryTitle") || "ដឹកជញ្ជូនរហ័ស",
+      subtitle: t("trust.deliveryDesc") || "គ្រប់ ២៥ ខេត្ត-ក្រុង",
+      tag: "រហ័ស & ទុកចិត្តបាន",
+      cardCls: "clay-card-purple",
+      textCls: "text-purple-700 dark:text-purple-300",
+      tagCls: "bg-purple-200/60 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300",
     },
     {
-      emoji: "🎀",
-      title: t("trust.qualityTitle") || "100% Authentic",
-      desc: t("trust.qualityDesc") || "Guaranteed with love ✨",
-      bg: "bg-purple-100/80 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300",
+      icon: <Calendar3D className="w-10 h-10 sm:w-11 sm:h-11" />,
+      title: t("trust.qualityTitle") || "ផលិតផលសុទ្ធ ១០០%",
+      subtitle: t("trust.qualityDesc") || "ធានាគុណភាពខ្ពស់",
+      tag: "ធានា ១០០%",
+      cardCls: "clay-card-pink",
+      textCls: "text-rose-600 dark:text-rose-300",
+      tagCls: "bg-rose-200/60 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300",
     },
     {
-      emoji: "🇰🇭",
-      title: t("trust.khqrTitle") || "Instant KHQR Pay",
-      desc: t("trust.khqrDesc") || "Bakong & Mobile Banking 💖",
-      bg: "bg-rose-100/80 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300",
+      icon: <Flag3D className="w-10 h-10 sm:w-11 sm:h-11" />,
+      title: t("trust.supportTitle") || "សេវាកម្ម ២៤/៧",
+      subtitle: t("trust.supportDesc") || "ឆាតរហ័សទាន់ចិត្ត",
+      tag: "ឆ្លើយតបរហ័ស",
+      cardCls: "clay-card-mint",
+      textCls: "text-emerald-700 dark:text-emerald-300",
+      tagCls: "bg-emerald-200/60 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300",
     },
     {
-      emoji: "💬",
-      title: t("trust.supportTitle") || "Friendly Support",
-      desc: t("trust.supportDesc") || "Telegram & FB chat 🎀",
-      bg: "bg-amber-100/80 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300",
+      icon: <Star3D className="w-10 h-10 sm:w-11 sm:h-11" />,
+      title: t("trust.khqrTitle") || "បង់ប្រាក់ KHQR",
+      subtitle: t("trust.khqrDesc") || "Bakong & គ្រប់ធនាគារ",
+      tag: "ស្កេនបង់ប្រាក់",
+      cardCls: "clay-card-yellow",
+      textCls: "text-amber-700 dark:text-amber-300",
+      tagCls: "bg-amber-200/60 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
     },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 pt-3 sm:pt-4 pb-2">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 p-3 sm:p-5 rounded-3xl sm:rounded-[32px] bg-white/90 dark:bg-[#1A1220]/90 backdrop-blur-xl border border-pink-100/90 dark:border-pink-950/60 shadow-marshmallow">
-        {items.map((item, idx) => (
+    <section className="max-w-7xl mx-auto px-3.5 sm:px-6 pt-3 sm:pt-5 pb-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4.5">
+        {cards.map((c, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-2.5 sm:gap-3.5 p-2 sm:p-3 rounded-2xl sm:rounded-[24px] hover:bg-pink-50/70 dark:hover:bg-pink-950/30 transition-all duration-300 group min-w-0 hover:scale-102"
+            className={`${c.cardCls} p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 relative overflow-hidden group cursor-default shadow-soft`}
           >
-            <div
-              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl sm:rounded-[20px] ${item.bg} flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}
-            >
-              <span>{item.emoji}</span>
+            {/* Left: 3D Clay Icon */}
+            <div className="shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
+              {c.icon}
             </div>
+
+            {/* Right: Content */}
             <div className="min-w-0 flex-1">
-              <h3 className="text-xs sm:text-sm font-black text-slate-800 dark:text-pink-100 truncate">
-                {item.title}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${c.tagCls}`}>
+                  {c.tag}
+                </span>
+              </div>
+              <h3 className="text-xs sm:text-sm font-black text-slate-800 dark:text-white truncate mt-1 leading-snug">
+                {c.title}
               </h3>
-              <p className="text-[10px] sm:text-xs text-pink-600/80 dark:text-pink-300/70 font-semibold truncate mt-0.5">
-                {item.desc}
+              <p className={`text-[11px] font-bold ${c.textCls} truncate mt-0.5`}>
+                {c.subtitle}
               </p>
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

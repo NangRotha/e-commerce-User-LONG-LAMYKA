@@ -223,11 +223,11 @@ export default function HeroSlider({ fallback = null }) {
                   {current.link_url && (
                     <a
                       href={current.link_url}
-                      className="mt-5 sm:mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white font-black text-sm sm:text-base transition-all duration-300 shadow-cute-glow hover:scale-105 active:scale-95"
+                      className="mt-5 sm:mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl clay-nav-active text-white font-black text-sm sm:text-base transition-all duration-300 shadow-soft hover:scale-105 active:scale-95"
                     >
-                      <span>✨</span>
+                      <span>🛍️</span>
                       <span>{t("product.shopNow")}</span>
-                      <span>💖</span>
+                      <span>✨</span>
                     </a>
                   )}
                 </div>
@@ -240,7 +240,7 @@ export default function HeroSlider({ fallback = null }) {
         {current.media_type === "youtube" && ytId && (
           <button
             onClick={() => setPlayingYt(current)}
-            className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 px-4 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-medium backdrop-blur transition flex items-center gap-2 z-20"
+            className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 px-4 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white text-sm font-bold backdrop-blur transition flex items-center gap-2 z-20 shadow-soft"
             aria-label={t("product.watchWithSound")}
           >
             <PlayIcon className="w-4 h-4 fill-white ml-0.5" />
@@ -254,14 +254,14 @@ export default function HeroSlider({ fallback = null }) {
         <>
           <button
             onClick={() => goTo(index - 1)}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-2xl bg-white/20 hover:bg-white/35 text-white backdrop-blur transition z-20 shadow-soft active:scale-95"
             aria-label={t("hero.previousSlide")}
           >
             <ChevronLeftIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => goTo(index + 1)}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/15 hover:bg-white/30 text-white backdrop-blur transition z-20 shadow-md"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-2xl bg-white/20 hover:bg-white/35 text-white backdrop-blur transition z-20 shadow-soft active:scale-95"
             aria-label={t("hero.nextSlide")}
           >
             <ChevronRightIcon className="w-5 h-5" />
@@ -271,13 +271,13 @@ export default function HeroSlider({ fallback = null }) {
 
       {/* Dots */}
       {count > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
           {slides.map((s, i) => (
             <button
               key={s.id}
               onClick={() => goTo(i)}
-              className={`h-2 rounded-full transition-all ${
-                i === index ? "w-6 bg-gradient-to-r from-pink-400 to-rose-400 shadow-sm" : "w-2 bg-white/50 hover:bg-white"
+              className={`h-2.5 rounded-full transition-all ${
+                i === index ? "w-7 clay-nav-active shadow-sm" : "w-2.5 bg-white/50 hover:bg-white"
               }`}
               aria-label={t("hero.goToSlide", { number: i + 1 })}
             />

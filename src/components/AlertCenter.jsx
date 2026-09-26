@@ -180,7 +180,7 @@ export default function AlertCenter() {
           />
           <div
             key={popup.id}
-            className={`relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden ${
+            className={`relative clay-card !rounded-[32px] shadow-2xl w-full max-w-md overflow-hidden ${
               isClosing(popup) ? "popup-exit" : "popup-enter"
             } ${
               popup.image_url ? "" : `border-t-4 ${(META[popup.alert_type] || META.info).accent}`
@@ -191,7 +191,7 @@ export default function AlertCenter() {
           >
             <button
               onClick={() => dismiss(popup.id)}
-              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-slate-900/60 text-white hover:bg-slate-900/80 transition"
+              className="absolute top-3 right-3 z-10 clay-circle-btn !w-8 !h-8 text-slate-700 dark:text-purple-200 text-xs flex items-center justify-center transition active:scale-90"
               aria-label={t("alerts.close")}
             >
               ✕
@@ -210,12 +210,12 @@ export default function AlertCenter() {
               </div>
             )}
 
-            <div className="p-7 sm:p-8">
+            <div className="p-6 sm:p-7">
               {popup.image_url ? (
                 <div>
                   {popup.title && (
                     <h3
-                      className={`text-2xl font-extrabold ${
+                      className={`text-2xl font-black ${
                         (META[popup.alert_type] || META.info).popupTitle
                       }`}
                     >
@@ -223,7 +223,7 @@ export default function AlertCenter() {
                     </h3>
                   )}
                   {popup.message && (
-                    <p className="mt-2 text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
+                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
                       {popup.message}
                     </p>
                   )}
@@ -241,7 +241,7 @@ export default function AlertCenter() {
                   <div className="min-w-0">
                     {popup.title && (
                       <h3
-                        className={`text-xl font-extrabold ${
+                        className={`text-xl font-black ${
                           (META[popup.alert_type] || META.info).popupTitle
                         }`}
                       >
@@ -249,7 +249,7 @@ export default function AlertCenter() {
                       </h3>
                     )}
                     {popup.message && (
-                      <p className="mt-2 text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
                         {popup.message}
                       </p>
                     )}
@@ -257,18 +257,18 @@ export default function AlertCenter() {
                 </div>
               )}
 
-              <div className="mt-7 flex gap-3 justify-end">
+              <div className="mt-6 flex gap-3 justify-end">
                 {popup.link_url && (
                   <button
                     onClick={() => handleAction(popup)}
-                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition active:scale-95"
+                    className="clay-nav-active px-5 py-2.5 rounded-2xl text-white text-sm font-bold shadow-soft transition hover:scale-102 active:scale-95"
                   >
                     {t("alerts.learnMore")}
                   </button>
                 )}
                 <button
                   onClick={() => dismiss(popup.id)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition active:scale-95"
+                  className="clay-circle-btn !w-auto !h-auto px-5 py-2.5 !rounded-2xl text-slate-700 dark:text-purple-200 text-sm font-bold shadow-2xs transition active:scale-95"
                 >
                   {popup.link_url ? t("alerts.later") : t("alerts.gotIt")}
                 </button>

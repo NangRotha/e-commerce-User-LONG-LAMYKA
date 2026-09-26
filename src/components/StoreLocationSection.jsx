@@ -50,23 +50,19 @@ export default function StoreLocationSection() {
 
   return (
     <section id="location" className="mt-16 sm:mt-24 scroll-mt-24">
-      <div className="rounded-3xl sm:rounded-[36px] bg-gradient-to-b from-white/95 via-pink-50/50 to-rose-50/30 dark:from-[#1E1324]/95 dark:via-[#19101F]/80 dark:to-pink-950/30 border-2 border-pink-100 dark:border-pink-900/50 p-6 sm:p-10 shadow-marshmallow backdrop-blur-xl relative overflow-hidden">
-        {/* Ambient subtle glow background */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-pink-400/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-rose-400/15 blur-3xl pointer-events-none" />
-
+      <div className="clay-card p-6 sm:p-10 relative overflow-hidden">
         {/* Section Header */}
-        <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-pink-100 dark:border-pink-900/50">
+        <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-purple-100 dark:border-purple-900/50">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-100/80 dark:bg-pink-950/80 border border-pink-200 dark:border-pink-800 text-pink-700 dark:text-pink-300 text-xs font-bold mb-3 shadow-2xs">
-              <MapPin className="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100/80 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 text-xs font-bold mb-3 shadow-2xs">
+              <MapPin className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
               <span>🌸 {t("location.badge")} ✨</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-pink-100 tracking-tight flex items-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
               <span>{t("location.title")}</span>
-              <span className="text-pink-400">🎀</span>
+              <span className="text-purple-400">🎀</span>
             </h2>
-            <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300 max-w-xl font-medium">
+            <p className="mt-1.5 text-sm text-slate-600 dark:text-purple-200/80 max-w-xl font-medium">
               {t("location.subtitle")}
             </p>
           </div>
@@ -76,7 +72,7 @@ export default function StoreLocationSection() {
             href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 hover:from-pink-500 hover:to-rose-500 text-white text-xs sm:text-sm font-bold shadow-cute-glow transition-all duration-200 active:scale-95 shrink-0"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl clay-nav-active text-white text-xs sm:text-sm font-bold shadow-soft transition-all duration-200 active:scale-95 shrink-0"
           >
             <span>{t("location.openInMaps")}</span>
             <ExternalLink className="w-4 h-4" />
@@ -89,22 +85,22 @@ export default function StoreLocationSection() {
           <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
             <div className="space-y-3.5">
               {/* Address Card */}
-              <div className="p-5 rounded-[24px] bg-white dark:bg-[#1E1324] border-2 border-pink-100 dark:border-pink-900/50 shadow-soft space-y-2">
+              <div className="p-5 rounded-[24px] clay-card space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
                     <MapPin className="w-4 h-4" />
                     {t("location.address")}
                   </span>
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 hover:text-pink-600 dark:hover:text-pink-400 transition"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 hover:text-purple-600 dark:hover:text-purple-400 transition"
                     title={t("location.copyAddress")}
                   >
                     {copied ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" />
-                        <span className="text-pink-600 dark:text-pink-400">
+                        <Check className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                        <span className="text-purple-600 dark:text-purple-400">
                           {t("location.copied")}
                         </span>
                       </>
@@ -116,26 +112,26 @@ export default function StoreLocationSection() {
                     )}
                   </button>
                 </div>
-                <p className="text-sm font-bold text-slate-800 dark:text-pink-100 leading-relaxed">
+                <p className="text-sm font-bold text-slate-800 dark:text-purple-100 leading-relaxed">
                   {address}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 font-medium">
+                <p className="text-xs text-slate-500 dark:text-purple-300/70 pt-1 font-medium">
                   📍 {t("location.area")} ({STORE_LOCATION.lat},{" "}
                   {STORE_LOCATION.lng})
                 </p>
               </div>
 
               {/* Hours Card */}
-              <div className="p-5 rounded-[24px] bg-white dark:bg-[#1E1324] border-2 border-pink-100 dark:border-pink-900/50 shadow-soft space-y-1.5">
+              <div className="p-5 rounded-[24px] clay-card space-y-1.5">
                 <span className="text-xs font-bold uppercase tracking-wider text-rose-500 dark:text-rose-400 flex items-center gap-1.5">
                   <Clock className="w-4 h-4" />
                   {t("location.hours")}
                 </span>
-                <p className="text-sm font-bold text-slate-800 dark:text-pink-100">
+                <p className="text-sm font-bold text-slate-800 dark:text-purple-100">
                   {hours}
                 </p>
-                <div className="flex items-center gap-2 pt-1 text-xs text-pink-600 dark:text-pink-400 font-bold">
-                  <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" />
+                <div className="flex items-center gap-2 pt-1 text-xs text-purple-600 dark:text-purple-400 font-bold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <span>
                     {t("location.openEveryday")}
                   </span>
@@ -143,21 +139,21 @@ export default function StoreLocationSection() {
               </div>
 
               {/* Delivery info */}
-              <div className="p-5 rounded-[24px] bg-white dark:bg-[#1E1324] border-2 border-pink-100 dark:border-pink-900/50 shadow-soft space-y-1.5">
-                <span className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400 flex items-center gap-1.5">
+              <div className="p-5 rounded-[24px] clay-card space-y-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
                   <Truck className="w-4 h-4" />
                   {t("location.delivery")}
                 </span>
-                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-pink-100">
+                <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-purple-100">
                   {delivery}
                 </p>
               </div>
 
               {/* Phone / WhatsApp if configured */}
               {(phone || waUrl) && (
-                <div className="p-5 rounded-[24px] bg-white dark:bg-[#1E1324] border-2 border-pink-100 dark:border-pink-900/50 shadow-soft flex items-center justify-between gap-3">
+                <div className="p-5 rounded-[24px] clay-card flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-2xl bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0 shadow-2xs">
+                    <div className="w-9 h-9 rounded-2xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-2xs">
                       <Phone className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 truncate">
@@ -167,12 +163,12 @@ export default function StoreLocationSection() {
                       {phone ? (
                         <a
                           href={`tel:${phone}`}
-                          className="text-sm font-bold text-slate-800 dark:text-pink-100 hover:text-pink-600 transition truncate block"
+                          className="text-sm font-bold text-slate-800 dark:text-purple-100 hover:text-purple-600 transition truncate block"
                         >
                           {phone}
                         </a>
                       ) : (
-                        <span className="text-sm font-bold text-slate-800 dark:text-pink-100">
+                        <span className="text-sm font-bold text-slate-800 dark:text-purple-100">
                           WhatsApp
                         </span>
                       )}
