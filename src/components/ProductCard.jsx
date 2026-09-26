@@ -126,7 +126,7 @@ export default function ProductCard({ product }) {
 
           {/* Video badge */}
           {product.video_url && (
-            <span className="absolute bottom-2.5 right-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
+            <span className="absolute bottom-2.5 right-2.5 bg-gradient-to-r from-purple-400 to-pink-400 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
               <Play className="w-2.5 h-2.5 fill-current" />
               VIDEO
             </span>
@@ -134,7 +134,7 @@ export default function ProductCard({ product }) {
 
           {/* Quick view button on hover */}
           <div className="absolute bottom-3 inset-x-3 flex justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
-            <span className="clay-card inline-flex items-center gap-1.5 text-purple-700 dark:text-purple-200 text-xs font-black px-3.5 py-1.5 rounded-full backdrop-blur-md border border-purple-200/60 dark:border-purple-900/60 shadow-soft">
+            <span className="clay-card inline-flex items-center gap-1.5 text-purple-600 dark:text-purple-200 text-xs font-black px-3.5 py-1.5 rounded-full backdrop-blur-md border border-purple-200/50 dark:border-purple-900/50 shadow-soft">
               <Eye className="w-3.5 h-3.5" />
               <span>{t("product.viewDetails")} 🌸</span>
             </span>
@@ -146,7 +146,7 @@ export default function ProductCard({ product }) {
       <div className="p-3.5 sm:p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between gap-2">
           {product.category ? (
-            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-200/50 dark:border-purple-900/50 px-2 py-0.5 rounded-xl truncate">
+            <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-300 bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/40 dark:border-purple-900/40 px-2 py-0.5 rounded-xl truncate">
               🌸 {product.category}
             </span>
           ) : (
@@ -160,7 +160,7 @@ export default function ProductCard({ product }) {
 
         <Link
           to={`/product/${product.id}`}
-          className="mt-2 font-black text-slate-800 dark:text-white line-clamp-2 leading-snug hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-xs sm:text-base"
+          className="mt-2 font-black text-slate-800 dark:text-white line-clamp-2 leading-snug hover:text-purple-500 dark:hover:text-purple-400 transition-colors text-xs sm:text-base"
         >
           {localizedName(product, lang)}
         </Link>
@@ -169,7 +169,7 @@ export default function ProductCard({ product }) {
         <div className="mt-auto pt-3 sm:pt-4 flex items-center justify-between gap-1.5 sm:gap-2">
           <div className="min-w-0">
             <div className="flex items-baseline gap-1 sm:gap-1.5 flex-wrap">
-              <span className="text-base sm:text-xl font-black text-purple-700 dark:text-purple-300 tracking-tight">
+              <span className="text-base sm:text-xl font-black text-purple-600 dark:text-purple-300 tracking-tight">
                 {formatPrice(price)}
               </span>
               {onSale ? (
