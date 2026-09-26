@@ -116,17 +116,17 @@ export default function Navbar() {
       <header className="sticky top-0 z-40 w-full max-w-full bg-white/85 dark:bg-[#160f1c]/85 backdrop-blur-2xl border-b border-purple-100/70 dark:border-purple-950/50 shadow-soft transition-colors duration-300">
         {/* Optional Top Milestone Bar */}
         {topMilestone && (
-          <div className="bg-[#fce7f3] dark:bg-[#2c1223] border-b border-pink-200/80 dark:border-pink-900/50 text-pink-900 dark:text-pink-200 text-[11px] sm:text-xs font-bold py-1.5 px-3 flex items-center justify-center gap-2 relative overflow-hidden transition-colors">
-            <Link to="/cart" className="flex items-center gap-1.5 hover:text-pink-700 dark:hover:text-pink-100 hover:underline truncate">
+          <div className="bg-[#FF9CCE] text-white text-[11px] sm:text-xs font-black py-1.5 px-3 flex items-center justify-center gap-2 relative overflow-hidden transition-colors shadow-2xs [text-shadow:_0_1px_2px_rgba(140,20,80,0.35)]">
+            <Link to="/cart" className="flex items-center gap-1.5 hover:opacity-90 transition-opacity truncate">
               <span>{topRemaining > 0 ? (topMilestone.icon || "🎁") : (topMilestone.unlocked_icon || "🎉")}</span>
-              <span>
+              <span className="font-extrabold tracking-wide">
                 {topRemaining > 0
                   ? `Add ${formatPrice(topRemaining)} more for ${topMilestone.title} (${topPercent}%)`
                   : topMilestone.reward_text}
               </span>
             </Link>
             <div
-              className="absolute bottom-0 left-0 h-[2px] bg-pink-400 dark:bg-pink-400 transition-all duration-300"
+              className="absolute bottom-0 left-0 h-[2.5px] bg-white/80 transition-all duration-300 rounded-full"
               style={{ width: `${topPercent}%` }}
             />
           </div>
