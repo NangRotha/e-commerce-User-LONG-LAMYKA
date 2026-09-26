@@ -94,6 +94,9 @@ export const api = {
     request("/api/orders/checkout", { method: "POST", body: payload }),
   getOrderStatus: (orderId) => request(`/api/orders/${orderId}/status`),
 
+  // ===== Shipping Companies (ក្រុមហ៊ុនដឹកជញ្ជូន) =====
+  getShippingCompanies: () => request("/api/shipping-companies"),
+
   // ===== Payments — ABA Pay / Bakong Wallet (KHQR) + auto-detect =====
   getPaymentConfig: () => request("/api/payments/config"),
   checkPaymentStatus: (transaction_id) =>

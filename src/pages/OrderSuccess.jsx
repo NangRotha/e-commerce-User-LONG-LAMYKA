@@ -309,6 +309,16 @@ export default function OrderSuccess() {
                 : t("pay.statusPending")}
             </span>
           </div>
+          {order?.shipping_company && (
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500 dark:text-slate-400 font-semibold">
+                {t("checkout.shippingCompany") ? t("checkout.shippingCompany").replace(" *", "") : "Shipping"}
+              </span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">
+                🚚 {order.shipping_company}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between text-sm pt-2 border-t border-purple-100 dark:border-purple-900/40">
             <span className="text-slate-500 dark:text-slate-400 font-semibold">{t("pay.total")}</span>
             <span className="font-black text-purple-600 dark:text-purple-400 text-lg">{amount}</span>

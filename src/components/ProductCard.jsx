@@ -101,19 +101,21 @@ export default function ProductCard({ product, catMap }) {
             </div>
           )}
 
-          {/* Wishlist Heart Button Styled with clay-circle-btn */}
+          {/* Wishlist Heart Button - styled exactly like user reference image */}
           <button
             type="button"
             onClick={toggleWishlist}
             aria-label={isWished ? t("common.wishlistRemove") : t("common.wishlistAdd")}
-            className={`absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-200 active:scale-90 shadow-xs z-10 clay-circle-btn ${
-              isWished
-                ? "bg-rose-500 text-white shadow-rose-500/30 !border-rose-400"
-                : "text-purple-400 hover:text-rose-500"
-            } ${heartAnim ? "animate-heartbeat" : ""}`}
+            className={`absolute top-2.5 right-2.5 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white shadow-md shadow-slate-900/10 dark:bg-[#1a1424] dark:shadow-black/50 transition-all duration-300 hover:scale-110 active:scale-90 z-10 ${
+              heartAnim ? "animate-heartbeat" : ""
+            }`}
           >
             <Heart
-              className={`w-4 h-4 ${isWished ? "fill-white text-white" : "hover:scale-110"}`}
+              className={`w-5 h-5 transition-all duration-200 stroke-[2.2] ${
+                isWished
+                  ? "fill-[#a855f7] text-[#a855f7] scale-105"
+                  : "text-[#a855f7] dark:text-[#c084fc] hover:text-[#9333ea]"
+              }`}
             />
           </button>
 

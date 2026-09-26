@@ -25,9 +25,18 @@ export const CAMBODIA_PROVINCES = [
   { km: "ខេត្តផ្សេងៗ", en: "Other Provinces" },
 ];
 
+export const DEFAULT_SHIPPING_COMPANIES = [
+  { id: 1, name: "VET Express", name_km: "វីរៈ ប៊ុនថាំ (VET Express)", fee: 1.50 },
+  { id: 2, name: "J&T Express", name_km: "ជេ & ធី (J&T Express)", fee: 1.50 },
+  { id: 3, name: "CE Express", name_km: "ស៊ីអ៊ី (CE Express)", fee: 1.50 },
+  { id: 4, name: "Cambodia Post / EMS", name_km: "ប្រៃសណីយ៍កម្ពុជា (Cambodia Post / EMS)", fee: 1.50 },
+  { id: 5, name: "Capitol Express", name_km: "កាពីតូល (Capitol Express)", fee: 1.50 },
+  { id: 6, name: "ZTO Express", name_km: "ZTO (ZTO Express)", fee: 1.50 },
+];
+
 /**
  * Checkout — Guest Checkout (គ្មាន Login / Sign Up) ✓
- * អតិថិជនបំពេញឈ្មោះ / លេខទូរស័ព្ទ / ជ្រើសរើសខេត្តទាំង ១២ / អាសយដ្ឋានលម្អិត រួចបញ្ជាទិញ
+ * អតិថិជនបំពេញឈ្មោះ / លេខទូរស័ព្ទ / ជ្រើសរើសខេត្តទាំង ១២ / ក្រុមហ៊ុនដឹកជញ្ជូន / អាសយដ្ឋានលម្អិត រួចបញ្ជាទិញ
  * បន្ទាប់មកទៅទំព័រ Order Success ដើម្បីស្កេន KHQR បង់ប្រាក់ (auto-detect) ✓
  */
 export default function Checkout() {
@@ -40,6 +49,8 @@ export default function Checkout() {
   const [province, setProvince] = useState("");
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
+  const [shippingCompanies, setShippingCompanies] = useState(DEFAULT_SHIPPING_COMPANIES);
+  const [selectedShippingId, setSelectedShippingId] = useState(1);
   const [promoCode, setPromoCode] = useState("");
   const [promo, setPromo] = useState(null); // { percent }
   const [promoError, setPromoError] = useState("");
@@ -56,6 +67,22 @@ export default function Checkout() {
   // ព័ត៌មាន Bakong Wallet (Company Name / Display Name / Currency) សម្រាប់បង្ហាញ
   useEffect(() => {
     api.getPaymentConfig().then(setPayment).catch(() => {});
+  }, []);
+
+  // ទាញយកបញ្ជីក្រុមហ៊ុនដឹកជញ្ជូនពី API (Dynamic CRUD ពី Admin)
+  useEffect(() => {
+    api
+      .getShippingCompanies()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setShippingCompanies(data);
+          setSelectedShippingId((prev) => {
+            const exists = data.some((c) => c.id === prev);
+            return exists ? prev : data[0].id;
+          });
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // ចងចាំព័ត៌មានអតិថិជនក្នុង localStorage -> បញ្ជាទិញលើកក្រោយងាយស្រួល
@@ -91,8 +118,12 @@ export default function Checkout() {
     setPromoCode("");
   };
 
+  const selectedCompany =
+    shippingCompanies.find((c) => c.id === Number(selectedShippingId)) ||
+    shippingCompanies[0];
+  const shippingFee = selectedCompany ? Number(selectedCompany.fee || 0) : 0;
   const discount = promo ? (subtotal * promo.percent) / 100 : 0;
-  const total = Math.max(0, subtotal - discount);
+  const total = Math.max(0, subtotal - discount + shippingFee);
 
   const placeOrder = async () => {
     setError("");
@@ -106,6 +137,9 @@ export default function Checkout() {
     try {
       const shippingAddress = `${province} — ${address.trim()}`;
       const paymentMethod = isPhnomPenh ? selectedPaymentMethod : "aba_pay";
+      const selectedCompanyName = selectedCompany
+        ? (lang === "km" ? selectedCompany.name_km || selectedCompany.name : selectedCompany.name || selectedCompany.name_km)
+        : "";
 
       const res = await api.checkout({
         items: items.map((i) => ({
@@ -116,6 +150,9 @@ export default function Checkout() {
         customer_name: name.trim(),
         customer_phone: phone.trim(),
         shipping_address: shippingAddress,
+        shipping_company: selectedCompanyName,
+        shipping_company_id: selectedCompany ? selectedCompany.id : null,
+        shipping_fee: shippingFee,
         note: note.trim(),
         promo_code: promo ? promoCode.trim() : null,
         payment_method: paymentMethod,
@@ -257,6 +294,40 @@ export default function Checkout() {
                     </svg>
                   </div>
                 </div>
+              </div>
+
+              {/* ក្រុមហ៊ុនដឹកជញ្ជូន * (Shipping Company Dropdown matching Image 2) */}
+              <div>
+                <label className={label}>
+                  {t("checkout.shippingCompany")}
+                </label>
+                <div className="relative mt-1.5">
+                  <select
+                    value={selectedShippingId}
+                    onChange={(e) => setSelectedShippingId(Number(e.target.value))}
+                    className={`${input} appearance-none pr-10 cursor-pointer font-medium text-slate-800 dark:text-slate-100`}
+                  >
+                    {shippingCompanies.map((c) => {
+                      const name = lang === "km" ? c.name_km || c.name : c.name || c.name_km;
+                      const feeText = `$${Number(c.fee || 0).toFixed(2)}`;
+                      return (
+                        <option key={c.id} value={c.id}>
+                          {name} · {feeText}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 dark:text-slate-500">
+                    <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                {selectedCompany?.estimated_delivery && (
+                  <p className="mt-1 text-xs text-purple-600 dark:text-purple-400 font-medium">
+                    ⚡ {selectedCompany.estimated_delivery}
+                  </p>
+                )}
               </div>
 
               {/* អាសយដ្ឋានលម្អិត */}
@@ -533,6 +604,12 @@ export default function Checkout() {
                 <span className="font-extrabold">−{formatPrice(discount)}</span>
               </div>
             )}
+            <div className="flex justify-between text-slate-600 dark:text-slate-400 text-sm font-semibold">
+              <span>{t("checkout.shippingFee")}</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">
+                {shippingFee > 0 ? formatPrice(shippingFee) : t("cart.free")}
+              </span>
+            </div>
           </div>
           <div className="mt-4 pt-4 border-t border-purple-100 dark:border-purple-900/40 flex justify-between text-base sm:text-lg font-black text-slate-900 dark:text-white">
             <span>{t("cart.total")}</span>
