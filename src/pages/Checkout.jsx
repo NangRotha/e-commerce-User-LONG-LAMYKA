@@ -10,19 +10,19 @@ const CUSTOMER_KEY = "shop_customer";
 
 // បញ្ជីខេត្ត-ក្រុងទាំង ១២ នៃប្រទេសកម្ពុជា (+ ជម្រើសខេត្តផ្សេងៗ)
 export const CAMBODIA_PROVINCES = [
-  "ភ្នំពេញ (Phnom Penh)",
-  "កណ្តាល (Kandal)",
-  "សៀមរាប (Siem Reap)",
-  "បាត់ដំបង (Battambang)",
-  "ព្រះសីហនុ (Preah Sihanouk)",
-  "កំពង់ចាម (Kampong Cham)",
-  "កំពត (Kampot)",
-  "កែប (Kep)",
-  "តាកែវ (Takeo)",
-  "កំពង់ធំ (Kampong Thom)",
-  "កំពង់ឆ្នាំង (Kampong Chhnang)",
-  "បន្ទាយមានជ័យ (Banteay Meanchey)",
-  "ខេត្តផ្សេងៗ (Other Provinces)",
+  { km: "រាជធានីភ្នំពេញ", en: "Phnom Penh" },
+  { km: "ខេត្តកណ្តាល", en: "Kandal" },
+  { km: "ខេត្តសៀមរាប", en: "Siem Reap" },
+  { km: "ខេត្តបាត់ដំបង", en: "Battambang" },
+  { km: "ខេត្តព្រះសីហនុ", en: "Preah Sihanouk" },
+  { km: "ខេត្តកំពង់ចាម", en: "Kampong Cham" },
+  { km: "ខេត្តកំពត", en: "Kampot" },
+  { km: "ខេត្តកែប", en: "Kep" },
+  { km: "ខេត្តតាកែវ", en: "Takeo" },
+  { km: "ខេត្តកំពង់ធំ", en: "Kampong Thom" },
+  { km: "ខេត្តកំពង់ឆ្នាំង", en: "Kampong Chhnang" },
+  { km: "ខេត្តបន្ទាយមានជ័យ", en: "Banteay Meanchey" },
+  { km: "ខេត្តផ្សេងៗ", en: "Other Provinces" },
 ];
 
 /**
@@ -225,7 +225,7 @@ export default function Checkout() {
                 {t("checkout.delivery")}
               </h2>
               <span className="text-[11px] sm:text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800 shadow-2xs">
-                🇰🇭 ដឹកជញ្ជូនទូទាំងប្រទេស
+                {t("checkout.nationwideDelivery")}
               </span>
             </div>
 
@@ -242,11 +242,14 @@ export default function Checkout() {
                     <option value="" disabled>
                       {t("checkout.selectProvince")}
                     </option>
-                    {CAMBODIA_PROVINCES.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
-                      </option>
-                    ))}
+                    {CAMBODIA_PROVINCES.map((p) => {
+                      const val = lang === "km" ? p.km : p.en;
+                      return (
+                        <option key={p.en} value={val}>
+                          {val}
+                        </option>
+                      );
+                    })}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 dark:text-slate-500">
                     <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
@@ -354,7 +357,7 @@ export default function Checkout() {
               </h2>
               {isPhnomPenh ? (
                 <span className="text-[11px] sm:text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/70 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-800 animate-pop-in shadow-2xs">
-                  {selectedPaymentMethod === "aba_pay" ? "⚡ Auto Pay KHQR" : "🚚 Cash on Delivery"}
+                  {selectedPaymentMethod === "aba_pay" ? t("pay.autoKhqrTag") : t("pay.codTag")}
                 </span>
               ) : province ? (
                 <span className="text-[11px] sm:text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/70 px-3 py-1 rounded-full border border-purple-200 dark:border-purple-800 animate-pop-in shadow-2xs">
@@ -384,7 +387,7 @@ export default function Checkout() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                       <p className="font-bold text-slate-900 dark:text-purple-100 text-sm sm:text-base">
-                        ABA Pay / Bakong KHQR (ស្កេនទូទាត់ភ្លាមៗ)
+                        {t("pay.autoKhqrTitle")}
                       </p>
                       <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                         selectedPaymentMethod === "aba_pay"
@@ -397,11 +400,11 @@ export default function Checkout() {
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                      ស្កេន QR តាមរយៈ ABA Mobile ឬកម្មវិធី Bakong ណាមួយ — ប្រព័ន្ធនឹងបញ្ជាក់ការបង់ប្រាក់ដោយស្វ័យប្រវត្តិ (Auto Confirm)
+                      {t("pay.autoKhqrHint")}
                     </p>
                     {payment?.display_name && (
                       <p className="mt-2 text-xs text-purple-600 dark:text-purple-400 font-bold">
-                        ✨ ទទួលប្រាក់៖ {payment.display_name} {payment.bakong_id ? `(${payment.bakong_id})` : ""}
+                        {t("pay.receivePayment")} {payment.display_name} {payment.bakong_id ? `(${payment.bakong_id})` : ""}
                       </p>
                     )}
                   </div>

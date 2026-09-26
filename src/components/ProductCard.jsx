@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Check, Play, Star, Eye, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
-import { effectivePrice, formatPrice, localizedName } from "../lib/helpers";
+import { effectivePrice, formatPrice, localizedName, localizedProductCategory } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 
 /**
@@ -92,7 +92,7 @@ export default function ProductCard({ product }) {
           {onSale ? (
             <div className="absolute top-2.5 left-2.5 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-full shadow-xs animate-pop-in tracking-wide flex items-center gap-1">
               <span>🎀</span>
-              <span>-{Math.round(product.sale_percent)}% OFF</span>
+              <span>-{Math.round(product.sale_percent)}% {t("product.off")}</span>
             </div>
           ) : (
             <div className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-[#1c1626]/90 text-purple-700 dark:text-purple-300 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs backdrop-blur-md border border-purple-100 dark:border-purple-950/80 flex items-center gap-1">
@@ -128,7 +128,7 @@ export default function ProductCard({ product }) {
           {product.video_url && (
             <span className="absolute bottom-2.5 right-2.5 bg-gradient-to-r from-purple-400 to-pink-400 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md backdrop-blur-md flex items-center gap-1">
               <Play className="w-2.5 h-2.5 fill-current" />
-              VIDEO
+              {t("product.video")}
             </span>
           )}
 
@@ -145,9 +145,9 @@ export default function ProductCard({ product }) {
       {/* Product info */}
       <div className="p-3.5 sm:p-5 flex flex-col flex-1">
         <div className="flex items-center justify-between gap-2">
-          {product.category ? (
+          {product.category || product.category_km ? (
             <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-300 bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/40 dark:border-purple-900/40 px-2 py-0.5 rounded-xl truncate">
-              🌸 {product.category}
+              🌸 {localizedProductCategory(product, lang)}
             </span>
           ) : (
             <span />
@@ -183,7 +183,7 @@ export default function ProductCard({ product }) {
               ) : null}
             </div>
             <p className="text-[10px] sm:text-[11px] text-purple-400/80 dark:text-purple-400/60 font-semibold truncate">
-              ~{khrAmount.toLocaleString()} ៛
+              ~{khrAmount.toLocaleString()} {lang === "km" ? "៛" : "KHR"}
             </p>
           </div>
 

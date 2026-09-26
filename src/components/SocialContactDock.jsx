@@ -168,7 +168,7 @@ export default function SocialContactDock() {
         {!open && (
           <span className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#120e1a]/95 shadow-soft border border-purple-200 dark:border-purple-900 text-xs font-bold text-slate-700 dark:text-purple-200 animate-fade-in backdrop-blur-md pointer-events-none">
             <span className="w-2 h-2 rounded-full bg-purple-500 animate-ping" />
-            <span>✨ Telegram · WhatsApp · TikTok · Maps ✨</span>
+            <span>{t("social.dockPill")}</span>
           </span>
         )}
 

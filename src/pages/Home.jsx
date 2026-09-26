@@ -320,7 +320,7 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight flex items-center gap-2">
-                <span>{category === "All" ? (t("home.featured") || "Featured Lovely Picks") : category}</span>
+                <span>{category === "All" ? (t("home.featured") || "Featured Lovely Picks") : catLabel(category)}</span>
                 <span className="text-base">💖</span>
               </h2>
               <p className="text-xs sm:text-sm text-purple-600/80 dark:text-purple-300/80 font-bold mt-0.5">

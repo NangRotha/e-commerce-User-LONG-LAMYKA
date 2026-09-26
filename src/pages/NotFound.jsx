@@ -30,11 +30,10 @@ export default function NotFound() {
 
         {/* Heading & Subtitle */}
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-          {t("notFound.title") || "រកមិនឃើញទំព័រនេះទេ (Page Not Found)"}
+          {t("notFound.title")}
         </h1>
         <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-md mx-auto">
-          {t("notFound.desc") ||
-            "ទំព័រដែលលោកអ្នកកំពុងស្វែងរកប្រហែលជាត្រូវបានប្តូរទីតាំង លុបចេញ ឬមិនមាននៅក្នុងប្រព័ន្ធឡើយ។"}
+          {t("notFound.desc")}
         </p>
 
         {/* Action Buttons */}
@@ -44,7 +43,7 @@ export default function NotFound() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-sm shadow-md shadow-pink-500/25 transition-all duration-200 hover:shadow-lift hover:scale-[1.02] active:scale-95"
           >
             <Home className="w-4 h-4" />
-            <span>{t("notFound.backHome") || "ត្រឡប់ទៅទំព័រដើម"}</span>
+            <span>{t("notFound.backHome")}</span>
           </Link>
 
           <Link
@@ -52,19 +51,19 @@ export default function NotFound() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-pink-200/80 dark:border-pink-900/50 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-pink-50/50 dark:hover:bg-slate-800 font-bold text-sm shadow-xs transition-all duration-200 active:scale-95"
           >
             <ShoppingBag className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-            <span>{t("notFound.viewCart") || "មើលកន្ត្រកទំនិញ"}</span>
+            <span>{t("notFound.viewCart")}</span>
           </Link>
         </div>
 
         {/* Quick Help Link */}
         <div className="mt-10 pt-6 border-t border-pink-100 dark:border-pink-950/50 text-xs text-slate-400 dark:text-slate-500">
           <p>
-            {t("notFound.needHelp") || "ត្រូវការជំនួយបន្ថែម?"}{" "}
+            {t("notFound.needHelp")}{" "}
             <Link
               to="/"
               className="text-pink-600 dark:text-pink-400 font-bold hover:underline"
             >
-              {t("notFound.browseProducts") || "មើលផលិតផលទាំងអស់ក្នុងហាង"}
+              {t("notFound.browseProducts")}
             </Link>
           </p>
         </div>

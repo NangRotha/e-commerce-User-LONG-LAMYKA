@@ -72,7 +72,7 @@ function CloseIcon({ className }) {
 }
 
 export default function HeroSlider({ fallback = null }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [slides, setSlides] = useState([]);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -204,37 +204,42 @@ export default function HeroSlider({ fallback = null }) {
         )}
 
         {/* Overlay gradient + text — ONLY show when title or subtitle is provided */}
-        {(current.title || current.subtitle) && (
-          <>
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent z-15 pointer-events-none" />
-            <div className="absolute inset-0 flex items-center z-20 pointer-events-none">
-              <div className="max-w-7xl mx-auto w-full px-4 sm:px-6">
-                <div className="max-w-xl pointer-events-auto">
-                  {current.title && (
-                    <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight drop-shadow-md">
-                      {current.title}
-                    </h1>
-                  )}
-                  {current.subtitle && (
-                    <p className="mt-3 sm:mt-4 text-pink-100 text-base sm:text-lg drop-shadow max-w-lg">
-                      {current.subtitle}
-                    </p>
-                  )}
-                  {current.link_url && (
-                    <a
-                      href={current.link_url}
-                      className="mt-5 sm:mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl clay-nav-active text-white font-black text-sm sm:text-base transition-all duration-300 shadow-soft hover:scale-105 active:scale-95"
-                    >
-                      <span>🛍️</span>
-                      <span>{t("product.shopNow")}</span>
-                      <span>✨</span>
-                    </a>
-                  )}
+        {(() => {
+          const slideTitle = lang === "km" ? (current.title_km || current.title) : (current.title || current.title_km);
+          const slideSubtitle = lang === "km" ? (current.subtitle_km || current.subtitle) : (current.subtitle || current.subtitle_km);
+          if (!slideTitle && !slideSubtitle) return null;
+          return (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-transparent z-15 pointer-events-none" />
+              <div className="absolute inset-0 flex items-center z-20 pointer-events-none">
+                <div className="max-w-7xl mx-auto w-full px-4 sm:px-6">
+                  <div className="max-w-xl pointer-events-auto">
+                    {slideTitle && (
+                      <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight drop-shadow-md">
+                        {slideTitle}
+                      </h1>
+                    )}
+                    {slideSubtitle && (
+                      <p className="mt-3 sm:mt-4 text-pink-100 text-base sm:text-lg drop-shadow max-w-lg">
+                        {slideSubtitle}
+                      </p>
+                    )}
+                    {current.link_url && (
+                      <a
+                        href={current.link_url}
+                        className="mt-5 sm:mt-7 inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl clay-nav-active text-white font-black text-sm sm:text-base transition-all duration-300 shadow-soft hover:scale-105 active:scale-95"
+                      >
+                        <span>🛍️</span>
+                        <span>{t("product.shopNow")}</span>
+                        <span>✨</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          );
+        })()}
 
         {/* YouTube: button to watch WITH sound (browsers only allow autoplay when muted) */}
         {current.media_type === "youtube" && ytId && (

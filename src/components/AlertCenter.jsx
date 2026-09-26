@@ -53,8 +53,13 @@ const META = {
  * - Real-time: បញ្ចូលថ្មីដោយស្វ័យប្រវត្តិ ពេល Admin កែ/បង្កើត/លុប Alert
  */
 export default function AlertCenter() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [alerts, setAlerts] = useState([]);
+
+  const getAlertTitle = (a) =>
+    lang === "km" ? (a.title_km || a.title) : (a.title || a.title_km);
+  const getAlertMessage = (a) =>
+    lang === "km" ? (a.message_km || a.message) : (a.message || a.message_km);
   // status[id] = 'closing' | 'hidden' — ចងចាំតែក្នុង Memory (Refresh page បាត់ -> បង្ហាញវិញ)
   const [status, setStatus] = useState({});
   const [ready, setReady] = useState(false);
@@ -153,8 +158,8 @@ export default function AlertCenter() {
                   </span>
                 )}
                 <div className="flex-1 min-w-0">
-                  {a.title && <strong className="font-bold">{a.title} </strong>}
-                  <span>{a.message}</span>
+                  {getAlertTitle(a) && <strong className="font-bold">{getAlertTitle(a)} </strong>}
+                  <span>{getAlertMessage(a)}</span>
                 </div>
                 <button
                   onClick={(e) => handleDismiss(e, a)}
@@ -187,7 +192,7 @@ export default function AlertCenter() {
             }`}
             role="dialog"
             aria-modal="true"
-            aria-label={popup.title || "Announcement"}
+            aria-label={getAlertTitle(popup) || "Announcement"}
           >
             <button
               onClick={() => dismiss(popup.id)}
@@ -202,7 +207,7 @@ export default function AlertCenter() {
               <div className="relative h-44 sm:h-52 w-full overflow-hidden">
                 <img
                   src={popup.image_url}
-                  alt={popup.title || "Announcement"}
+                  alt={getAlertTitle(popup) || "Announcement"}
                   className="w-full h-full object-cover"
                   onError={(e) => (e.target.style.display = "none")}
                 />
@@ -213,18 +218,18 @@ export default function AlertCenter() {
             <div className="p-6 sm:p-7">
               {popup.image_url ? (
                 <div>
-                  {popup.title && (
+                  {getAlertTitle(popup) && (
                     <h3
                       className={`text-2xl font-black ${
                         (META[popup.alert_type] || META.info).popupTitle
                       }`}
                     >
-                      {popup.title}
+                      {getAlertTitle(popup)}
                     </h3>
                   )}
-                  {popup.message && (
+                  {getAlertMessage(popup) && (
                     <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
-                      {popup.message}
+                      {getAlertMessage(popup)}
                     </p>
                   )}
                 </div>
@@ -239,18 +244,18 @@ export default function AlertCenter() {
                     {(META[popup.alert_type] || META.info).icon}
                   </span>
                   <div className="min-w-0">
-                    {popup.title && (
+                    {getAlertTitle(popup) && (
                       <h3
                         className={`text-xl font-black ${
                           (META[popup.alert_type] || META.info).popupTitle
                         }`}
                       >
-                        {popup.title}
+                        {getAlertTitle(popup)}
                       </h3>
                     )}
-                    {popup.message && (
+                    {getAlertMessage(popup) && (
                       <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
-                        {popup.message}
+                        {getAlertMessage(popup)}
                       </p>
                     )}
                   </div>

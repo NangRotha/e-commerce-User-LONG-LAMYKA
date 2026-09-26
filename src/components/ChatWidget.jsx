@@ -95,7 +95,7 @@ export default function ChatWidget() {
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-1.5 pointer-events-none">
         {!open && (
           <div className="pointer-events-auto animate-bounce-soft hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#120e1a]/95 border border-purple-200 dark:border-purple-900 text-xs font-bold text-purple-700 dark:text-purple-300 shadow-soft">
-            <span>✨ Need help? Chat with AI 💬</span>
+            <span>{t("chat.launcherPrompt")}</span>
           </div>
         )}
         <button

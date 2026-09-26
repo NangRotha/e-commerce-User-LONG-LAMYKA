@@ -327,7 +327,7 @@ export default function OrderSuccess() {
                   {t("pay.codBadge")}
                 </h3>
                 <p className="text-xs text-amber-800 dark:text-amber-200 font-bold">
-                  ✓ មិនបាច់បង់ប្រាក់មុនទេ — គិតលុយពេលអីវ៉ាន់ដល់ដៃ
+                  {t("pay.codNoPrepay")}
                 </p>
               </div>
             </div>
@@ -340,7 +340,8 @@ export default function OrderSuccess() {
               )}
               {order?.shipping_address && (
                 <p className="text-slate-600 dark:text-slate-300">
-                  📍 អាសយដ្ឋានដឹកជញ្ជូន៖ <span className="font-bold text-slate-800 dark:text-slate-100">{order.shipping_address}</span>
+                  {t("pay.shippingAddress")}{" "}
+                  <span className="font-bold text-slate-800 dark:text-slate-100">{order.shipping_address}</span>
                 </p>
               )}
             </div>

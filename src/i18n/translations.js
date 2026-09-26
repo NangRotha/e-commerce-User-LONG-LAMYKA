@@ -114,6 +114,12 @@ export const en = {
     muteSound: "Mute sound",
     unmuteSound: "Unmute sound",
     videoUnsupported: "Your browser does not support playing this video.",
+    video: "VIDEO",
+    off: "OFF",
+    topRated: "Top Rated",
+    specialDeal: "Special Deal",
+    originalPrice: "Original",
+    selectOptionPlaceholder: "Select Option / Color",
   },
   cart: {
     title: "Shopping Cart",
@@ -187,6 +193,7 @@ export const en = {
     errAddress: "Please enter your detailed delivery address.",
     errEmail: "Please enter a valid email address.",
     emptyHint: "Your cart is empty.",
+    nationwideDelivery: "🇰🇭 Nationwide Delivery",
     onlineNotConfigured:
       "⚠️ Online payment is not configured yet — we will contact you to arrange payment.",
   },
@@ -253,6 +260,14 @@ export const en = {
     checkNow: "Check payment now",
     directLink: "Direct checkout link",
     qrAlt: "KHQR — ABA / Bakong Wallet",
+    codNoPrepay: "✓ No advance payment required — Pay upon delivery",
+    shippingAddress: "📍 Delivery address:",
+    autoKhqrTag: "⚡ Auto Pay KHQR",
+    codTag: "🚚 Cash on Delivery",
+    autoKhqrTitle: "ABA Pay / Bakong KHQR (Instant Scan & Pay)",
+    autoKhqrHint:
+      "Scan QR with ABA Mobile or any Bakong wallet app — The order is confirmed automatically once paid (Auto Confirm).",
+    receivePayment: "✨ Receiving account:",
   },
   alerts: {
     dismiss: "Dismiss announcement",
@@ -277,6 +292,7 @@ export const en = {
       "Recommend a gift under $50",
     ],
     panelAria: "AI assistant chat",
+    launcherPrompt: "✨ Need help? Chat with AI 💬",
   },
   footer: {
     tagline:
@@ -329,6 +345,8 @@ export const en = {
     directContact: "Direct Contact",
     waChat: "WhatsApp Chat",
     fbPage: "Facebook Page",
+    fbOfficialPage: "Facebook Official Page",
+    dockPill: "✨ Telegram · WhatsApp · TikTok · Maps ✨",
   },
   location: {
     badge: "Physical Store",
@@ -358,6 +376,18 @@ export const en = {
     khqrDesc: "Bakong & all bank wallets",
     supportTitle: "Telegram & FB Support",
     supportDesc: "Instant 24/7 assistance",
+    deliveryTag: "Fast & Reliable",
+    qualityTag: "100% Guaranteed",
+    supportTag: "Quick Reply",
+    khqrTag: "Scan & Pay",
+  },
+  milestone: {
+    addMore: "Add {amount} more for {title} ({percent}%)",
+    unlocked: "Yay! You unlocked {title}! 🎁✨",
+    allUnlocked: "🎉 Congratulations! All rewards unlocked!",
+    deliveryDiscount: "Delivery Discount",
+    freeGift: "Free Sweet Delivery & Gift!",
+    vipDiscount: "VIP Discount",
   },
   offline: {
     unreachable: "Cannot reach the backend API at",
@@ -478,6 +508,12 @@ export const km = {
     muteSound: "បិទសំឡេង",
     unmuteSound: "បើកសំឡេង",
     videoUnsupported: "កម្មវិធីរុករករបស់អ្នកមិនអាចលេងវីដេអូនេះបានទេ។",
+    video: "វីដេអូ",
+    off: "បញ្ចុះតម្លៃ",
+    topRated: "ពេញនិយមបំផុត",
+    specialDeal: "ប្រូម៉ូសិនពិសេស",
+    originalPrice: "តម្លៃដើម",
+    selectOptionPlaceholder: "ជម្រើសប្រភេទ / ពណ៌",
   },
   cart: {
     title: "កន្ត្រកទំនិញ",
@@ -551,6 +587,7 @@ export const km = {
     cod: "ទូទាត់ប្រាក់ពេលទំនិញដល់ដៃ",
     placingOrder: "កំពុងបញ្ជាទិញ...",
     emptyHint: "កន្ត្រករបស់អ្នកទទេ។",
+    nationwideDelivery: "🇰🇭 ដឹកជញ្ជូនទូទាំងប្រទេស",
     onlineNotConfigured:
       "⚠️ ការបង់ប្រាក់អនឡាញមិនទាន់បានកំណត់ទេ — យើងនឹងទាក់ទងអ្នកដើម្បីរៀបចំការបង់ប្រាក់។",
   },
@@ -617,6 +654,14 @@ export const km = {
     checkNow: "ពិនិត្យការបង់ប្រាក់ឥឡូវ",
     directLink: "តំណបង់ប្រាក់ផ្ទាល់",
     qrAlt: "KHQR — ABA / Bakong Wallet",
+    codNoPrepay: "✓ មិនបាច់បង់ប្រាក់មុនទេ — គិតលុយពេលអីវ៉ាន់ដល់ដៃ",
+    shippingAddress: "📍 អាសយដ្ឋានដឹកជញ្ជូន៖",
+    autoKhqrTag: "⚡ បង់ប្រាក់ស្វ័យប្រវត្តិ KHQR",
+    codTag: "🚚 គិតលុយពេលដល់ដៃ",
+    autoKhqrTitle: "ABA Pay / Bakong KHQR (ស្កេនទូទាត់ភ្លាមៗ)",
+    autoKhqrHint:
+      "ស្កេន QR តាមរយៈ ABA Mobile ឬកម្មវិធី Bakong ណាមួយ — ប្រព័ន្ធនឹងបញ្ជាក់ការបង់ប្រាក់ដោយស្វ័យប្រវត្តិ (Auto Confirm)",
+    receivePayment: "✨ ទទួលប្រាក់៖",
   },
   alerts: {
     dismiss: "បិទការជូនដំណឹង",
@@ -637,6 +682,7 @@ export const km = {
     error: "សូមទោស ខ្ញុំមិនអាចភ្ជាប់ទៅ AI បានទេឥឡូវនេះ។ សូមព្យាយាមម្តងទៀត។",
     suggestions: ["ហាងលក់អ្វីខ្លះ?", "មានដឹកជញ្ជូនឥតគិតថ្លៃទេ?", "ណែនាំអំណោយក្រោម $50"],
     panelAria: "ការសន្ទនាជាមួយជំនួយការ AI",
+    launcherPrompt: "✨ ត្រូវការជំនួយ? ជជែកជាមួយ AI 💬",
   },
   footer: {
     tagline:
@@ -689,6 +735,8 @@ export const km = {
     directContact: "ទំនាក់ទំនងហាងផ្ទាល់",
     waChat: "ជជែកតាម WhatsApp",
     fbPage: "ទំព័រ Facebook",
+    fbOfficialPage: "ទំព័រផ្លូវការ Facebook",
+    dockPill: "✨ តេឡេក្រាម · វ័តស៍អាប់ · ទីកតុក · ផែនទី ✨",
   },
   location: {
     badge: "ទីតាំងហាងផ្ទាល់",
@@ -718,6 +766,18 @@ export const km = {
     khqrDesc: "ស្កេនបានគ្រប់កម្មវិធីធនាគារ",
     supportTitle: "សេវាគាំទ្រ Telegram & FB",
     supportDesc: "ឆ្លើយតបរហ័ស ២៤/៧",
+    deliveryTag: "រហ័ស & ទុកចិត្តបាន",
+    qualityTag: "ធានា ១០០%",
+    supportTag: "ឆ្លើយតបរហ័ស",
+    khqrTag: "ស្កេនបង់ប្រាក់",
+  },
+  milestone: {
+    addMore: "ថែម {amount} ទៀត ដើម្បីទទួលបាន {title} ({percent}%)",
+    unlocked: "អបអរ! អ្នកទទួលបាន {title}! 🎁✨",
+    allUnlocked: "🎉 អបអរសាទរ! អ្នកទទួលបានរង្វាន់ទាំងអស់!",
+    deliveryDiscount: "បញ្ចុះតម្លៃដឹកជញ្ជូន",
+    freeGift: "ដឹកជញ្ជូនឥតគិតថ្លៃ និងកាដូពិសេស!",
+    vipDiscount: "បញ្ចុះតម្លៃពិសេស VIP",
   },
   offline: {
     unreachable: "មិនអាចភ្ជាប់ទៅ Backend API បានទេ នៅ",

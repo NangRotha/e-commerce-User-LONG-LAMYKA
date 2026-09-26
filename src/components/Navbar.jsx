@@ -121,8 +121,17 @@ export default function Navbar() {
               <span>{topRemaining > 0 ? (topMilestone.icon || "🎁") : (topMilestone.unlocked_icon || "🎉")}</span>
               <span className="font-extrabold tracking-wide">
                 {topRemaining > 0
-                  ? `Add ${formatPrice(topRemaining)} more for ${topMilestone.title} (${topPercent}%)`
-                  : topMilestone.reward_text}
+                  ? t("milestone.addMore", {
+                      amount: formatPrice(topRemaining),
+                      title:
+                        lang === "km"
+                          ? topMilestone.title_km || topMilestone.title
+                          : topMilestone.title || topMilestone.title_km,
+                      percent: topPercent,
+                    })
+                  : lang === "km"
+                  ? topMilestone.reward_text_km || topMilestone.reward_text
+                  : topMilestone.reward_text || topMilestone.reward_text_km}
               </span>
             </Link>
             <div

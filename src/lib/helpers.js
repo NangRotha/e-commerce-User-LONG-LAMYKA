@@ -51,3 +51,11 @@ export function localizedCategoryName(name, catMap, lang) {
   return (lang === "km" ? km || en : en || km) || "";
 }
 
+/** ឈ្មោះប្រភេទផលិតផល តាមភាសាដែលកំពុងប្រើ */
+export function localizedProductCategory(product, lang) {
+  if (!product) return "";
+  const en = String(product.category || "").trim();
+  const km = String(product.category_km || "").trim();
+  return (lang === "km" ? km || en : en || km) || "";
+}
+

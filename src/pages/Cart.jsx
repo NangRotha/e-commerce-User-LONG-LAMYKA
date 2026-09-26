@@ -84,14 +84,24 @@ export default function Cart() {
                 <>
                   <span className="text-base">{activeMilestone.icon || "🎁"}</span>
                   <span>
-                    Add <span className="text-purple-700 dark:text-purple-300 font-black">{formatPrice(remaining)}</span> more for {activeMilestone.title || "Free Sweet Delivery & Gift!"}
+                    {lang === "km" ? (
+                      <>
+                        ថែម <span className="text-purple-700 dark:text-purple-300 font-black">{formatPrice(remaining)}</span> ទៀត ដើម្បីទទួលបាន {activeMilestone.title_km || activeMilestone.title || t("milestone.freeGift")}
+                      </>
+                    ) : (
+                      <>
+                        Add <span className="text-purple-700 dark:text-purple-300 font-black">{formatPrice(remaining)}</span> more for {activeMilestone.title || activeMilestone.title_km || t("milestone.freeGift")}
+                      </>
+                    )}
                   </span>
                 </>
               ) : (
                 <>
                   <span className="text-base">{activeMilestone.unlocked_icon || "🎉"}</span>
                   <span className="text-purple-700 dark:text-purple-300 font-black">
-                    {activeMilestone.reward_text || "Yay! You unlocked Free Sweet Delivery & Gift! 🎁✨"}
+                    {lang === "km"
+                      ? activeMilestone.reward_text_km || activeMilestone.reward_text || t("milestone.allUnlocked")
+                      : activeMilestone.reward_text || activeMilestone.reward_text_km || t("milestone.allUnlocked")}
                   </span>
                 </>
               )}

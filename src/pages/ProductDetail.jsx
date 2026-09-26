@@ -8,6 +8,7 @@ import {
   isVideoUrl,
   localizedName,
   localizedDescription,
+  localizedProductCategory,
 } from "../lib/helpers";
 import { api } from "../api/client";
 import useProductsRealtime from "../hooks/useProductsRealtime";
@@ -40,7 +41,8 @@ export default function ProductDetail() {
     s.social_whatsapp || s.whatsapp_url || s.contact_phone,
     product,
     product ? effectivePrice(product) : 0,
-    selectedVariant
+    selectedVariant,
+    lang
   );
   const ttUrl = normalizeTikTok(s.social_tiktok);
 
@@ -332,7 +334,7 @@ export default function ProductDetail() {
                         </span>
                       </span>
                       <span className="absolute bottom-0.5 right-0.5 text-[9px] font-black tracking-wider uppercase px-1 py-0.5 bg-purple-600 text-white rounded">
-                        VIDEO
+                        {t("product.video")}
                       </span>
                     </>
                   ) : (
@@ -355,11 +357,11 @@ export default function ProductDetail() {
         >
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs sm:text-sm text-purple-600 dark:text-purple-400 uppercase tracking-widest font-extrabold bg-purple-50 dark:bg-purple-950/60 px-3 py-1 rounded-full border border-purple-200/80 dark:border-purple-900/60">
-              {product.category || "—"}
+              {localizedProductCategory(product, lang) || "—"}
             </p>
             <div className="inline-flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 px-3 py-1 rounded-full text-amber-700 dark:text-amber-300 text-xs font-black shadow-2xs">
               <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"} (Top Rated)</span>
+              <span>{product.rating ? Number(product.rating).toFixed(1) : "5.0"} ({t("product.topRated")})</span>
             </div>
           </div>
           <h1 className="mt-3 text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
@@ -376,7 +378,7 @@ export default function ProductDetail() {
                   {formatPrice(product.price)}
                 </span>
                 <span className="clay-nav-active text-white text-xs font-black px-3.5 py-1.5 rounded-full shadow-soft animate-pop-in">
-                  🔥 -{Math.round(product.sale_percent)}% Special Deal
+                  🔥 -{Math.round(product.sale_percent)}% {t("product.specialDeal")}
                 </span>
               </>
             ) : product.original_price && product.original_price > price ? (
@@ -385,7 +387,7 @@ export default function ProductDetail() {
                   {formatPrice(product.original_price)}
                 </span>
                 <span className="clay-nav-active text-white text-xs font-black px-3.5 py-1.5 rounded-full shadow-soft animate-pop-in">
-                  Original {formatPrice(product.original_price)}
+                  {t("product.originalPrice")} {formatPrice(product.original_price)}
                 </span>
               </>
             ) : null}
@@ -416,7 +418,7 @@ export default function ProductDetail() {
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-purple-100 flex items-center gap-1.5">
                   <span>🎨</span>
-                  <span>{t("product.selectType") || "ជម្រើសប្រភេទ / ពណ៌ (Select Option)"}:</span>
+                  <span>{t("product.selectType")}:</span>
                 </span>
                 {selectedVariant && (
                   <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-100/80 dark:bg-purple-950/80 px-3 py-0.5 rounded-full border border-purple-200 dark:border-purple-800 shadow-2xs">
@@ -484,7 +486,7 @@ export default function ProductDetail() {
               {outOfStock
                 ? t("product.soldOut")
                 : added
-                ? "Added to Bag! ✓"
+                ? `✓ ${t("product.addedShort")}`
                 : `🛍️ ${t("product.addToCart")}`}
             </button>
           </div>
@@ -492,7 +494,7 @@ export default function ProductDetail() {
           {/* Direct Social Order / Inquire Buttons */}
           <div className="mt-4 pt-4 border-t border-purple-100 dark:border-purple-900/50 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3">
             <a
-              href={getTelegramOrderUrl(s.social_telegram || s.telegram_url, product, price, selectedVariant)}
+              href={getTelegramOrderUrl(s.social_telegram || s.telegram_url, product, price, selectedVariant, lang)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-2xl bg-[#229ED9] hover:bg-[#1b8bc2] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#229ED9]/25 transition-all active:scale-95"

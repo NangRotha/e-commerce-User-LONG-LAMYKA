@@ -64,18 +64,26 @@ export function normalizeWhatsApp(val) {
   return clean ? `https://wa.me/${clean}` : "";
 }
 
-export function getTelegramOrderUrl(telegramVal, product, price, variant = "") {
+export function getTelegramOrderUrl(telegramVal, product, price, variant = "", lang = "km") {
   const base = normalizeTelegram(telegramVal);
   // Extract username if it's a t.me link
   const match = base.match(/t\.me\/([^/?#]+)/i);
   let user = match ? match[1] : "Lamykabot";
   if (user.toLowerCase() === "khmerudomet") user = "Lamykabot";
-  let text = `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${product?.name || ""}`;
+
+  const pName = lang === "km"
+    ? (product?.name_km || product?.name || "")
+    : (product?.name || product?.name_km || "");
+
+  let text = lang === "km"
+    ? `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${pName}`
+    : `Hello! I am interested in ordering / asking about:\n📦 ${pName}`;
+
   if (variant) {
-    text += `\n🎨 ប្រភេទ/ជម្រើស៖ ${variant}`;
+    text += lang === "km" ? `\n🎨 ប្រភេទ/ជម្រើស៖ ${variant}` : `\n🎨 Option/Variant: ${variant}`;
   }
   if (price !== undefined && price !== null) {
-    text += `\n💰 តម្លៃ៖ $${price}`;
+    text += lang === "km" ? `\n💰 តម្លៃ៖ $${price}` : `\n💰 Price: $${price}`;
   }
   if (typeof window !== "undefined" && window.location) {
     text += `\n🔗 ${window.location.href}`;
@@ -83,7 +91,7 @@ export function getTelegramOrderUrl(telegramVal, product, price, variant = "") {
   return `https://t.me/${user}?text=${encodeURIComponent(text)}`;
 }
 
-export function getWhatsAppOrderUrl(whatsappVal, product, price, variant = "") {
+export function getWhatsAppOrderUrl(whatsappVal, product, price, variant = "", lang = "km") {
   const base = normalizeWhatsApp(whatsappVal);
   if (!base) return "";
 
@@ -100,12 +108,19 @@ export function getWhatsAppOrderUrl(whatsappVal, product, price, variant = "") {
     if (digits) phone = digits;
   }
 
-  let text = `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${product?.name || ""}`;
+  const pName = lang === "km"
+    ? (product?.name_km || product?.name || "")
+    : (product?.name || product?.name_km || "");
+
+  let text = lang === "km"
+    ? `សួស្តី! ខ្ញុំចាប់អារម្មណ៍ចង់ទិញ / សាកសួរផលិតផល៖\n📦 ${pName}`
+    : `Hello! I am interested in ordering / asking about:\n📦 ${pName}`;
+
   if (variant) {
-    text += `\n🎨 ប្រភេទ/ជម្រើស៖ ${variant}`;
+    text += lang === "km" ? `\n🎨 ប្រភេទ/ជម្រើស៖ ${variant}` : `\n🎨 Option/Variant: ${variant}`;
   }
   if (price !== undefined && price !== null) {
-    text += `\n💰 តម្លៃ៖ $${price}`;
+    text += lang === "km" ? `\n💰 តម្លៃ៖ $${price}` : `\n💰 Price: $${price}`;
   }
   if (typeof window !== "undefined" && window.location) {
     text += `\n🔗 ${window.location.href}`;
