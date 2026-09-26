@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -14,6 +15,8 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
 import useSiteSettings from "./hooks/useSiteSettings";
+import { api } from "./api/client";
+import { useRealtime } from "./context/RealtimeContext";
 
 /**
  * Storefront — គ្មាន Login / Sign Up / Profile
@@ -22,6 +25,15 @@ import useSiteSettings from "./hooks/useSiteSettings";
 export default function App() {
   // ភ្ជាប់ Branding (Site Name / Tab Favicon Logo ពី Database)
   useSiteSettings();
+
+  // Load and cache categories globally for instant translation across all pages
+  useEffect(() => {
+    api.getCategories().catch(() => {});
+  }, []);
+
+  useRealtime("categories_changed", () => {
+    api.getCategories().catch(() => {});
+  });
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden overflow-x-clip flex flex-col admin-mesh-bg text-slate-800 dark:text-slate-100 transition-colors duration-300 relative selection:bg-pink-100 selection:text-pink-900 font-sans">

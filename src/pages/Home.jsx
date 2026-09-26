@@ -128,9 +128,10 @@ export default function Home() {
 
   // Categories list — value នៅតែជា name អង់គ្លេស (Key សម្រាប់ Filter និង API)
   const categoryOptions = useMemo(() => {
-    if (categories.length) return ["All", ...categories.map((c) => c.name)];
-    const uniq = [...new Set((products || []).map((p) => p.category).filter(Boolean))];
-    return ["All", ...uniq.sort()];
+    const fromCats = (categories || []).map((c) => c.name).filter(Boolean);
+    const fromProducts = (products || []).map((p) => p.category).filter(Boolean);
+    const allSet = new Set([...fromCats, ...fromProducts]);
+    return ["All", ...Array.from(allSet).sort()];
   }, [categories, products]);
 
 
@@ -356,7 +357,7 @@ export default function Home() {
                   className="animate-fade-in-up"
                   style={{ animationDelay: `${Math.min(i, 11) * 45}ms` }}
                 >
-                  <ProductCard product={p} />
+                  <ProductCard product={p} catMap={catMap} />
                 </div>
               ))}
             </div>

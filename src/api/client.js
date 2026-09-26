@@ -1,3 +1,5 @@
+import { registerCategoryTranslations } from "../lib/helpers";
+
 /**
  * API Client — Storefront (frontend-user)
  *
@@ -75,7 +77,13 @@ export const api = {
   // ===== Catalog =====
   getProducts: () => request("/api/products"),
   getProduct: (id) => request(`/api/products/${id}`),
-  getCategories: () => request("/api/categories"),
+  getCategories: async () => {
+    const list = await request("/api/categories");
+    if (Array.isArray(list)) {
+      registerCategoryTranslations(list);
+    }
+    return list;
+  },
   getSlides: () => request("/api/slides"),
   getAlerts: () => request("/api/alerts"),
   getMilestones: () => request("/api/milestones"),

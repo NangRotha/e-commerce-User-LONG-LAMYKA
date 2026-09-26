@@ -9,7 +9,7 @@ import { useI18n } from "../i18n/I18nContext";
  * ProductCard — 3D Claymorphic Card Matched with Frontend-Admin
  * Features rounded-[28px], clay bevel, soft purple-pink accents, and responsive layout.
  */
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, catMap }) {
   const { addItem } = useCart();
   const { t, lang } = useI18n();
   const [justAdded, setJustAdded] = useState(false);
@@ -147,7 +147,7 @@ export default function ProductCard({ product }) {
         <div className="flex items-center justify-between gap-2">
           {product.category || product.category_km ? (
             <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-300 bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/40 dark:border-purple-900/40 px-2 py-0.5 rounded-xl truncate">
-              🌸 {localizedProductCategory(product, lang)}
+              🌸 {localizedProductCategory(product, lang, catMap)}
             </span>
           ) : (
             <span />
