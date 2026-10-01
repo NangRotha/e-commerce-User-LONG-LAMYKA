@@ -13,22 +13,28 @@
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.19.16",
     "@tailwindcss/vite": "^4.3.3",
+    "intersection-observer": "^0.12.2",
     "lucide-react": "^1.46.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.18.3",
+    "resize-observer-polyfill": "^1.5.1",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@csstools/postcss-cascade-layers": "^6.0.1",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-legacy": "^6.1.1",
     "@vitejs/plugin-react": "^4.4.1",
     "concurrently": "^9.2.4",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "postcss": "^8.5.28",
+    "terser": "^5.51.2",
     "vite": "^6.3.5"
   }
 }

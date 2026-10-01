@@ -1,7 +1,9 @@
+import "./polyfills";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { I18nProvider } from "./i18n/I18nContext";
 import { ThemeProvider } from "./theme/ThemeContext";
 import { CartProvider } from "./context/CartContext";
@@ -10,17 +12,19 @@ import "./index.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ThemeProvider>
-      <I18nProvider>
-        <BrowserRouter>
-          <RealtimeProvider>
-            <CartProvider>
-              <App />
-            </CartProvider>
-          </RealtimeProvider>
-        </BrowserRouter>
-      </I18nProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <I18nProvider>
+          <BrowserRouter>
+            <RealtimeProvider>
+              <CartProvider>
+                <App />
+              </CartProvider>
+            </RealtimeProvider>
+          </BrowserRouter>
+        </I18nProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   </StrictMode>
 );
 

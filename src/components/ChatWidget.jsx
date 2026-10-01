@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import ErrorBoundary from "./ErrorBoundary";
 import { api } from "../api/client";
 import { useI18n } from "../i18n/I18nContext";
 
@@ -109,12 +110,14 @@ export default function ChatWidget() {
             <div className="relative w-full h-full p-2">
               {/* Fallback icon while the Lottie animation loads */}
               <BotIcon className="absolute inset-0 m-auto w-8 h-8 text-purple-500" />
-              <DotLottieReact
-                src={LOTTIE_URL}
-                loop
-                autoplay
-                className="absolute inset-0"
-              />
+              <ErrorBoundary fallback={null}>
+                <DotLottieReact
+                  src={LOTTIE_URL}
+                  loop
+                  autoplay
+                  className="absolute inset-0"
+                />
+              </ErrorBoundary>
               <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-purple-500 border-2 border-white dark:border-[#120e1a] animate-ping" />
               <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-purple-600 border-2 border-white dark:border-[#120e1a]" />
             </div>
@@ -128,19 +131,21 @@ export default function ChatWidget() {
           open
             ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
             : "opacity-0 translate-y-6 scale-95 pointer-events-none"
-        } inset-x-0 bottom-0 w-full h-[min(580px,85dvh)] !rounded-t-[32px] sm:!rounded-b-[0px] origin-bottom sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(620px,72vh)] sm:w-[410px] sm:max-w-[calc(100vw-2.5rem)] sm:!rounded-[32px] sm:origin-bottom-right`}
+        } inset-x-0 bottom-0 w-full h-[min(580px,85vh)] !rounded-t-[32px] sm:!rounded-b-[0px] origin-bottom sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(620px,72vh)] sm:w-[410px] sm:max-w-[calc(100vw-2.5rem)] sm:!rounded-[32px] sm:origin-bottom-right`}
         role="dialog"
         aria-label={t("chat.panelAria")}
       >
         {/* Header */}
         <div className="shrink-0 clay-nav-active text-white px-5 py-4 flex items-center gap-3 shadow-sm">
           <div className="relative w-11 h-11 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center overflow-hidden border border-white/30 shadow-inner">
-            <DotLottieReact
-              src={LOTTIE_URL}
-              loop
-              autoplay
-              style={{ width: 44, height: 44 }}
-            />
+            <ErrorBoundary fallback={<BotIcon className="w-6 h-6 text-white" />}>
+              <DotLottieReact
+                src={LOTTIE_URL}
+                loop
+                autoplay
+                style={{ width: 44, height: 44 }}
+              />
+            </ErrorBoundary>
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-black text-base leading-tight flex items-center gap-1.5">

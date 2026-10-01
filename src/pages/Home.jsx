@@ -100,6 +100,7 @@ export default function Home() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let list = (products || []).filter((p) => {
+      const activeOk = p.is_active !== false;
       const catOk = category === "All" || p.category === category;
       const searchOk =
         !q ||
@@ -109,7 +110,7 @@ export default function Home() {
         (p.description_km || "").toLowerCase().includes(q) ||
         catLabel(p.category || "").toLowerCase().includes(q);
       const stockOk = !inStockOnly || p.stock > 0;
-      return catOk && searchOk && stockOk;
+      return activeOk && catOk && searchOk && stockOk;
     });
 
     // Sorting
@@ -129,7 +130,10 @@ export default function Home() {
   // Categories list — value នៅតែជា name អង់គ្លេស (Key សម្រាប់ Filter និង API)
   const categoryOptions = useMemo(() => {
     const fromCats = (categories || []).map((c) => c.name).filter(Boolean);
-    const fromProducts = (products || []).map((p) => p.category).filter(Boolean);
+    const fromProducts = (products || [])
+      .filter((p) => p.is_active !== false)
+      .map((p) => p.category)
+      .filter(Boolean);
     const allSet = new Set([...fromCats, ...fromProducts]);
     return ["All", ...Array.from(allSet).sort()];
   }, [categories, products]);
@@ -138,8 +142,9 @@ export default function Home() {
   // Category items count helper
   const getCategoryCount = (cat) => {
     if (!products) return 0;
-    if (cat === "All") return products.length;
-    return products.filter((p) => p.category === cat).length;
+    const active = products.filter((p) => p.is_active !== false);
+    if (cat === "All") return active.length;
+    return active.filter((p) => p.category === cat).length;
   };
 
   const countLabel =
@@ -234,7 +239,7 @@ export default function Home() {
             </div>
 
             {/* Sort & In-stock toggle */}
-            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap xs:flex-nowrap">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
               {/* Sort selector */}
               <div className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl border border-purple-200/80 dark:border-purple-900/50 bg-purple-50/40 dark:bg-[#120e1a] text-xs font-bold text-slate-700 dark:text-purple-200 shadow-2xs">
                 <ArrowUpDown className="w-3.5 h-3.5 text-purple-500" />

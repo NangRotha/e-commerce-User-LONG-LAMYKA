@@ -203,14 +203,14 @@ export default function ProductCard({ product, catMap }) {
             {justAdded ? (
               <>
                 <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[3]" />
-                <span className="text-xs">{t("product.addedCute")}</span>
+                <span className="text-xs hidden sm:inline">{t("product.addedCute")}</span>
               </>
             ) : outOfStock ? (
               <span className="text-xs">{t("product.soldOut")}</span>
             ) : (
               <>
                 <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline sm:inline">{t("common.add")} 🛍️</span>
+                <span className="hidden sm:inline">{t("common.add")} 🛍️</span>
               </>
             )}
           </button>

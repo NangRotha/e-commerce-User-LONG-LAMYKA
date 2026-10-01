@@ -167,7 +167,7 @@ export default function Navbar() {
 
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-300 max-w-[130px] xs:max-w-[170px] sm:max-w-none">
+                <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-300 max-w-[140px] min-[400px]:max-w-[220px] sm:max-w-none">
                   {siteName}
                 </span>
                 <span className="text-xs">✨</span>
@@ -318,7 +318,7 @@ export default function Navbar() {
           {/* =========================================================
               MOBILE CONTROLS (< md:)
              ========================================================= */}
-          <div className="flex md:hidden items-center gap-1.5 xs:gap-2 shrink-0">
+          <div className="flex md:hidden items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Mobile Language Button (direct toggle with flag) */}
             <button
               type="button"
@@ -327,7 +327,7 @@ export default function Navbar() {
                 lang === "km" ? t("nav.switchToEnglish") : t("nav.switchToKhmer")
               }
               title={lang === "km" ? t("nav.switchToEnglish") : t("nav.switchToKhmer")}
-              className="clay-circle-btn inline-flex items-center gap-1 xs:gap-1.5 h-10 px-2.5 rounded-2xl text-slate-800 dark:text-purple-200 font-bold text-xs select-none"
+              className="clay-circle-btn inline-flex items-center gap-1 sm:gap-1.5 h-10 px-2.5 rounded-2xl text-slate-800 dark:text-purple-200 font-bold text-xs select-none"
             >
               {lang === "km" ? (
                 <>
@@ -393,7 +393,7 @@ export default function Navbar() {
 
           {/* Drawer Container styled like admin sidebar */}
           <aside
-            className="relative z-10 w-full max-w-[320px] xs:max-w-[340px] h-full admin-mesh-bg border-l border-purple-200/80 dark:border-purple-900/50 shadow-2xl flex flex-col justify-between p-4 overflow-y-auto animate-slide-left select-none font-sans"
+            className="relative z-10 w-full max-w-[320px] sm:max-w-[350px] h-full admin-mesh-bg border-l border-purple-200/80 dark:border-purple-900/50 shadow-2xl flex flex-col justify-between p-4 overflow-y-auto animate-slide-left select-none font-sans"
             role="dialog"
             aria-label={t("nav.mobileNav")}
           >

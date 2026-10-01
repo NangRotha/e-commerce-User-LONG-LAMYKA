@@ -303,7 +303,7 @@ export default function ProductDetail() {
                   key={`${item.url}-${i}`}
                   type="button"
                   onClick={() => setActiveImage(i)}
-                  className={`relative shrink-0 snap-start w-15 h-15 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 transition-all duration-200 active:scale-95 ${
+                  className={`relative shrink-0 snap-start w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 transition-all duration-200 active:scale-95 ${
                     i === activeImage
                       ? "border-purple-500 ring-2 ring-purple-300 dark:ring-purple-800 shadow-soft scale-102"
                       : "border-purple-100 dark:border-purple-900/40 bg-white/80 dark:bg-[#120e1a] hover:border-purple-300 opacity-80 hover:opacity-100"
@@ -448,8 +448,8 @@ export default function ProductDetail() {
             </div>
           )}
 
-          <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row sm:flex-row items-stretch xs:items-center sm:items-center gap-3 sm:gap-4">
-            <div className="flex items-center justify-between xs:justify-start border border-purple-200/80 dark:border-purple-900/50 bg-white dark:bg-[#120e1a] rounded-2xl overflow-hidden shadow-2xs shrink-0">
+          <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-center justify-between sm:justify-start border border-purple-200/80 dark:border-purple-900/50 bg-white dark:bg-[#120e1a] rounded-2xl overflow-hidden shadow-2xs shrink-0">
               <button
                 type="button"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -459,7 +459,7 @@ export default function ProductDetail() {
               >
                 −
               </button>
-              <span className="px-4 py-2.5 text-base font-black min-w-12 text-center border-x border-purple-100 dark:border-purple-950/80 text-slate-800 dark:text-purple-100 tabular-nums">
+              <span className="px-4 py-2.5 text-base font-black min-w-[48px] text-center border-x border-purple-100 dark:border-purple-950/80 text-slate-800 dark:text-purple-100 tabular-nums">
                 {qty}
               </span>
               <button

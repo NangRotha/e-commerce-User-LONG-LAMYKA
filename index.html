@@ -23,6 +23,13 @@
     <meta name="twitter:title" content="LONG LAMYKA — Official Store 🎀" />
     <meta name="twitter:image" content="/logo.png" />
 
+    <!-- Global polyfill bootstrap for older iOS Safari (iPhone 6 / iOS 12) -->
+    <script>
+      if (typeof globalThis === "undefined") {
+        window.globalThis = window;
+      }
+    </script>
+
     <!-- Instant Branding bootstrap from cached database settings (runs before React loads) -->
     <script>
       (function () {
