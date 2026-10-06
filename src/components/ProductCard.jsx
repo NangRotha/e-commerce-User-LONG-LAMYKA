@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Check, Play, Star, Eye, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { effectivePrice, formatPrice, localizedName, localizedProductCategory } from "../lib/helpers";
 import { useI18n } from "../i18n/I18nContext";
 
@@ -11,45 +12,22 @@ import { useI18n } from "../i18n/I18nContext";
  */
 export default function ProductCard({ product, catMap }) {
   const { addItem } = useCart();
+  const { isWished: checkWished, toggleWishlist: toggleWish } = useWishlist();
   const { t, lang } = useI18n();
   const [justAdded, setJustAdded] = useState(false);
-  const [isWished, setIsWished] = useState(false);
   const [heartAnim, setHeartAnim] = useState(false);
 
+  const isWished = checkWished(product?.id);
   const price = effectivePrice(product);
   const outOfStock = product.stock <= 0;
   const onSale = product.is_on_sale && product.sale_percent > 0;
-
-  // Check wishlist in localStorage
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("udom_wishlist") || "[]");
-      setIsWished(saved.includes(product.id));
-    } catch {
-      /* ignore */
-    }
-  }, [product.id]);
 
   const toggleWishlist = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setHeartAnim(true);
     setTimeout(() => setHeartAnim(false), 800);
-
-    try {
-      const saved = JSON.parse(localStorage.getItem("udom_wishlist") || "[]");
-      let next;
-      if (saved.includes(product.id)) {
-        next = saved.filter((id) => id !== product.id);
-        setIsWished(false);
-      } else {
-        next = [...saved, product.id];
-        setIsWished(true);
-      }
-      localStorage.setItem("udom_wishlist", JSON.stringify(next));
-    } catch {
-      setIsWished((v) => !v);
-    }
+    toggleWish(product);
   };
 
   // Approximate KHR price (standard 4,100 KHR / USD rate)

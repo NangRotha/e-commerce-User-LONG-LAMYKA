@@ -11,9 +11,11 @@ import PageTransition from "./components/PageTransition";
 import Home from "./pages/Home";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
+import WishlistToast from "./components/WishlistToast";
 import useSiteSettings from "./hooks/useSiteSettings";
 import { api } from "./api/client";
 import { useRealtime } from "./context/RealtimeContext";
@@ -50,6 +52,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/likes" element={<Wishlist />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/order-success" element={<OrderSuccess />} />
             <Route path="*" element={<NotFound />} />
@@ -57,6 +61,8 @@ export default function App() {
         </PageTransition>
       </main>
       <Footer />
+      {/* Toast alert ពេល User ចុចបេះដូងទំនិញពេញចិត្ត */}
+      <WishlistToast />
       {/* Social Media floating dock (Telegram · Facebook · Instagram) */}
       <SocialContactDock />
       {/* AI Chatbot (DeepSeek) — floating widget */}

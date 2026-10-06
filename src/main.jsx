@@ -7,6 +7,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { I18nProvider } from "./i18n/I18nContext";
 import { ThemeProvider } from "./theme/ThemeContext";
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 import { RealtimeProvider } from "./context/RealtimeContext";
 import "./index.css";
 
@@ -18,7 +19,9 @@ createRoot(document.getElementById("root")).render(
           <BrowserRouter>
             <RealtimeProvider>
               <CartProvider>
-                <App />
+                <WishlistProvider>
+                  <App />
+                </WishlistProvider>
               </CartProvider>
             </RealtimeProvider>
           </BrowserRouter>

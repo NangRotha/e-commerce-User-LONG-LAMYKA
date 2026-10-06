@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Star, Volume2, VolumeX } from "lucide-react";
+import { Star, Volume2, VolumeX, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import {
   effectivePrice,
   formatPrice,
@@ -28,6 +29,7 @@ function getYouTubeId(url) {
 export default function ProductDetail() {
   const { id } = useParams();
   const { addItem } = useCart();
+  const { isWished, toggleWishlist } = useWishlist();
   const { t, lang } = useI18n();
   const s = useSiteSettings();
   const [product, setProduct] = useState(null);
@@ -488,6 +490,25 @@ export default function ProductDetail() {
                 : added
                 ? `✓ ${t("product.addedShort")}`
                 : `🛍️ ${t("product.addToCart")}`}
+            </button>
+
+            {/* Wishlist Heart Button */}
+            <button
+              type="button"
+              onClick={() => product && toggleWishlist(product)}
+              className={`w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 border transition-all duration-200 active:scale-90 ${
+                isWished(product?.id)
+                  ? "bg-pink-50 dark:bg-pink-950/40 border-pink-300 dark:border-pink-800 text-pink-500 shadow-md shadow-pink-500/10"
+                  : "bg-white dark:bg-[#120e1a] border-purple-200/80 dark:border-purple-900/50 text-slate-400 hover:text-pink-500 hover:border-pink-300"
+              }`}
+              title={isWished(product?.id) ? t("common.wishlistRemove") : t("common.wishlistAdd")}
+              aria-label={isWished(product?.id) ? t("common.wishlistRemove") : t("common.wishlistAdd")}
+            >
+              <Heart
+                className={`w-6 h-6 transition-transform ${
+                  isWished(product?.id) ? "fill-pink-500 text-pink-500 scale-110" : ""
+                }`}
+              />
             </button>
           </div>
 

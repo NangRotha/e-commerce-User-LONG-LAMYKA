@@ -12,8 +12,10 @@ import {
   Sun,
   Moon,
   Sparkles,
+  Heart,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import useSiteSettings from "../hooks/useSiteSettings";
 import { api } from "../api/client";
 import { formatPrice } from "../lib/helpers";
@@ -40,6 +42,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { count, subtotal } = useCart();
+  const { count: wishlistCount } = useWishlist();
   const s = useSiteSettings();
   const { lang, setLang, t } = useI18n();
   const { isDark, toggleTheme } = useTheme();
@@ -290,6 +293,31 @@ export default function Navbar() {
             {/* Divider */}
             <div className="h-6 w-px bg-purple-200/60 dark:bg-purple-900/40 my-auto" />
 
+            {/* Wishlist / Liked Button */}
+            <Link
+              to="/wishlist"
+              className="relative inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#1c1626] text-pink-600 dark:text-pink-300 font-bold text-xs shadow-soft hover:shadow-lift hover:scale-105 active:scale-95 transition-all duration-200 group shrink-0 border border-pink-200/80 dark:border-pink-900/40"
+              title={t("nav.wishlist")}
+              aria-label={`${t("nav.wishlist")}, ${wishlistCount}`}
+            >
+              <Heart
+                className={`w-4 h-4 transition-transform group-hover:scale-115 ${
+                  wishlistCount > 0
+                    ? "fill-pink-500 text-pink-500 animate-heartbeat"
+                    : "text-pink-500 stroke-[2.2]"
+                }`}
+              />
+              <span className="font-bold">{t("nav.wishlist")}</span>
+              {wishlistCount > 0 && (
+                <span
+                  key={wishlistCount}
+                  className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[11px] font-black rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center shadow-xs shadow-pink-500/30 animate-cute-bounce"
+                >
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
             {/* Cart Button Styled as Clay Card Pill */}
             <Link
               to="/cart"
@@ -341,6 +369,27 @@ export default function Navbar() {
                 </>
               )}
             </button>
+
+            {/* Mobile Quick Wishlist Button */}
+            <Link
+              to="/wishlist"
+              className="clay-circle-btn relative inline-flex items-center justify-center w-10 h-10 rounded-2xl text-pink-500 dark:text-pink-400 font-bold"
+              aria-label={`${t("nav.wishlist")}, ${wishlistCount}`}
+            >
+              <Heart
+                className={`w-4.5 h-4.5 transition-transform ${
+                  wishlistCount > 0 ? "fill-pink-500 text-pink-500" : "text-pink-500 stroke-[2.2]"
+                }`}
+              />
+              {wishlistCount > 0 && (
+                <span
+                  key={wishlistCount}
+                  className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-black rounded-full h-4.5 min-w-4.5 px-1 flex items-center justify-center shadow-xs ring-2 ring-white dark:ring-[#160f1c] animate-cute-bounce"
+                >
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             {/* Mobile Quick Cart Button */}
             <Link
@@ -463,6 +512,39 @@ export default function Navbar() {
                     </div>
                   </div>
                   <ChevronRight className="w-4 h-4 opacity-70" />
+                </NavLink>
+
+                {/* Wishlist Link */}
+                <NavLink
+                  to="/wishlist"
+                  onClick={() => setMobileOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between p-3 rounded-2xl font-bold transition-all duration-200 ${
+                      isActive
+                        ? "clay-nav-active"
+                        : "clay-card text-slate-800 dark:text-purple-100 hover:bg-white/80"
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-pink-100 dark:bg-pink-900/40 text-pink-600 dark:text-pink-300 flex items-center justify-center shrink-0">
+                      <Heart className="w-4 h-4 fill-pink-500 text-pink-500" />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-xs font-black block">{t("nav.wishlist")}</span>
+                      <span className="text-[10px] opacity-75 font-normal block">
+                        {t("wishlist.title")}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {wishlistCount > 0 && (
+                      <span className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full shadow-xs">
+                        {wishlistCount}
+                      </span>
+                    )}
+                    <ChevronRight className="w-4 h-4 opacity-70" />
+                  </div>
                 </NavLink>
 
                 {/* Cart Link */}
