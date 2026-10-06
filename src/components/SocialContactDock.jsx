@@ -20,10 +20,10 @@ export default function SocialContactDock() {
   const mapsUrl = s.store_maps_url || STORE_LOCATION.mapsUrl;
 
   return (
-    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:left-6 z-40 flex flex-col items-end sm:items-start gap-3 pointer-events-auto">
+    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-22 z-35 flex flex-col items-end gap-3 pointer-events-auto">
       {/* Expanded popout menu */}
       {open && (
-        <div className="clay-card !rounded-[28px] p-3.5 shadow-soft space-y-2 animate-pop-in min-w-[240px] origin-bottom-right sm:origin-bottom-left">
+        <div className="clay-card !rounded-[28px] p-3.5 shadow-soft space-y-2 animate-pop-in min-w-[240px] origin-bottom-right">
           <div className="px-2.5 py-1.5 border-b border-purple-100 dark:border-purple-900/50 flex items-center justify-between">
             <span className="text-xs font-black text-slate-800 dark:text-purple-100 uppercase tracking-wider flex items-center gap-1.5">
               <span>💬</span>

@@ -504,7 +504,7 @@ export const km = {
     instantKhqrCheckout: "បង់ប្រាក់តាម KHQR ភ្លាមៗ",
   },
   product: {
-    backToShop: "← ត្រឡប់ទៅហាង",
+    backToShop: "ត្រឡប់ទៅហាង",
     noDescription: "គ្មានការពិពណ៌នាទេ។",
     inStock: "នៅក្នុងស្តុក",
     readyToShip: "ត្រៀមដឹកជញ្ជូន",
