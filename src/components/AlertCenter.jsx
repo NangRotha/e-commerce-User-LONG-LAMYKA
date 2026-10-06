@@ -1,88 +1,123 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Sparkles,
+  Bell,
+  AlertTriangle,
+  Gift,
+  X,
+  ExternalLink,
+  ChevronRight,
+  ArrowRight,
+} from "lucide-react";
 import { api } from "../api/client";
 import { useRealtime } from "../context/RealtimeContext";
 import { useI18n } from "../i18n/I18nContext";
 
-// រយៈពេល exit animation (Popup/Banner ចេញ) មុននឹងលាក់
 const EXIT_MS = 260;
-// ពន្យាពេលបង្ហាញ Popup បន្តិចបន្ទាប់ពីចូលទំព័រ (ឲ្យមានអារម្មណ៍រលូន)
-const ENTER_DELAY_MS = 450;
+const ENTER_DELAY_MS = 400;
 
 const META = {
   info: {
-    icon: "ℹ️",
-    banner: "bg-blue-50 border-blue-200 text-blue-800",
-    bannerBtn: "hover:bg-blue-100",
-    popupTitle: "text-blue-900",
-    popupIcon: "bg-blue-100 text-blue-600",
-    accent: "border-t-blue-500",
+    icon: Bell,
+    badgeBg: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800/60",
+    banner: "bg-blue-50/95 dark:bg-[#101b2e]/95 border-b border-blue-200/80 dark:border-blue-900/50 text-blue-950 dark:text-blue-100",
+    bannerBtn: "hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300",
+    popupBadge: "bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60",
+    popupTitle: "text-slate-900 dark:text-white",
+    glow: "from-blue-500/15 via-pink-500/10 to-transparent",
+    labelKm: "ការជូនដំណឹង",
+    labelEn: "Store Announcement",
   },
   success: {
-    icon: "✅",
-    banner: "bg-emerald-50 border-emerald-200 text-emerald-800",
-    bannerBtn: "hover:bg-emerald-100",
-    popupTitle: "text-emerald-900",
-    popupIcon: "bg-emerald-100 text-emerald-600",
-    accent: "border-t-emerald-500",
+    icon: Sparkles,
+    badgeBg: "bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-200/80 dark:border-pink-800/60",
+    banner: "bg-gradient-to-r from-pink-50/95 via-rose-50/95 to-pink-50/95 dark:from-[#21111d]/95 dark:via-[#261320]/95 dark:to-[#21111d]/95 border-b border-pink-200/80 dark:border-pink-900/50 text-pink-950 dark:text-pink-100",
+    bannerBtn: "hover:bg-pink-100 dark:hover:bg-pink-900/60 text-pink-700 dark:text-pink-300",
+    popupBadge: "bg-pink-100 dark:bg-pink-950/80 text-pink-600 dark:text-pink-400 border border-pink-200/60 dark:border-pink-800/60",
+    popupTitle: "text-slate-900 dark:text-white",
+    glow: "from-pink-500/20 via-rose-500/15 to-transparent",
+    labelKm: "ប្រូម៉ូសិនពិសេស",
+    labelEn: "Special Promotion",
   },
   warning: {
-    icon: "⚠️",
-    banner: "bg-amber-50 border-amber-200 text-amber-800",
-    bannerBtn: "hover:bg-amber-100",
-    popupTitle: "text-amber-900",
-    popupIcon: "bg-amber-100 text-amber-600",
-    accent: "border-t-amber-500",
+    icon: AlertTriangle,
+    badgeBg: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60",
+    banner: "bg-amber-50/95 dark:bg-[#251a0f]/95 border-b border-amber-200/80 dark:border-amber-900/50 text-amber-950 dark:text-amber-100",
+    bannerBtn: "hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300",
+    popupBadge: "bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60",
+    popupTitle: "text-slate-900 dark:text-white",
+    glow: "from-amber-500/20 via-pink-500/10 to-transparent",
+    labelKm: "ដំណឹងសំខាន់",
+    labelEn: "Important Notice",
   },
   danger: {
-    icon: "🚨",
-    banner: "bg-rose-50 border-rose-200 text-rose-800",
-    bannerBtn: "hover:bg-rose-100",
-    popupTitle: "text-rose-900",
-    popupIcon: "bg-rose-100 text-rose-600",
-    accent: "border-t-rose-500",
+    icon: Gift,
+    badgeBg: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800/60",
+    banner: "bg-rose-50/95 dark:bg-[#261017]/95 border-b border-rose-200/80 dark:border-rose-900/50 text-rose-950 dark:text-rose-100",
+    bannerBtn: "hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300",
+    popupBadge: "bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60",
+    popupTitle: "text-slate-900 dark:text-white",
+    glow: "from-rose-500/25 via-pink-500/15 to-transparent",
+    labelKm: "ឱកាសពិសេស",
+    labelEn: "Exclusive Offer",
   },
 };
 
 /**
- * បង្ហាញ Alert / Popup ដែល Admin បង្កើតពី Admin Panel
- * - Banner: របារពណ៌នៅក្រោម Navbar
- * - Popup: ប្រអប់ Modal កណ្តាលអេក្រង់
- * - បង្ហាញម្តងទៀតរាល់ពេល Refresh page / ចូលទំព័រវិញ (មិនចងចាំការបិទទេ)
- * - មាន animation ចូល (enter) និង ចេញ (exit)
- * - Real-time: បញ្ចូលថ្មីដោយស្វ័យប្រវត្តិ ពេល Admin កែ/បង្កើត/លុប Alert
+ * AlertCenter — Storefront Luxury Alert & Announcement Display
+ * Displays live banners under the Navbar and centered popup modal dialogs
+ * created by Admin from the Admin Panel.
  */
 export default function AlertCenter() {
   const { t, lang } = useI18n();
   const [alerts, setAlerts] = useState([]);
-
-  const getAlertTitle = (a) =>
-    lang === "km" ? (a.title_km || a.title) : (a.title || a.title_km);
-  const getAlertMessage = (a) =>
-    lang === "km" ? (a.message_km || a.message) : (a.message || a.message_km);
-  // status[id] = 'closing' | 'hidden' — ចងចាំតែក្នុង Memory (Refresh page បាត់ -> បង្ហាញវិញ)
   const [status, setStatus] = useState({});
   const [ready, setReady] = useState(false);
   const navigate = useNavigate();
 
+  const getAlertTitle = useCallback(
+    (a) => (lang === "km" ? a.title_km || a.title : a.title || a.title_km),
+    [lang]
+  );
+
+  const getAlertMessage = useCallback(
+    (a) => (lang === "km" ? a.message_km || a.message : a.message || a.message_km),
+    [lang]
+  );
+
   const load = useCallback(() => {
-    api.getAlerts().then(setAlerts).catch(() => {});
+    api
+      .getAlerts()
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setAlerts(data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  // Real-time: Admin បង្កើត/កែ/លុប Alert -> ផ្ទុកថ្មីដោយស្វ័យប្រវត្តិ
-  useRealtime("alerts_changed", load);
+  // Real-time: Refresh alerts when Admin creates, edits, or deletes
+  useRealtime("alerts_changed", () => {
+    // Clear session dismissal for updated alerts so customer sees changes immediately
+    try {
+      sessionStorage.removeItem("dismissed_popup_session");
+    } catch {}
+    setStatus({});
+    load();
+  });
 
-  // ពន្យាពេលបន្តិចមុនបង្ហាញ Popup ពេលចូលទំព័រ
+  // Smooth delay before showing popup
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), ENTER_DELAY_MS);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setReady(true), ENTER_DELAY_MS);
+    return () => clearTimeout(timer);
   }, []);
 
-  // ពេល status = 'closing' -> បន្ទាប់ពី exit animation ចប់ ទើបលាក់ ('hidden')
+  // Handle closing transition
   useEffect(() => {
     const closing = Object.entries(status)
       .filter(([, s]) => s === "closing")
@@ -104,24 +139,40 @@ export default function AlertCenter() {
         ? prev
         : { ...prev, [String(id)]: "closing" }
     );
+    try {
+      sessionStorage.setItem(`dismissed_alert_${id}`, "true");
+    } catch {}
   };
 
-  const isVisible = (a) => status[a.id] !== "hidden";
+  const isVisible = (a) => {
+    if (status[a.id] === "hidden") return false;
+    try {
+      if (sessionStorage.getItem(`dismissed_alert_${a.id}`) === "true") {
+        return false;
+      }
+    } catch {}
+    return true;
+  };
+
   const isClosing = (a) => status[a.id] === "closing";
 
   const banners = alerts.filter(
     (a) => (a.style === "banner" || a.style === "both") && isVisible(a)
   );
+
   const popup = alerts.find(
     (a) => (a.style === "popup" || a.style === "both") && isVisible(a)
   );
 
   const handleAction = (a) => {
     if (a.link_url) {
-      if (a.link_url.startsWith("/")) navigate(a.link_url);
-      else window.open(a.link_url, "_blank", "noopener,noreferrer");
+      if (a.link_url.startsWith("/")) {
+        navigate(a.link_url);
+      } else {
+        window.open(a.link_url, "_blank", "noopener,noreferrer");
+      }
     }
-    if (a.style === "popup") dismiss(a.id);
+    dismiss(a.id);
   };
 
   const handleDismiss = (e, a) => {
@@ -131,152 +182,183 @@ export default function AlertCenter() {
 
   return (
     <>
-      {/* Banners: របារពណ៌នៅក្រោម Navbar */}
+      {/* ==================== BANNERS (Under Navbar) ==================== */}
       {banners.length > 0 && (
-        <div>
+        <div className="w-full flex flex-col">
           {banners.map((a) => {
             const m = META[a.alert_type] || META.info;
+            const IconComp = m.icon;
+            const title = getAlertTitle(a);
+            const message = getAlertMessage(a);
+
             return (
               <div
                 key={a.id}
                 role={a.link_url ? "button" : "status"}
                 onClick={() => a.link_url && handleAction(a)}
-                className={`relative flex items-center gap-3 px-4 sm:px-6 py-2.5 text-sm border-b overflow-hidden ${
+                className={`relative flex items-center justify-between gap-3 px-4 sm:px-6 py-2.5 text-xs sm:text-sm backdrop-blur-md transition-all ${
                   isClosing(a) ? "banner-exit" : "banner-enter"
-                } ${m.banner} ${a.link_url ? "cursor-pointer" : ""}`}
+                } ${m.banner} ${a.link_url ? "cursor-pointer group" : ""}`}
               >
-                {a.image_url ? (
-                  <img
-                    src={a.image_url}
-                    alt=""
-                    className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover border border-black/5 bg-white"
-                    onError={(e) => (e.target.style.display = "none")}
-                  />
-                ) : (
-                  <span aria-hidden className="text-lg">
-                    {m.icon}
-                  </span>
-                )}
-                <div className="flex-1 min-w-0">
-                  {getAlertTitle(a) && <strong className="font-bold">{getAlertTitle(a)} </strong>}
-                  <span>{getAlertMessage(a)}</span>
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  {a.image_url ? (
+                    <img
+                      src={a.image_url}
+                      alt=""
+                      className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover border border-pink-200/80 shadow-2xs bg-white"
+                      onError={(e) => (e.target.style.display = "none")}
+                    />
+                  ) : (
+                    <span
+                      className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center shadow-2xs ${m.badgeBg}`}
+                      aria-hidden
+                    >
+                      <IconComp className="w-4 h-4" />
+                    </span>
+                  )}
+
+                  <div className="min-w-0 flex-1">
+                    {title && (
+                      <span className="font-extrabold mr-1.5 tracking-tight group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                        {title}
+                      </span>
+                    )}
+                    <span className="opacity-90 font-medium">{message}</span>
+                  </div>
                 </div>
-                <button
-                  onClick={(e) => handleDismiss(e, a)}
-                  className={`shrink-0 p-1 rounded-md opacity-60 hover:opacity-100 transition ${m.bannerBtn}`}
-                  aria-label={t("alerts.dismiss")}
-                >
-                  ✕
-                </button>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  {a.link_url && (
+                    <span className="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-pink-600 dark:text-pink-400 group-hover:translate-x-0.5 transition-transform">
+                      <span>{t("alerts.learnMore")}</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </span>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={(e) => handleDismiss(e, a)}
+                    className={`p-1.5 rounded-lg opacity-60 hover:opacity-100 transition-all cursor-pointer ${m.bannerBtn}`}
+                    aria-label={t("alerts.dismiss")}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             );
           })}
         </div>
       )}
 
-      {/* Popup: ប្រអប់ Modal កណ្តាលអេក្រង់ */}
+      {/* ==================== POPUP MODAL (Screen Center) ==================== */}
       {popup && ready && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          {/* Frosted Glass Backdrop */}
           <div
-            className={`absolute inset-0 bg-slate-900/50 backdrop-blur-sm ${
+            className={`fixed inset-0 bg-slate-950/50 dark:bg-black/75 backdrop-blur-md transition-opacity ${
               isClosing(popup) ? "backdrop-exit" : "backdrop-enter"
             }`}
             onClick={() => dismiss(popup.id)}
           />
+
+          {/* Luxury Modal Card */}
           <div
             key={popup.id}
-            className={`relative clay-card !rounded-[32px] shadow-2xl w-full max-w-md overflow-hidden ${
+            className={`relative w-full max-w-lg rounded-3xl sm:rounded-[36px] bg-white/95 dark:bg-[#191122]/95 backdrop-blur-2xl border border-pink-200/80 dark:border-pink-900/60 shadow-2xl overflow-hidden ${
               isClosing(popup) ? "popup-exit" : "popup-enter"
-            } ${
-              popup.image_url ? "" : `border-t-4 ${(META[popup.alert_type] || META.info).accent}`
             }`}
             role="dialog"
             aria-modal="true"
             aria-label={getAlertTitle(popup) || "Announcement"}
           >
+            {/* Ambient Pink Glow Overlay */}
+            <div
+              className={`absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-40 bg-gradient-to-b ${
+                (META[popup.alert_type] || META.info).glow
+              } blur-3xl pointer-events-none`}
+            />
+
+            {/* Circular Close Button */}
             <button
               onClick={() => dismiss(popup.id)}
-              className="absolute top-3 right-3 z-10 clay-circle-btn !w-8 !h-8 text-slate-700 dark:text-purple-200 text-xs flex items-center justify-center transition active:scale-90"
+              className="absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-full bg-slate-900/40 hover:bg-slate-900/70 text-white backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer shadow-md"
               aria-label={t("alerts.close")}
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
 
-            {/* រូបភាពធំនៅលើ (បើ Admin បញ្ចូលរូបភាព) */}
+            {/* Showcase Image */}
             {popup.image_url && (
-              <div className="relative h-44 sm:h-52 w-full overflow-hidden">
+              <div className="relative h-48 sm:h-60 w-full overflow-hidden bg-pink-50/50 dark:bg-pink-950/20 group">
                 <img
                   src={popup.image_url}
                   alt={getAlertTitle(popup) || "Announcement"}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   onError={(e) => (e.target.style.display = "none")}
                 />
-                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white dark:from-[#191122] to-transparent" />
               </div>
             )}
 
-            <div className="p-6 sm:p-7">
-              {popup.image_url ? (
-                <div>
-                  {getAlertTitle(popup) && (
-                    <h3
-                      className={`text-2xl font-black ${
-                        (META[popup.alert_type] || META.info).popupTitle
-                      }`}
-                    >
-                      {getAlertTitle(popup)}
-                    </h3>
-                  )}
-                  {getAlertMessage(popup) && (
-                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
-                      {getAlertMessage(popup)}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-start gap-4">
-                  <span
-                    className={`shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${
-                      (META[popup.alert_type] || META.info).popupIcon
-                    }`}
-                    aria-hidden
-                  >
-                    {(META[popup.alert_type] || META.info).icon}
+            {/* Content Body */}
+            <div className={`p-6 sm:p-8 ${popup.image_url ? "pt-2 sm:pt-3" : "pt-8"}`}>
+              {/* Type Pill Badge */}
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
+                    (META[popup.alert_type] || META.info).popupBadge
+                  }`}
+                >
+                  {(() => {
+                    const Comp = (META[popup.alert_type] || META.info).icon;
+                    return <Comp className="w-3.5 h-3.5" />;
+                  })()}
+                  <span>
+                    {lang === "km"
+                      ? (META[popup.alert_type] || META.info).labelKm
+                      : (META[popup.alert_type] || META.info).labelEn}
                   </span>
-                  <div className="min-w-0">
-                    {getAlertTitle(popup) && (
-                      <h3
-                        className={`text-xl font-black ${
-                          (META[popup.alert_type] || META.info).popupTitle
-                        }`}
-                      >
-                        {getAlertTitle(popup)}
-                      </h3>
-                    )}
-                    {getAlertMessage(popup) && (
-                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-wrap">
-                        {getAlertMessage(popup)}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                </span>
+              </div>
+
+              {/* Title */}
+              {getAlertTitle(popup) && (
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
+                  {getAlertTitle(popup)}
+                </h3>
               )}
 
-              <div className="mt-6 flex gap-3 justify-end">
-                {popup.link_url && (
-                  <button
-                    onClick={() => handleAction(popup)}
-                    className="clay-nav-active px-5 py-2.5 rounded-2xl text-white text-sm font-bold shadow-soft transition hover:scale-102 active:scale-95"
-                  >
-                    {t("alerts.learnMore")}
-                  </button>
-                )}
+              {/* Message */}
+              {getAlertMessage(popup) && (
+                <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed whitespace-pre-line">
+                  {getAlertMessage(popup)}
+                </p>
+              )}
+
+              {/* Action Buttons Row */}
+              <div className="mt-6 sm:mt-7 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3">
                 <button
+                  type="button"
                   onClick={() => dismiss(popup.id)}
-                  className="clay-circle-btn !w-auto !h-auto px-5 py-2.5 !rounded-2xl text-slate-700 dark:text-purple-200 text-sm font-bold shadow-2xs transition active:scale-95"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 cursor-pointer text-center"
                 >
                   {popup.link_url ? t("alerts.later") : t("alerts.gotIt")}
                 </button>
+
+                {popup.link_url && (
+                  <button
+                    type="button"
+                    onClick={() => handleAction(popup)}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 hover:from-pink-600 hover:to-rose-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/35 hover:scale-[1.02] active:scale-95 transition-all duration-200 cursor-pointer"
+                  >
+                    <span>{t("alerts.learnMore")}</span>
+                    {popup.link_url.startsWith("http") ? (
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    ) : (
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -285,4 +367,3 @@ export default function AlertCenter() {
     </>
   );
 }
-

@@ -91,7 +91,7 @@ export const en = {
     instantKhqrCheckout: "Instant KHQR checkout",
   },
   product: {
-    backToShop: "← Back to shop",
+    backToShop: "Back to shop",
     noDescription: "No description available.",
     inStock: "in stock",
     readyToShip: "Ready to ship",
@@ -227,7 +227,7 @@ export const en = {
     statusPaid: "Payment verified!",
     statusFailed: "Payment failed",
     noOrder: "Order not found",
-    backToShop: "← Back to shop",
+    backToShop: "Back to shop",
     secureNote: "Protected by ABA Pay · Bakong KHQR",
     payNow: "Pay with ABA Pay / KHQR",
     checkoutHint:
@@ -266,7 +266,7 @@ export const en = {
     payLink: "Payment link",
     failed: "Payment was not completed. Please try again.",
     noOrder: "No order found",
-    backToShop: "← Back to shop",
+    backToShop: "Back to shop",
     secureNote: "Secured by ABA Pay · Bakong KHQR",
     payNow: "Pay with ABA Pay / KHQRcc",
     checkoutHint:
@@ -640,7 +640,7 @@ export const km = {
     statusPaid: "បានផ្ទៀងផ្ទាត់ការបង់ប្រាក់!",
     statusFailed: "ការបង់ប្រាក់មិនបានសម្រេច",
     noOrder: "រកមិនឃើញការបញ្ជាទិញ",
-    backToShop: "← ត្រឡប់ទៅហាង",
+    backToShop: "ត្រឡប់ទៅហាង",
     secureNote: "ការពារដោយ ABA Pay · Bakong KHQR",
     payNow: "បង់ប្រាក់តាម ABA Pay / KHQR",
     checkoutHint:
@@ -679,7 +679,7 @@ export const km = {
     payLink: "តំណបង់ប្រាក់",
     failed: "ការបង់ប្រាក់មិនបានសម្រេចទេ។ សូមព្យាយាមម្តងទៀត។",
     noOrder: "រកមិនឃើញការបញ្ជាទិញ",
-    backToShop: "← ត្រឡប់ទៅហាង",
+    backToShop: "ត្រឡប់ទៅហាង",
     secureNote: "ការពារដោយ ABA Pay · Bakong KHQR",
     payNow: "បង់ប្រាក់តាម ABA Pay / KHQRcc",
     checkoutHint:
