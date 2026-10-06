@@ -323,13 +323,10 @@ export default function Footer() {
           <p className="font-medium">
             © {new Date().getFullYear()} <span className="font-bold text-pink-700 dark:text-pink-300">{siteName}</span>. {t("footer.rights")}
           </p>
-          <div className="flex items-center gap-1.5 font-medium">
+          <div className="flex items-center gap-1.5 font-medium flex-wrap justify-center sm:justify-end">
             <span>{t("footer.craftedWith")}</span>
             <Heart className="w-4 h-4 text-pink-500 fill-pink-500 animate-heartbeat inline hover:scale-125 transition-transform cursor-pointer" />
-            <span>{t("footer.forCuteGirlsIn")}</span>
-            <span className="inline-flex items-center gap-1 font-bold text-pink-700 dark:text-pink-300 bg-pink-100/80 dark:bg-pink-950/50 px-2.5 py-0.5 rounded-full border border-pink-300/60 dark:border-pink-900/50 shadow-2xs">
-              {t("footer.cambodia")}
-            </span>
+            <span>{t("footer.forLovedOnes") || t("footer.forCuteGirlsIn")}</span>
           </div>
         </div>
       </div>

@@ -313,7 +313,8 @@ export const en = {
     waChat: "WhatsApp Chat",
     fbPage: "Facebook Page",
     craftedWith: "Crafted with",
-    forCuteGirlsIn: "for cute girls in",
+    forLovedOnes: "as a gift for your loved ones & everyone",
+    forCuteGirlsIn: "as a gift for your loved ones & everyone",
     cambodia: "Cambodia 🇰🇭",
   },
   social: {
@@ -706,7 +707,8 @@ export const km = {
     waChat: "ជជែកតាម WhatsApp",
     fbPage: "ទំព័រ Facebook",
     craftedWith: "បង្កើតឡើងដោយ",
-    forCuteGirlsIn: "សម្រាប់ស្រីៗដ៏គួរឲ្យស្រលាញ់នៅ",
+    forLovedOnes: "សម្រាប់ជាការដូរដល់អ្នកជាទីស្រលាញ់និងមនុស្សគ្រប់គ្នា",
+    forCuteGirlsIn: "សម្រាប់ជាការដូរដល់អ្នកជាទីស្រលាញ់និងមនុស្សគ្រប់គ្នា",
     cambodia: "កម្ពុជា 🇰🇭",
   },
   social: {

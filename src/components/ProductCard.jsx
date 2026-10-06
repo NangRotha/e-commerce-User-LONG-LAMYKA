@@ -88,30 +88,25 @@ export default function ProductCard({ product, catMap }) {
           {/* Gradient overlay on hover */}
           <div className="absolute inset-0 bg-gradient-to-t from-purple-950/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          {/* Cute Sticker Pill */}
-          {onSale ? (
+          {/* Sale Sticker Pill */}
+          {onSale && (
             <div className="absolute top-2.5 left-2.5 bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-full shadow-xs animate-pop-in tracking-wide flex items-center gap-1">
               <span>🎀</span>
               <span>-{Math.round(product.sale_percent)}% {t("product.off")}</span>
             </div>
-          ) : (
-            <div className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-[#1c1626]/90 text-purple-700 dark:text-purple-300 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs backdrop-blur-md border border-purple-100 dark:border-purple-950/80 flex items-center gap-1">
-              <span>✨</span>
-              <span>{t("product.cutePick") || "Cute Pick"}</span>
-            </div>
           )}
 
-          {/* Wishlist Heart Button - styled exactly like user reference image */}
+          {/* Wishlist Heart Button */}
           <button
             type="button"
             onClick={toggleWishlist}
             aria-label={isWished ? t("common.wishlistRemove") : t("common.wishlistAdd")}
-            className={`absolute top-2.5 right-2.5 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white shadow-md shadow-slate-900/10 dark:bg-[#1a1424] dark:shadow-black/50 transition-all duration-300 hover:scale-110 active:scale-90 z-10 ${
+            className={`absolute top-2.5 right-2.5 w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-white shadow-sm shadow-slate-900/10 dark:bg-[#1a1424] dark:shadow-black/50 transition-all duration-300 hover:scale-110 active:scale-90 z-10 ${
               heartAnim ? "animate-heartbeat" : ""
             }`}
           >
             <Heart
-              className={`w-5 h-5 transition-all duration-200 stroke-[2.2] ${
+              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-200 stroke-[2.2] ${
                 isWished
                   ? "fill-[#a855f7] text-[#a855f7] scale-105"
                   : "text-[#a855f7] dark:text-[#c084fc] hover:text-[#9333ea]"
