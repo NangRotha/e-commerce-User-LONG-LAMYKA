@@ -151,11 +151,10 @@ export default function Navbar() {
             className="group flex items-center gap-2.5 sm:gap-3.5 shrink min-w-0 focus:outline-none"
             aria-label={`${siteName} Home`}
           >
-            {/* 3D Avatar character in circle with white border (Same as Admin) */}
+            {/* 3D Avatar character in circle with white border (Same as Footer) */}
             <div className="relative group shrink-0">
               <div
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-md shadow-purple-300/40 dark:shadow-none bg-[#f6f0fc]"
-                style={{ border: "2.5px solid white" }}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden shadow-marshmallow bg-pink-100 shrink-0 border-2 border-white dark:border-pink-400/50 hover:rotate-6 hover:scale-110 transition-transform duration-300"
               >
                 <img
                   src={siteLogo || "/avatar_clay.jpg"}
@@ -169,13 +168,11 @@ export default function Navbar() {
             </div>
 
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="truncate text-base sm:text-lg font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-purple-600 dark:group-hover:text-purple-300 max-w-[140px] min-[400px]:max-w-[220px] sm:max-w-none">
-                  {siteName}
-                </span>
-                <span className="text-xs">✨</span>
-              </div>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 dark:text-purple-200/70 truncate">
+              <span className="tracking-tight bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 dark:from-pink-300 dark:via-rose-200 dark:to-purple-200 bg-clip-text text-transparent group-hover:opacity-90 transition-opacity font-black text-lg sm:text-2xl flex items-center gap-1.5 leading-tight">
+                <span className="truncate max-w-[140px] min-[400px]:max-w-[220px] sm:max-w-none">{siteName}</span>
+                <Sparkles className="w-4 h-4 text-pink-500 dark:text-pink-400 animate-sparkle shrink-0" />
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-slate-500 dark:text-purple-200/70 truncate mt-0.5">
                 <span>{greeting.text}</span>
                 <span>{greeting.icon}</span>
               </span>
@@ -718,8 +715,9 @@ export default function Navbar() {
                   <img src="/plant_clay.jpg" alt="Store mascot" className="w-full h-full object-cover" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-black text-slate-800 dark:text-white truncate">
-                    {siteName} 🌸
+                  <p className="text-[11px] font-black bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 dark:from-pink-300 dark:via-rose-200 dark:to-purple-200 bg-clip-text text-transparent truncate flex items-center gap-1">
+                    <span>{siteName}</span>
+                    <Sparkles className="w-3 h-3 text-pink-500 dark:text-pink-400 animate-sparkle shrink-0" />
                   </p>
                   <p className="text-[10px] text-slate-500 dark:text-purple-200/60 font-medium truncate">
                     {t("nav.onlineMsg")}
